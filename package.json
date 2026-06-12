@@ -1,0 +1,31 @@
+{
+  "name": "habit-tracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite --port 3000",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AR2BJ/habit-tracker.git"
+  },
+  "keywords": [],
+  "author": "AR2BJ",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "bugs": {
+    "url": "https://github.com/AR2BJ/habit-tracker/issues"
+  },
+  "homepage": "https://github.com/AR2BJ/habit-tracker#readme",
+  "devDependencies": {
+    "vite": "^8.0.16"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.1",
+    "tailwindcss": "^4.3.1"
+  }
+}

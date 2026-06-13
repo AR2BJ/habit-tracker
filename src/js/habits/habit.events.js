@@ -345,13 +345,13 @@ function openEditModal(id, currentName) {
 
   document.getElementById("edit-habit-input").value = currentName;
 
-  document.getElementById("edit-modal").classList.remove("hidden");
+  document.getElementById("edit-modal").classList.replace("hidden", "flex");
 }
 
 function closeEditModal() {
   pendingEditId = null;
 
-  document.getElementById("edit-modal").classList.add("hidden");
+  document.getElementById("edit-modal").classList.replace("flex", "hidden");
 }
 
 // =============================
@@ -365,13 +365,13 @@ function closeEditModal() {
 function openDeleteModal(id) {
   pendingDeleteId = id;
 
-  document.getElementById("delete-modal").classList.remove("hidden");
+  document.getElementById("delete-modal").classList.replace("hidden", "flex");
 }
 
 function closeDeleteModal() {
   pendingDeleteId = null;
 
-  document.getElementById("delete-modal").classList.add("hidden");
+  document.getElementById("delete-modal").classList.replace("flex", "hidden");
 }
 
 // =============================

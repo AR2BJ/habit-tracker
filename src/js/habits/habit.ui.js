@@ -2,7 +2,7 @@
 // HABIT UI START
 // =============================
 
-import { calculateStreak, todayISO as getToday } from "../utils/helpers.js";
+import { calculateStreak, todayISO } from "../utils/helpers.js";
 
 import { renderCalendar } from "./habit.calendar.js";
 import { state } from "../state.js";
@@ -30,15 +30,7 @@ export function renderHabits(habits) {
     container.innerHTML = `
   
     <div
-      class="
-        border
-        border-dashed
-        border-gray-700
-        rounded-3xl
-        p-16
-        text-center
-        bg-gray-900/30
-      "
+      class="border border-dashed border-gray-700 rounded-3xl p-16 text-center bg-gray-900/30"
     >
 
       <div class="text-6xl mb-6">
@@ -46,22 +38,13 @@ export function renderHabits(habits) {
       </div>
 
       <h2
-        class="
-          text-2xl
-          font-bold
-          text-white
-        "
+        class="text-2xl font-bold text-white"
       >
         ${title}
       </h2>
 
       <p
-        class="
-          mt-3
-          text-gray-400
-          max-w-sm
-          mx-auto
-        "
+        class="mt-3 text-gray-400 max-w-sm mx-auto"
       >
         ${description}
       </p>
@@ -80,7 +63,7 @@ export function renderHabits(habits) {
   habits.forEach((habit) => {
     const { current, best } = calculateStreak(habit.completedDates);
 
-    const completedToday = habit.completedDates.includes(getToday());
+    const completedToday = habit.completedDates.includes(todayISO());
 
     const isArchived = habit.archived;
 
@@ -90,21 +73,8 @@ export function renderHabits(habits) {
     // HABIT CARD START
     // =============================
 
-    item.className = `
-      bg-gradient-to-r
-      from-gray-900
-      via-gray-950
-      to-gray-900
-      border
-      border-gray-800
-      p-7
-      rounded-3xl
-      transition-all
-      duration-300
-      hover:border-indigo-500/30
-      hover:shadow-2xl
-      hover:shadow-indigo-500/5
-    `;
+    item.className =
+      "bg-gradient-to-r from-gray-900 via-gray-950 to-gray-900 border border-gray-800 p-7 rounded-3xl transition-all duration-300 hover:border-indigo-500/30 hover:shadow-2xl hover:shadow-indigo-500/5";
 
     // =============================
     // HABIT CARD END
@@ -230,7 +200,12 @@ export function renderHabits(habits) {
 
         <!-- Calendar -->
         <div class="pt-4 overflow-x-auto">
-          ${renderCalendar(habit.completedDates, habit.id, habit.archived)}
+          ${renderCalendar(
+            habit.completedDates,
+            habit.id,
+            habit.createdAt,
+            habit.archived,
+          )}
         </div>
       </div>
     `;

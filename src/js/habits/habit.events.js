@@ -9,6 +9,7 @@ import { toggleHabit, toggleHabitDate } from "./habit.service.js";
 import { createHabit } from "./habit.service.js";
 import { deleteHabit } from "./habit.service.js";
 import { editHabit } from "./habit.service.js";
+import { formatDate } from "../utils/helpers.js";
 import { renderDashboard } from "../dashboard/dashboard.ui.js";
 import { renderHabits } from "./habit.ui.js";
 import { saveToStorage } from "../storage.js";
@@ -137,11 +138,9 @@ export function bindHabitEvents() {
 
       if (habit?.archived) return;
 
-      const today = new Date().toISOString().split("T")[0];
+      const today = formatDate(new Date());
 
-      const yesterday = new Date(Date.now() - 86400000)
-        .toISOString()
-        .split("T")[0];
+      const yesterday = formatDate(new Date(Date.now() - 86400000));
 
       if (date !== today && date !== yesterday) {
         return;
@@ -172,6 +171,8 @@ export function bindHabitEvents() {
 
       renderDashboard(state.habits);
 
+      showArchiveToast();
+
       return;
     }
 
@@ -191,6 +192,8 @@ export function bindHabitEvents() {
       renderHabits(getFilteredHabits());
 
       renderDashboard(state.habits);
+
+      showRestoreToast();
 
       return;
     }
@@ -422,6 +425,42 @@ function hideUndoToast() {
 
 // =============================
 // UNDO TOAST HELPERS END
+// =============================
+
+// =============================
+// ARCHIVE TOAST HELPERS START
+// =============================
+
+function showArchiveToast() {
+  const toast = document.getElementById("archive-toast");
+
+  toast.classList.remove("hidden");
+
+  setTimeout(() => {
+    toast.classList.add("hidden");
+  }, 2500);
+}
+
+// =============================
+// ARCHIVE TOAST HELPERS END
+// =============================
+
+// =============================
+// RESTORE TOAST HELPERS START
+// =============================
+
+function showRestoreToast() {
+  const toast = document.getElementById("restore-toast");
+
+  toast.classList.remove("hidden");
+
+  setTimeout(() => {
+    toast.classList.add("hidden");
+  }, 2500);
+}
+
+// =============================
+// RESTORE TOAST HELPERS END
 // =============================
 
 // =============================

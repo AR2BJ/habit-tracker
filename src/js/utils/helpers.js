@@ -6,8 +6,18 @@ export function generateId() {
   return crypto.randomUUID();
 }
 
+export function formatDate(date) {
+  const year = date.getFullYear();
+
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
 export function todayISO() {
-  return new Date().toISOString().split("T")[0];
+  return formatDate(new Date());
 }
 
 // =============================
@@ -40,7 +50,7 @@ export function calculateStreak(dates) {
   }
 
   while (true) {
-    const iso = cursor.toISOString().split("T")[0];
+    const iso = formatDate(cursor);
 
     if (dateSet.has(iso)) {
       current++;
@@ -63,7 +73,7 @@ export function calculateStreak(dates) {
     let nextDate = new Date(currentDate);
     nextDate.setDate(nextDate.getDate() + 1);
 
-    while (dateSet.has(nextDate.toISOString().split("T")[0])) {
+    while (dateSet.has(formatDate(nextDate))) {
       temp++;
       nextDate.setDate(nextDate.getDate() + 1);
     }

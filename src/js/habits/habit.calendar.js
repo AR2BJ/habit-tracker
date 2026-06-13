@@ -2,19 +2,37 @@
 // HABIT CALENDAR START
 // =============================
 
-export function renderCalendar(dates, habitId, isArchived = false) {
+import { formatDate } from "../utils/helpers";
+
+export function renderCalendar(dates, habitId, createdAt, isArchived = false) {
   const dateSet = new Set(dates);
 
   const days = [];
 
-  const totalDays = 59;
+  const created = new Date(createdAt);
 
-  for (let i = totalDays; i >= 0; i--) {
-    const date = new Date();
+  const today = new Date();
 
-    date.setDate(date.getDate() - i);
+  const diffDays = Math.floor((today - created) / 86400000);
 
-    const iso = date.toISOString().split("T")[0];
+  const periodIndex = Math.max(0, Math.floor(diffDays / 59));
+
+  const showCreatedAt = periodIndex > 0;
+
+  const periodStart = new Date(created);
+
+  periodStart.setDate(periodStart.getDate() + periodIndex * 59);
+
+  const periodEnd = new Date(periodStart);
+
+  periodEnd.setDate(periodEnd.getDate() + 59);
+
+  for (let i = 0; i < 60; i++) {
+    const date = new Date(periodStart);
+
+    date.setDate(periodStart.getDate() + i);
+
+    const iso = formatDate(date);
 
     days.push({
       date: iso,
@@ -26,65 +44,63 @@ export function renderCalendar(dates, habitId, isArchived = false) {
     <div class="space-y-4 p-1 overflow-hidden">
       <!-- Timeline -->
 
-      <div
-        class="
-          flex
-          justify-between
-          text-gray-400
-          text-sm
-          select-none
-        "
-      >
-        <span>60 days ago</span>
-
-        <span>Today</span>
+      <div class="flex justify-between text-gray-400 text-sm select-none">
+        <span>${formatDate(periodStart)}</span>
+        <span>${formatDate(periodEnd)}</span>
       </div>
 
       <!-- Calendar Grid -->
 
-      <div
-        class="
-          grid
-          grid-flow-col
-          grid-rows-2
-          gap-2
-          w-max
-        "
-      >
+      <div class="grid grid-cols-30 grid-rows-2 gap-2 w-max">
         ${days
           .map((day) => {
-            const today = new Date().toISOString().split("T")[0];
+            const today = formatDate(new Date());
 
-            const yesterday = new Date(Date.now() - 86400000)
-              .toISOString()
-              .split("T")[0];
+            const yesterday = formatDate(new Date(Date.now() - 86400000));
+
+            const tooltip = day.completed
+              ? `Completed • ${day.date}`
+              : day.date < today
+                ? `Missed • ${day.date}`
+                : `Upcoming • ${day.date}`;
 
             const editable = day.date === today || day.date === yesterday;
 
             return `
-              <div
+              <button
                 data-date="${day.date}"
                 data-habit-id="${habitId}"
-                title="${day.date}"
-                class="calendar-day
-                ${editable && !isArchived ? "cursor-pointer hover:scale-110" : "cursor-not-allowed opacity-60"}
-                w-5.5
-                h-5.5
-                rounded-md
-                transition-all
-                duration-200
-                ${
+                title="${tooltip}"
+                class="calendar-day ${
+                  editable && !isArchived
+                    ? "cursor-pointer hover:scale-110"
+                    : "cursor-not-allowed opacity-60"
+                } w-5.5 h-5.5 rounded-md flex flex-row justify-center items-center transition-all duration-200 ${
                   day.completed
                     ? "bg-emerald-500 shadow-lg shadow-emerald-500/20"
                     : "bg-slate-700"
-                }
-                ${editable && !isArchived && !day.completed ? "hover:bg-slate-600" : ""}
-              "
-              ></div>
+                } ${
+                  editable && !isArchived && !day.completed
+                    ? "hover:bg-slate-600"
+                    : ""
+                }"
+              >
+                ${day.completed ? "✓" : ""}
+              </button>
             `;
           })
           .join("")}
       </div>
+      ${
+        showCreatedAt
+          ? `
+            <div class="ps-1.5 pt-3 text-xs text-gray-500 italic text-left">
+              Created: ${createdAt}
+            </div>
+          `
+          : ""
+      }
+
     </div>
   `;
 }

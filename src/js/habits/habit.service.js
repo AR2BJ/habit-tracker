@@ -2,10 +2,11 @@
 // HABIT SERVICE START
 // =============================
 
+import { formatDate, todayISO } from "../utils/helpers.js";
+
 import { generateId } from "../utils/helpers.js";
 import { saveToStorage } from "../storage.js";
 import { state } from "../state.js";
-import { todayISO } from "../utils/helpers.js";
 
 export function createHabit(name) {
   // =============================
@@ -58,7 +59,7 @@ export function createHabit(name) {
   const habit = {
     id: generateId(),
     name: cleaned,
-    createdAt: new Date().toISOString(),
+    createdAt: formatDate(new Date()),
     archived: false,
     completedDates: [],
     stats: {

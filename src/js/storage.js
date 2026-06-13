@@ -2,6 +2,8 @@
 // STORAGE LAYER START
 // =============================
 
+import { formatDate } from "./utils/helpers";
+
 const STORAGE_KEY = "habit_tracker";
 const STORAGE_VERSION = 2;
 
@@ -9,7 +11,7 @@ function migrateHabit(habit) {
   return {
     id: habit.id,
     name: habit.name,
-    createdAt: habit.createdAt ?? new Date().toISOString(),
+    createdAt: habit.createdAt ?? formatDate(new Date()),
     archived: habit.archived ?? false,
     completedDates: habit.completedDates ?? [],
     stats: {

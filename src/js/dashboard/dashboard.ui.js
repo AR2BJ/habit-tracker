@@ -2,12 +2,16 @@
 // DASHBOARD START
 // =============================
 
-import { calculateStreak, calculateSuccessRate } from "../utils/helpers.js";
+import {
+  calculateStreak,
+  calculateSuccessRate,
+  formatDate,
+} from "../utils/helpers.js";
 
 export function renderDashboard(habits) {
   const dashboard = document.getElementById("dashboard");
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = formatDate(new Date());
 
   const totalHabits = habits.length;
 
@@ -31,8 +35,7 @@ export function renderDashboard(habits) {
 
   dashboard.innerHTML = `
     <div
-      class="bg-gray-900 border border-gray-800 hover:-translate-y-1
-      hover:border-indigo-500/30 rounded-3xl p-6 transition"
+      class="bg-gray-900 border border-gray-800 hover:-translate-y-1 hover:border-indigo-500/30 rounded-3xl p-6 transition"
     >
       <div class="text-gray-400 text-sm truncate">🎯 Total Habits</div>
 
@@ -40,8 +43,7 @@ export function renderDashboard(habits) {
     </div>
 
     <div
-      class="bg-gray-900 border border-gray-800 hover:-translate-y-1
-      hover:border-indigo-500/30 rounded-3xl p-6 transition"
+      class="bg-gray-900 border border-gray-800 hover:-translate-y-1 hover:border-indigo-500/30 rounded-3xl p-6 transition"
     >
       <div class="text-gray-400 text-sm truncate">✅ Completed Today</div>
 
@@ -49,8 +51,7 @@ export function renderDashboard(habits) {
     </div>
 
     <div
-      class="bg-gray-900 border border-gray-800 hover:-translate-y-1
-      hover:border-indigo-500/30 rounded-3xl p-6 transition"
+      class="bg-gray-900 border border-gray-800 hover:-translate-y-1 hover:border-indigo-500/30 rounded-3xl p-6 transition"
     >
       <div class="text-gray-400 text-sm truncate">🔥 Best Streak</div>
 
@@ -58,8 +59,7 @@ export function renderDashboard(habits) {
     </div>
 
     <div
-      class="bg-gray-900 border border-gray-800 hover:-translate-y-1
-      hover:border-indigo-500/30 rounded-3xl p-6 transition"
+      class="bg-gray-900 border border-gray-800 hover:-translate-y-1hover:border-indigo-500/30 rounded-3xl p-6 transition"
     >
       <div class="text-gray-400 text-sm truncate">📈 Success Rate</div>
 
@@ -67,8 +67,7 @@ export function renderDashboard(habits) {
     </div>
 
     <div
-      class="bg-gray-900 border border-gray-800 hover:-translate-y-1
-      hover:border-indigo-500/30 rounded-3xl p-6 transition"
+      class="bg-gray-900 border border-gray-800 hover:-translate-y-1 hover:border-indigo-500/30 rounded-3xl p-6 transition"
     >
       <div class="text-gray-400 text-sm truncate">🗃️ Archived</div>
 

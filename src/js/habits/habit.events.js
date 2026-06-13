@@ -2,6 +2,8 @@
 // HABIT EVENTS START
 // =============================
 
+import { archiveHabit, restoreHabit } from "./habit.service.js";
+import { getFilteredHabits, state } from "../state.js";
 import { toggleHabit, toggleHabitDate } from "./habit.service.js";
 
 import { createHabit } from "./habit.service.js";
@@ -10,7 +12,6 @@ import { editHabit } from "./habit.service.js";
 import { renderDashboard } from "../dashboard/dashboard.ui.js";
 import { renderHabits } from "./habit.ui.js";
 import { saveToStorage } from "../storage.js";
-import { state } from "../state.js";
 
 // =============================
 // EDIT MODAL STATE START
@@ -52,7 +53,7 @@ export function bindHabitEvents() {
     if (!value) return;
 
     createHabit(value);
-    renderHabits(state.habits);
+    renderHabits(getFilteredHabits());
     renderDashboard(state.habits);
     input.value = "";
   });
@@ -112,10 +113,14 @@ export function bindHabitEvents() {
 
   document.addEventListener("click", (e) => {
     if (e.target.classList.contains("toggle-btn")) {
+      const habit = state.habits.find((h) => h.id === e.target.dataset.id);
+
+      if (habit?.archived) return;
+
       const id = e.target.dataset.id;
 
       toggleHabit(id);
-      renderHabits(state.habits);
+      renderHabits(getFilteredHabits());
       renderDashboard(state.habits);
     }
 
@@ -127,6 +132,10 @@ export function bindHabitEvents() {
       const date = e.target.dataset.date;
 
       const habitId = e.target.dataset.habitId;
+
+      const habit = state.habits.find((h) => h.id === habitId);
+
+      if (habit?.archived) return;
 
       const today = new Date().toISOString().split("T")[0];
 
@@ -140,7 +149,7 @@ export function bindHabitEvents() {
 
       toggleHabitDate(habitId, date);
 
-      renderHabits(state.habits);
+      renderHabits(getFilteredHabits());
       renderDashboard(state.habits);
 
       return;
@@ -148,6 +157,46 @@ export function bindHabitEvents() {
 
     // =============================
     // CALENDAR BACKFILL END
+    // =============================
+
+    // =============================
+    // ARCHIVE EVENT HANDLER START
+    // =============================
+
+    if (e.target.closest(".archive-btn")) {
+      const button = e.target.closest(".archive-btn");
+
+      archiveHabit(button.dataset.id);
+
+      renderHabits(getFilteredHabits());
+
+      renderDashboard(state.habits);
+
+      return;
+    }
+
+    // =============================
+    // ARCHIVE EVENT HANDLER END
+    // =============================
+
+    // =============================
+    // RESTORE EVENT HANDLER START
+    // =============================
+
+    if (e.target.closest(".restore-btn")) {
+      const button = e.target.closest(".restore-btn");
+
+      restoreHabit(button.dataset.id);
+
+      renderHabits(getFilteredHabits());
+
+      renderDashboard(state.habits);
+
+      return;
+    }
+
+    // =============================
+    // RESTORE EVENT HANDLER END
     // =============================
 
     // =============================
@@ -177,7 +226,7 @@ export function bindHabitEvents() {
 
       editHabit(pendingEditId, input.value);
 
-      renderHabits(state.habits);
+      renderHabits(getFilteredHabits());
       renderDashboard(state.habits);
 
       closeEditModal();
@@ -218,7 +267,7 @@ export function bindHabitEvents() {
 
       deleteHabit(pendingDeleteId);
 
-      renderHabits(state.habits);
+      renderHabits(getFilteredHabits());
       renderDashboard(state.habits);
 
       closeDeleteModal();
@@ -244,7 +293,7 @@ export function bindHabitEvents() {
 
     state.habits.push(lastDeletedHabit);
 
-    renderHabits(state.habits);
+    renderHabits(getFilteredHabits());
     renderDashboard(state.habits);
 
     saveToStorage(state);
@@ -257,6 +306,30 @@ export function bindHabitEvents() {
   // =============================
   // UNDO DELETE EVENT END
   // =============================
+
+  // ======================
+  // CHANGE TAB EVENT START
+  // ======================
+
+  document.getElementById("tab-active").addEventListener("click", () => {
+    state.activeTab = "active";
+    updateTabUI();
+
+    renderHabits(getFilteredHabits());
+    renderDashboard(state.habits);
+  });
+
+  document.getElementById("tab-archived").addEventListener("click", () => {
+    state.activeTab = "archived";
+    updateTabUI();
+
+    renderHabits(getFilteredHabits());
+    renderDashboard(state.habits);
+  });
+
+  // ====================
+  // CHANGE TAB EVENT END
+  // ====================
 
   // =============================
   // TOGGLE EVENT BINDING END
@@ -349,6 +422,36 @@ function hideUndoToast() {
 
 // =============================
 // UNDO TOAST HELPERS END
+// =============================
+
+// =============================
+// TAB UI START
+// =============================
+
+function updateTabUI() {
+  const indicator = document.getElementById("tab-indicator");
+
+  const activeBtn = document.getElementById("tab-active");
+
+  const archivedBtn = document.getElementById("tab-archived");
+
+  if (state.activeTab === "active") {
+    indicator.classList.replace("translate-x-27.5", "translate-x-0");
+
+    activeBtn.classList.replace("text-gray-400", "text-white");
+
+    archivedBtn.classList.replace("text-white", "text-gray-400");
+  } else {
+    indicator.classList.replace("translate-x-0", "translate-x-27.5");
+
+    archivedBtn.classList.replace("text-gray-400", "text-white");
+
+    activeBtn.classList.replace("text-white", "text-gray-400");
+  }
+}
+
+// =============================
+// TAB UI END
 // =============================
 
 // =============================

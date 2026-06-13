@@ -2,7 +2,7 @@
 // DASHBOARD START
 // =============================
 
-import { calculateStreak } from "../utils/helpers.js";
+import { calculateStreak, calculateSuccessRate } from "../utils/helpers.js";
 
 export function renderDashboard(habits) {
   const dashboard = document.getElementById("dashboard");
@@ -20,10 +20,14 @@ export function renderDashboard(habits) {
     ...habits.map((habit) => calculateStreak(habit.completedDates).best),
   );
 
-  const totalCompletions = habits.reduce(
-    (sum, habit) => sum + habit.completedDates.length,
-    0,
-  );
+  const averageSuccessRate = habits.length
+    ? Math.round(
+        habits.reduce((sum, habit) => sum + calculateSuccessRate(habit), 0) /
+          habits.length,
+      )
+    : 0;
+
+  const archivedCount = habits.filter((habit) => habit.archived).length;
 
   dashboard.innerHTML = `
     <div
@@ -57,9 +61,18 @@ export function renderDashboard(habits) {
       class="bg-gray-900 border border-gray-800 hover:-translate-y-1
       hover:border-indigo-500/30 rounded-3xl p-6 transition"
     >
-      <div class="text-gray-400 text-sm truncate">📈 Total Completions</div>
+      <div class="text-gray-400 text-sm truncate">📈 Success Rate</div>
 
-      <div class="text-3xl font-bold mt-2">${totalCompletions}</div>
+      <div class="text-3xl font-bold mt-2">${averageSuccessRate}%</div>
+    </div>
+
+    <div
+      class="bg-gray-900 border border-gray-800 hover:-translate-y-1
+      hover:border-indigo-500/30 rounded-3xl p-6 transition"
+    >
+      <div class="text-gray-400 text-sm truncate">🗃️ Archived</div>
+
+      <div class="text-3xl font-bold mt-2">${archivedCount}</div>
     </div>
   `;
 }

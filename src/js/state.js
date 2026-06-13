@@ -18,6 +18,16 @@ export const state = {
   // =============================
   // UNDO DELETE STATE END
   // =============================
+
+  // =============================
+  // TAB STATE START
+  // =============================
+
+  activeTab: "active",
+
+  // =============================
+  // TAB STATE START
+  // =============================
 };
 
 // =============================
@@ -31,7 +41,7 @@ export function initState() {
     state.habits = saved.habits || [];
   }
 
-  renderHabits(state.habits);
+  renderHabits(getFilteredHabits());
   renderDashboard(state.habits);
   bindHabitEvents();
 
@@ -40,6 +50,22 @@ export function initState() {
 
 // =============================
 // STATE INITIALIZATION LOGIC END
+// =============================
+
+// =============================
+// FILTERED HABITS LOGIC START
+// =============================
+
+export function getFilteredHabits() {
+  if (state.activeTab === "archived") {
+    return state.habits.filter((h) => h.archived);
+  }
+
+  return state.habits.filter((h) => !h.archived);
+}
+
+// =============================
+// FILTERED HABITS LOGIC END
 // =============================
 
 // =============================

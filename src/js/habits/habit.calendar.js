@@ -2,7 +2,7 @@
 // HABIT CALENDAR START
 // =============================
 
-export function renderCalendar(dates, habitId) {
+export function renderCalendar(dates, habitId, isArchived = false) {
   const dateSet = new Set(dates);
 
   const days = [];
@@ -67,30 +67,19 @@ export function renderCalendar(dates, habitId) {
                 data-habit-id="${habitId}"
                 title="${day.date}"
                 class="calendar-day
-                  ${editable ? "cursor-pointer" : "cursor-not-allowed opacity-60"}
-                  w-[22px]
-                  h-[22px]
-
-                  rounded-md
-
-                  transition-all
-                  duration-200
-
-                  hover:scale-110
-
-                  ${
-                    day.completed
-                      ? `
-                        bg-emerald-500
-                        shadow-lg
-                        shadow-emerald-500/20
-                      `
-                      : `
-                        bg-slate-700
-                        hover:bg-slate-600
-                      `
-                  }
-                "
+                ${editable && !isArchived ? "cursor-pointer hover:scale-110" : "cursor-not-allowed opacity-60"}
+                w-5.5
+                h-5.5
+                rounded-md
+                transition-all
+                duration-200
+                ${
+                  day.completed
+                    ? "bg-emerald-500 shadow-lg shadow-emerald-500/20"
+                    : "bg-slate-700"
+                }
+                ${editable && !isArchived && !day.completed ? "hover:bg-slate-600" : ""}
+              "
               ></div>
             `;
           })

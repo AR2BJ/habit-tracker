@@ -182,5 +182,33 @@ export function toggleHabitDate(habitId, date) {
 // =============================
 
 // =============================
+// ARCHIVE HABIT START
+// =============================
+
+export function archiveHabit(id) {
+  const habit = state.habits.find((h) => h.id === id);
+
+  if (!habit) return;
+
+  habit.archived = true;
+
+  saveToStorage(state);
+}
+
+export function restoreHabit(id) {
+  const habit = state.habits.find((h) => h.id === id);
+
+  if (!habit) return;
+
+  habit.archived = false;
+
+  saveToStorage(state);
+}
+
+// =============================
+// ARCHIVE HABIT END
+// =============================
+
+// =============================
 // HABIT SERVICE END
 // =============================

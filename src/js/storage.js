@@ -3,22 +3,7 @@
 // =============================
 
 const STORAGE_KEY = "habit_tracker";
-
-export function saveToStorage(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-export function loadFromStorage() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-
-  if (!raw) return null;
-
-  const data = JSON.parse(raw);
-
-  data.habits = data.habits.map(migrateHabit);
-
-  return data;
-}
+const STORAGE_VERSION = 2;
 
 function migrateHabit(habit) {
   return {
@@ -30,6 +15,48 @@ function migrateHabit(habit) {
     stats: {
       bestStreak: habit.stats?.bestStreak ?? 0,
     },
+  };
+}
+
+function migrateData(data) {
+  const version = data.version ?? 1;
+
+  switch (version) {
+    case 1:
+      return {
+        version: 2,
+
+        habits: (data.habits || []).map(migrateHabit),
+      };
+
+    default:
+      return data;
+  }
+}
+
+export function saveToStorage(data) {
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify({
+      version: STORAGE_VERSION,
+      ...data,
+    }),
+  );
+}
+
+export function loadFromStorage() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+
+  if (!raw) return null;
+
+  const data = JSON.parse(raw);
+
+  const migrated = migrateData(data);
+
+  return {
+    ...migrated,
+
+    habits: (migrated.habits || []).map(migrateHabit),
   };
 }
 

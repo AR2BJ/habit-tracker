@@ -79,5 +79,25 @@ export function calculateStreak(dates) {
 // =============================
 
 // =============================
+// SUCCESS RATE START
+// =============================
+
+export function calculateSuccessRate(habit) {
+  const createdAt = new Date(habit.createdAt);
+
+  const today = new Date();
+
+  const diffDays = Math.floor((today - createdAt) / (1000 * 60 * 60 * 24)) + 1;
+
+  if (diffDays <= 0) return 0;
+
+  return Math.round((habit.completedDates.length / diffDays) * 100);
+}
+
+// =============================
+// SUCCESS RATE END
+// =============================
+
+// =============================
 // HELPERS END
 // =============================

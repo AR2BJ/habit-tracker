@@ -27,7 +27,7 @@
   </head>
 
   <body
-    class="h-full bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-white"
+    class="h-full bg-linear-to-b from-gray-950 via-gray-900 to-gray-950 text-white"
   >
     <!-- ============================= -->
     <!-- APP CONTAINER START -->
@@ -67,8 +67,37 @@
 
       <section
         id="dashboard"
-        class="grid grid-cols-4 gap-4 mb-8"
+        class="grid grid-cols-5 gap-3 mb-6"
       ></section>
+
+      <!-- ============================= -->
+      <!-- TABS START -->
+      <!-- ============================= -->
+
+      <div class="relative flex w-fit bg-gray-800/60 rounded-2xl p-1 mb-6">
+        <div
+          id="tab-indicator"
+          class="absolute top-1 left-1 h-[calc(100%-8px)] w-27.5 rounded-xl bg-indigo-600 transition-all duration-300 translate-x-0"
+        ></div>
+
+        <button
+          id="tab-active"
+          class="relative z-10 w-27.5 py-2 text-sm font-medium rounded-l-xl transition cursor-pointer"
+        >
+          Active
+        </button>
+
+        <button
+          id="tab-archived"
+          class="relative z-10 w-27.5 py-2 text-sm font-medium rounded-r-xl transition cursor-pointer"
+        >
+          Archived
+        </button>
+      </div>
+
+      <!-- ============================= -->
+      <!-- TABS END -->
+      <!-- ============================= -->
 
       <!-- ============================= -->
       <!-- HABITS SECTION START -->
@@ -76,7 +105,7 @@
 
       <section
         id="habits"
-        class="mt-10 space-y-6"
+        class="mt-6 space-y-6"
       >
         <!-- ============================= -->
         <!-- CREATE HABIT SECTION START -->
@@ -217,7 +246,7 @@
 
       <div
         id="undo-toast"
-        class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[999] bg-gray-900/95 backdrop-blur-md border border-gray-700 rounded-3xl px-5 py-4 shadow-2xl min-w-[300px]"
+        class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-gray-900/95 backdrop-blur-md border border-gray-700 rounded-3xl px-5 py-4 shadow-2xl min-w-75"
       >
         <div class="flex flex-row justify-between items-center gap-2">
           <!-- Timer -->

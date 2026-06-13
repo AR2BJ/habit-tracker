@@ -5,11 +5,22 @@
 import { calculateStreak, todayISO as getToday } from "../utils/helpers.js";
 
 import { renderCalendar } from "./habit.calendar.js";
+import { state } from "../state.js";
 
 export function renderHabits(habits) {
   const container = document.getElementById("habit-list");
 
   container.innerHTML = "";
+
+  const isArchived = state.activeTab === "archived";
+
+  const emoji = isArchived ? "🗃️" : "🎯";
+
+  const title = isArchived ? "No archived habits" : "No habits yet";
+
+  const description = isArchived
+    ? "Archived habits will appear here."
+    : "Create your first habit and start building consistency.";
 
   // =============================
   // EMPTY STATE START
@@ -31,7 +42,7 @@ export function renderHabits(habits) {
     >
 
       <div class="text-6xl mb-6">
-        🎯
+        ${emoji}
       </div>
 
       <h2
@@ -41,7 +52,7 @@ export function renderHabits(habits) {
           text-white
         "
       >
-        No habits yet
+        ${title}
       </h2>
 
       <p
@@ -52,8 +63,7 @@ export function renderHabits(habits) {
           mx-auto
         "
       >
-        Create your first habit and
-        start building consistency.
+        ${description}
       </p>
 
     </div>
@@ -71,6 +81,8 @@ export function renderHabits(habits) {
     const { current, best } = calculateStreak(habit.completedDates);
 
     const completedToday = habit.completedDates.includes(getToday());
+
+    const isArchived = habit.archived;
 
     const item = document.createElement("div");
 
@@ -105,10 +117,14 @@ export function renderHabits(habits) {
           <div class="flex items-center gap-6">
             <button
               data-id="${habit.id}"
-              class="toggle-btn w-7 h-7 rounded-full border-[3px] flex items-center justify-center transition-all duration-300 hover:scale-110 ${
+              class="toggle-btn w-7 h-7 rounded-full border-[3px] flex items-center justify-center transition-all duration-300 ${
                 completedToday
                   ? "bg-emerald-500 border-emerald-500"
                   : "border-slate-500"
+              } ${
+                isArchived
+                  ? "cursor-not-allowed opacity-60 border-slate-700"
+                  : "hover:cursor-pointer hover:scale-110"
               }"
             >
               ${completedToday ? "✓" : ""}
@@ -140,36 +156,73 @@ export function renderHabits(habits) {
 
             <div class="w-px h-16 bg-gray-800"></div>
 
-            <div class="relative group">
-              <button
-                data-id="${habit.id}"
-                data-name="${habit.name}"
-                class="edit-btn w-10 h-10 rounded-xl bg-blue-300/10 hover:bg-blue-500/10 flex items-center justify-center transition"
-              >
-                <i
-                  class="fa-regular fa-pen-to-square text-blue-500 text-lg"
-                ></i>
-              </button>
+            <div class="flex flex-row justify-center items-center gap-3">
+              <div class="relative">
+                <button
+                  data-id="${habit.id}"
+                  class="${
+                    state.activeTab === "archived"
+                      ? "restore-btn"
+                      : "archive-btn"
+                  }
+                    w-10 h-10 rounded-xl
+                    ${
+                      state.activeTab === "archived"
+                        ? "bg-emerald-300/10 hover:bg-emerald-500/10"
+                        : "bg-yellow-300/10 hover:bg-yellow-500/10"
+                    }
+                    flex items-center justify-center hover:cursor-pointer peer transition"
+                >
+                  <i
+                    class="
+                      fa-regular
+                      ${
+                        state.activeTab === "archived"
+                          ? "fa-arrow-rotate-left text-emerald-500"
+                          : "fa-box-archive text-yellow-500"
+                      }
+                    "
+                  ></i>
+                </button>
 
-              <div
-                class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-black text-xs text-white opacity-0 group-hover:opacity-100 transition"
-              >
-                Edit
+                <div
+                  class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-black text-xs text-white opacity-0 cursor-default peer-hover:opacity-100 transition"
+                >
+                  ${state.activeTab === "archived" ? "Restore" : "Archive"}
+                </div>
               </div>
-            </div>
 
-            <div class="relative group">
-              <button
-                data-id="${habit.id}"
-                class="delete-btn w-10 h-10 rounded-xl bg-red-300/10 hover:bg-red-500/10 flex items-center justify-center transition"
-              >
-                <i class="fa-regular fa-trash-can text-red-500 text-xl"></i>
-              </button>
+              <div class="relative">
+                <button
+                  data-id="${habit.id}"
+                  data-name="${habit.name}"
+                  class="edit-btn w-10 h-10 rounded-xl bg-blue-300/10 hover:bg-blue-500/10 flex items-center justify-center hover:cursor-pointer peer transition"
+                >
+                  <i
+                    class="fa-regular fa-pen-to-square text-blue-500 text-lg"
+                  ></i>
+                </button>
 
-              <div
-                class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-black text-xs text-white opacity-0 group-hover:opacity-100 transition"
-              >
-                Delete
+                <div
+                  class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-black text-xs text-white opacity-0 cursor-default peer-hover:opacity-100 transition"
+                >
+                  Edit
+                </div>
+              </div>
+
+              <div class="relative">
+                <button
+                  data-id="${habit.id}"
+                  class="delete-btn w-10 h-10 rounded-xl bg-red-300/10 hover:bg-red-500/10 flex items-center justify-center hover:cursor-pointer peer transition"
+                >
+                  <i class="fa-regular fa-trash-can text-red-500 text-xl"></i>
+                </button>
+
+                <div
+                  class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-black text-xs text-white opacity-0 cursor-default peer-hover:opacity-100 transition"
+                >
+                  Delete
+                </div>
               </div>
             </div>
           </div>
@@ -177,7 +230,7 @@ export function renderHabits(habits) {
 
         <!-- Calendar -->
         <div class="pt-4 overflow-x-auto">
-          ${renderCalendar(habit.completedDates, habit.id)}
+          ${renderCalendar(habit.completedDates, habit.id, habit.archived)}
         </div>
       </div>
     `;

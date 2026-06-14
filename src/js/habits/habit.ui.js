@@ -30,7 +30,7 @@ export function renderHabits(habits) {
     container.innerHTML = `
   
     <div
-      class="border border-dashed border-gray-700 rounded-3xl p-16 text-center bg-gray-900/30"
+      class="border border-dashed border-border rounded-3xl p-16 text-center bg-surface-2"
     >
 
       <div class="text-6xl mb-6">
@@ -38,13 +38,13 @@ export function renderHabits(habits) {
       </div>
 
       <h2
-        class="text-2xl font-bold text-white"
+        class="text-2xl font-bold text-primary"
       >
         ${title}
       </h2>
 
       <p
-        class="mt-3 text-gray-400 max-w-sm mx-auto"
+        class="mt-3 text-secondary max-w-sm mx-auto"
       >
         ${description}
       </p>
@@ -74,14 +74,14 @@ export function renderHabits(habits) {
     // =============================
 
     item.className =
-      "bg-gradient-to-r from-gray-900 via-gray-950 to-gray-900 border border-gray-800 p-7 rounded-3xl transition-all duration-300 hover:border-indigo-500/30 hover:shadow-2xl hover:shadow-indigo-500/5";
+      "bg-surface border border-border p-7 rounded-3xl transition-all duration-300 hover:border-brand/30 hover:shadow-2xl hover:shadow-brand/5";
 
     // =============================
     // HABIT CARD END
     // =============================
 
     item.innerHTML = `
-      <div class="space-y-8">
+<div class="space-y-8">
         <!-- Header -->
         <div class="flex justify-between items-center">
           <div class="flex items-center gap-6">
@@ -90,10 +90,10 @@ export function renderHabits(habits) {
               class="toggle-btn w-7 h-7 rounded-full border-[3px] flex items-center justify-center transition-all duration-300 ${
                 completedToday
                   ? "bg-emerald-500 border-emerald-500"
-                  : "border-slate-500"
+                  : "border-border"
               } ${
                 isArchived
-                  ? "cursor-not-allowed opacity-60 border-slate-700"
+                  ? "cursor-not-allowed opacity-60 border-border"
                   : "hover:cursor-pointer hover:scale-110"
               }"
             >
@@ -101,9 +101,9 @@ export function renderHabits(habits) {
             </button>
 
             <div>
-              <h3 class="text-2xl font-bold text-white">${habit.name}</h3>
+              <h3 class="text-2xl font-bold text-primary">${habit.name}</h3>
 
-              <div class="mt-2 text-sm text-orange-400">
+              <div class="mt-2 text-sm text-brand">
                 🔥 ${current} day streak
               </div>
             </div>
@@ -111,20 +111,20 @@ export function renderHabits(habits) {
 
           <div class="flex items-center gap-8">
             <div class="text-center">
-              <div class="text-2xl font-bold text-white">${current}</div>
+              <div class="text-2xl font-bold text-primary">${current}</div>
 
-              <div class="text-sm text-gray-400">🔥 day streak</div>
+              <div class="text-sm text-secondary">🔥 day streak</div>
             </div>
 
-            <div class="w-px h-16 bg-gray-800"></div>
+            <div class="w-px h-16 bg-border"></div>
 
             <div class="text-center">
-              <div class="text-2xl font-bold text-white">${best}</div>
+              <div class="text-2xl font-bold text-primary">${best}</div>
 
-              <div class="text-sm text-gray-400">🏆 best streak</div>
+              <div class="text-sm text-secondary">🏆 best streak</div>
             </div>
 
-            <div class="w-px h-16 bg-gray-800"></div>
+            <div class="w-px h-16 bg-border"></div>
 
             <div class="flex flex-row justify-center items-center gap-3">
               <div class="relative">
@@ -138,8 +138,8 @@ export function renderHabits(habits) {
                     w-10 h-10 rounded-xl
                     ${
                       state.activeTab === "archived"
-                        ? "bg-emerald-300/10 hover:bg-emerald-500/10"
-                        : "bg-yellow-300/10 hover:bg-yellow-500/10"
+                        ? "bg-surface-2 hover:bg-green-600/10"
+                        : "bg-surface-2 hover:bg-yellow-600/10"
                     }
                     flex items-center justify-center hover:cursor-pointer peer transition"
                 >
@@ -156,7 +156,7 @@ export function renderHabits(habits) {
                 </button>
 
                 <div
-                  class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-black text-xs text-white opacity-0 cursor-default peer-hover:opacity-100 transition"
+                  class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-surface-2 text-xs text-primary opacity-0 cursor-default peer-hover:opacity-100 transition"
                 >
                   ${state.activeTab === "archived" ? "Restore" : "Archive"}
                 </div>
@@ -166,7 +166,7 @@ export function renderHabits(habits) {
                 <button
                   data-id="${habit.id}"
                   data-name="${habit.name}"
-                  class="edit-btn w-10 h-10 rounded-xl bg-blue-300/10 hover:bg-blue-500/10 flex items-center justify-center hover:cursor-pointer peer transition"
+                  class="edit-btn w-10 h-10 rounded-xl bg-surface-2 hover:bg-blue-600/10 flex items-center justify-center hover:cursor-pointer peer transition"
                 >
                   <i
                     class="fa-regular fa-pen-to-square text-blue-500 text-lg"
@@ -174,7 +174,7 @@ export function renderHabits(habits) {
                 </button>
 
                 <div
-                  class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-black text-xs text-white opacity-0 cursor-default peer-hover:opacity-100 transition"
+                  class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-surface-2 text-xs text-primary opacity-0 cursor-default peer-hover:opacity-100 transition"
                 >
                   Edit
                 </div>
@@ -183,13 +183,13 @@ export function renderHabits(habits) {
               <div class="relative">
                 <button
                   data-id="${habit.id}"
-                  class="delete-btn w-10 h-10 rounded-xl bg-red-300/10 hover:bg-red-500/10 flex items-center justify-center hover:cursor-pointer peer transition"
+                  class="delete-btn w-10 h-10 rounded-xl bg-surface-2 hover:bg-red-600/10 flex items-center justify-center hover:cursor-pointer peer transition"
                 >
                   <i class="fa-regular fa-trash-can text-red-500 text-xl"></i>
                 </button>
 
                 <div
-                  class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-black text-xs text-white opacity-0 cursor-default peer-hover:opacity-100 transition"
+                  class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-surface-2 text-xs text-primary opacity-0 cursor-default peer-hover:opacity-100 transition"
                 >
                   Delete
                 </div>

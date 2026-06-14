@@ -44,7 +44,7 @@ export function renderCalendar(dates, habitId, createdAt, isArchived = false) {
     <div class="space-y-4 p-1 overflow-hidden">
       <!-- Timeline -->
 
-      <div class="flex justify-between text-gray-400 text-sm select-none">
+      <div class="flex justify-between text-secondary text-sm select-none">
         <span>${formatDate(periodStart)}</span>
         <span>${formatDate(periodEnd)}</span>
       </div>
@@ -78,10 +78,10 @@ export function renderCalendar(dates, habitId, createdAt, isArchived = false) {
                 } w-5.5 h-5.5 rounded-md flex flex-row justify-center items-center transition-all duration-200 ${
                   day.completed
                     ? "bg-emerald-500 shadow-lg shadow-emerald-500/20"
-                    : "bg-slate-700"
+                    : "bg-(--color-surface-3)"
                 } ${
                   editable && !isArchived && !day.completed
-                    ? "hover:bg-slate-600"
+                    ? "hover:bg-(--color-surface-3)/70"
                     : ""
                 }"
               >

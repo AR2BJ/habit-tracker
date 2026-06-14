@@ -2,43 +2,33 @@
 // APP BOOTSTRAP START
 // =============================
 
+import { getTheme, setTheme, toggleTheme } from "./theme.js";
+
 import { initState } from "./state.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  initState();
-
-  // =============================
-  // DARK / LIGHT MODE TOGGLE START
-  // =============================
-
+function updateThemeToggleIcon(theme) {
   const themeToggleBtn = document.getElementById("theme-toggle");
-  const root = document.documentElement;
+  if (!themeToggleBtn) return;
 
-  const savedTheme = localStorage.getItem("theme") || "dark";
-  setTheme(savedTheme);
+  themeToggleBtn.innerHTML =
+    theme === "dark"
+      ? `<i class="fa-regular fa-sun text-yellow-400"></i>`
+      : `<i class="fa-regular fa-moon"></i>`;
+}
 
-  themeToggleBtn.addEventListener("click", () => {
-    const currentTheme = root.classList.contains("dark") ? "dark" : "light";
-    const newTheme = currentTheme === "dark" ? "light" : "dark";
-    setTheme(newTheme);
-  });
+document.addEventListener("DOMContentLoaded", () => {
+  const theme = getTheme();
 
-  function setTheme(mode) {
-    if (mode === "dark") {
-      root.classList.add("dark");
-      root.classList.remove("light");
-      themeToggleBtn.innerHTML = `<i class="fa-regular fa-moon"></i>`;
-    } else {
-      root.classList.add("light");
-      root.classList.remove("dark");
-      themeToggleBtn.innerHTML = `<i class="fa-regular fa-sun text-yellow-400"></i>`;
-    }
-    localStorage.setItem("theme", mode);
+  initState();
+  setTheme(theme);
+  updateThemeToggleIcon(theme);
+});
+
+document.addEventListener("click", (e) => {
+  if (e.target.closest("#theme-toggle")) {
+    toggleTheme();
+    updateThemeToggleIcon(getTheme());
   }
-
-  // =============================
-  // DARK / LIGHT MODE TOGGLE END
-  // =============================
 });
 
 // =============================

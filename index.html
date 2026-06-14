@@ -49,15 +49,17 @@
             width="50"
             height="50"
           />
-          <h1 class="text-4xl font-bold tracking-tight">Habit Tracker</h1>
+          <h1 class="text-4xl font-bold tracking-tight text-primary">
+            Habit Tracker
+          </h1>
         </div>
 
         <!-- Theme Toggle Button -->
         <button
           id="theme-toggle"
-          class="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-xl transition cursor-pointer"
+          class="w-10 h-10 bg-surface-2 hover:bg-(--color-surface-3) text-primary border border-border rounded-xl transition cursor-pointer flex flex-row justify-center items-center"
         >
-          <i class="fa-regular fa-moon"></i>
+          <i class="fa-regular fa-sun text-yellow-400"></i>
         </button>
       </header>
 
@@ -74,22 +76,24 @@
       <!-- TABS START -->
       <!-- ============================= -->
 
-      <div class="relative flex w-fit bg-gray-800/60 rounded-2xl p-1 mb-6">
+      <div
+        class="relative flex w-fit bg-surface-2 rounded-2xl p-1 mb-6 border border-border"
+      >
         <div
           id="tab-indicator"
-          class="absolute top-1 left-1 h-[calc(100%-8px)] w-27.5 rounded-xl bg-indigo-600 transition-all duration-300 translate-x-0"
+          class="absolute top-1 left-1 h-[calc(100%-8px)] w-27.5 rounded-xl bg-brand transition-all duration-300 translate-x-0"
         ></div>
 
         <button
           id="tab-active"
-          class="relative z-10 w-27.5 py-2 text-sm font-medium rounded-l-xl transition cursor-pointer"
+          class="relative z-10 w-27.5 py-2 text-sm font-medium rounded-l-xl text-(--color-btn-primary-text) transition cursor-pointer"
         >
           Active
         </button>
 
         <button
           id="tab-archived"
-          class="relative z-10 w-27.5 py-2 text-sm font-medium rounded-r-xl transition cursor-pointer"
+          class="relative z-10 w-27.5 py-2 text-sm font-medium rounded-r-xl text-secondary transition cursor-pointer"
         >
           Archived
         </button>
@@ -111,18 +115,18 @@
         <!-- CREATE HABIT SECTION START -->
         <!-- ============================= -->
 
-        <div class="bg-gray-900 p-6 rounded-2xl border border-gray-800">
+        <div class="bg-surface p-6 rounded-2xl border border-border">
           <div class="flex gap-4">
             <input
               id="habit-input"
               type="text"
               maxlength="50"
               placeholder="Enter new habit..."
-              class="flex-1 px-4 py-3 bg-gray-800 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
+              class="flex-1 px-4 py-3 bg-surface-2 text-primary placeholder:text-(--color-tertiary) rounded-xl outline-none focus:ring-2 focus:ring-brand"
             />
             <button
               id="add-habit-btn"
-              class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 transition rounded-xl font-semibold cursor-pointer"
+              class="px-6 py-3 bg-brand hover:bg-(--color-brand-hover) text-(--color-btn-primary-text) transition rounded-xl font-semibold cursor-pointer"
             >
               Add
             </button>
@@ -158,7 +162,7 @@
           ></div>
 
           <div
-            class="relative w-full max-w-md mx-4 bg-gray-900 border border-gray-800 rounded-3xl p-6"
+            class="relative w-full max-w-md mx-4 bg-surface border border-border rounded-3xl p-6 shadow-2xl"
           >
             <h2 class="text-xl font-bold">Edit Habit</h2>
 
@@ -166,20 +170,20 @@
               id="edit-habit-input"
               type="text"
               maxlength="50"
-              class="w-full mt-4 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 outline-none"
+              class="w-full mt-4 px-4 py-3 rounded-xl bg-surface-2 border border-border text-primary placeholder:text-(--color-tertiary) outline-none focus:ring-2 focus:ring-brand"
             />
 
             <div class="flex justify-end gap-2 mt-6">
               <button
                 id="cancel-edit"
-                class="px-4 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 transition cursor-pointer"
+                class="px-4 py-2 rounded-xl bg-surface-2 hover:bg-(--color-surface-3) text-primary transition cursor-pointer"
               >
                 Cancel
               </button>
 
               <button
                 id="confirm-edit"
-                class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 transition cursor-pointer"
+                class="px-4 py-2 rounded-xl bg-brand hover:bg-(--color-brand-hover) text-(--color-btn-primary-text) transition cursor-pointer font-medium"
               >
                 Save
               </button>
@@ -209,25 +213,25 @@
           <!-- modal -->
 
           <div
-            class="relative w-full max-w-md mx-4 bg-gray-900 border border-gray-800 rounded-3xl p-6 shadow-2xl"
+            class="relative w-full max-w-md mx-4 bg-surface border border-border rounded-3xl p-6 shadow-2xl"
           >
-            <h2 class="text-xl font-bold text-white">Delete Habit</h2>
+            <h2 class="text-xl font-bold text-primary">Delete Habit</h2>
 
-            <p class="mt-3 text-gray-400">
+            <p class="mt-3 text-secondary">
               Are you sure you want to delete this habit?
             </p>
 
             <div class="flex justify-end gap-2 mt-6">
               <button
                 id="cancel-delete"
-                class="px-4 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 transition cursor-pointer"
+                class="px-4 py-2 rounded-xl bg-surface-2 hover:bg-(--color-surface-3) text-primary transition cursor-pointer"
               >
                 Cancel
               </button>
 
               <button
                 id="confirm-delete"
-                class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 transition cursor-pointer"
+                class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-(--color-btn-primary-text) transition cursor-pointer font-medium"
               >
                 Delete
               </button>
@@ -246,24 +250,26 @@
 
       <div
         id="undo-toast"
-        class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-gray-900/95 backdrop-blur-md border border-gray-700 rounded-3xl px-5 py-4 shadow-2xl min-w-75"
+        class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-surface/95 backdrop-blur-md border border-border rounded-3xl px-5 py-4 shadow-2xl min-w-75"
       >
         <div class="flex flex-row justify-between items-center gap-2">
           <!-- Timer -->
 
-          <div class="flex items-center gap-3 text-gray-400">
+          <div class="flex items-center gap-3 text-secondary">
             <span id="undo-countdown"> 5s </span>
 
             <!-- Message -->
 
-            <span class="text-white text-sm font-medium"> Habit deleted </span>
+            <span class="text-primary text-sm font-medium">
+              Habit deleted
+            </span>
           </div>
 
           <!-- Restore Button -->
 
           <button
             id="undo-delete-btn"
-            class="w-14 h-8 transition flex items-center text-indigo-400 hover:text-indigo-600 justify-center gap-1 cursor-pointer"
+            class="h-8 px-3 transition flex items-center text-brand hover:text-(--color-brand-hover) justify-center gap-1 cursor-pointer rounded-lg bg-surface-2 hover:bg-(--color-surface-3) text-sm font-medium"
           >
             <i class="fa-regular fa-rotate-left"></i>
 
@@ -284,13 +290,15 @@
 
       <div
         id="archive-toast"
-        class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-gray-900/95 backdrop-blur-md border border-gray-700 rounded-full px-5 py-4 shadow-2xl min-w-75"
+        class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-surface/95 backdrop-blur-md border border-border rounded-full px-5 py-4 shadow-2xl min-w-75"
       >
         <div class="flex flex-row justify-between items-center gap-2">
-          <div class="py-1.5 flex items-center gap-3 text-gray-400">
+          <div class="py-1.5 flex items-center gap-3 text-secondary">
             <i class="fa-regular fa-box-archive text-yellow-500"></i>
 
-            <span class="text-white text-sm font-medium"> Habit archived </span>
+            <span class="text-primary text-sm font-medium">
+              Habit archived
+            </span>
           </div>
         </div>
       </div>
@@ -305,13 +313,13 @@
 
       <div
         id="restore-toast"
-        class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-gray-900/95 backdrop-blur-md border border-gray-700 rounded-full px-5 py-4 shadow-2xl min-w-75"
+        class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-surface/95 backdrop-blur-md border border-border rounded-full px-5 py-4 shadow-2xl min-w-75"
       >
         <div class="flex flex-row justify-between items-center gap-2">
-          <div class="py-1.5 flex items-center gap-3 text-gray-400">
-            <i class="fa-regular fa-rotate-left text-indigo-500"></i>
+          <div class="py-1.5 flex items-center gap-3 text-secondary">
+            <i class="fa-regular fa-rotate-left text-brand"></i>
 
-            <span class="text-white text-sm font-medium"> Habit restored </span>
+            <span class="text-primary text-sm font-medium"> Habit restored </span>
           </div>
         </div>
       </div>

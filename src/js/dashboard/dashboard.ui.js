@@ -35,43 +35,43 @@ export function renderDashboard(habits) {
 
   dashboard.innerHTML = `
     <div
-      class="bg-gray-900 border border-gray-800 hover:-translate-y-1 hover:border-indigo-500/30 rounded-3xl p-6 transition"
+      class="bg-surface border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition"
     >
-      <div class="text-gray-400 text-sm truncate">🎯 Total Habits</div>
+      <div class="text-secondary text-sm truncate">🎯 Total Habits</div>
 
-      <div class="text-3xl font-bold mt-2">${totalHabits}</div>
+      <div class="text-3xl font-bold mt-2 text-primary">${totalHabits}</div>
     </div>
 
     <div
-      class="bg-gray-900 border border-gray-800 hover:-translate-y-1 hover:border-indigo-500/30 rounded-3xl p-6 transition"
+      class="bg-surface border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition"
     >
-      <div class="text-gray-400 text-sm truncate">✅ Completed Today</div>
+      <div class="text-secondary text-sm truncate">✅ Completed Today</div>
 
-      <div class="text-3xl font-bold mt-2">${completedToday}</div>
+      <div class="text-3xl font-bold mt-2 text-primary">${completedToday}</div>
     </div>
 
     <div
-      class="bg-gray-900 border border-gray-800 hover:-translate-y-1 hover:border-indigo-500/30 rounded-3xl p-6 transition"
+      class="bg-surface border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition"
     >
-      <div class="text-gray-400 text-sm truncate">🔥 Best Streak</div>
+      <div class="text-secondary text-sm truncate">🔥 Best Streak</div>
 
-      <div class="text-3xl font-bold mt-2">${bestStreak}</div>
+      <div class="text-3xl font-bold mt-2 text-primary">${bestStreak}</div>
     </div>
 
     <div
-      class="bg-gray-900 border border-gray-800 hover:-translate-y-1hover:border-indigo-500/30 rounded-3xl p-6 transition"
+      class="bg-surface border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition"
     >
-      <div class="text-gray-400 text-sm truncate">📈 Success Rate</div>
+      <div class="text-secondary text-sm truncate">📈 Success Rate</div>
 
-      <div class="text-3xl font-bold mt-2">${averageSuccessRate}%</div>
+      <div class="text-3xl font-bold mt-2 text-primary">${averageSuccessRate}%</div>
     </div>
 
     <div
-      class="bg-gray-900 border border-gray-800 hover:-translate-y-1 hover:border-indigo-500/30 rounded-3xl p-6 transition"
+      class="bg-surface border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition"
     >
-      <div class="text-gray-400 text-sm truncate">🗃️ Archived</div>
+      <div class="text-secondary text-sm truncate">🗃️ Archived</div>
 
-      <div class="text-3xl font-bold mt-2">${archivedCount}</div>
+      <div class="text-3xl font-bold mt-2 text-primary">${archivedCount}</div>
     </div>
   `;
 }

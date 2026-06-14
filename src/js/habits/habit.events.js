@@ -477,15 +477,27 @@ function updateTabUI() {
   if (state.activeTab === "active") {
     indicator.classList.replace("translate-x-27.5", "translate-x-0");
 
-    activeBtn.classList.replace("text-gray-400", "text-white");
+    activeBtn.classList.replace(
+      "text-secondary",
+      "text-(--color-btn-primary-text)",
+    );
 
-    archivedBtn.classList.replace("text-white", "text-gray-400");
+    archivedBtn.classList.replace(
+      "text-(--color-btn-primary-text)",
+      "text-secondary",
+    );
   } else {
     indicator.classList.replace("translate-x-0", "translate-x-27.5");
 
-    archivedBtn.classList.replace("text-gray-400", "text-white");
+    archivedBtn.classList.replace(
+      "text-secondary",
+      "text-(--color-btn-primary-text)",
+    );
 
-    activeBtn.classList.replace("text-white", "text-gray-400");
+    activeBtn.classList.replace(
+      "text-(--color-btn-primary-text)",
+      "text-secondary",
+    );
   }
 }
 

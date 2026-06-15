@@ -334,10 +334,12 @@ export const HabitController = {
     const activeBtn = document.getElementById("tab-active");
 
     const archivedBtn = document.getElementById("tab-archived");
+
     if (!indicator) return;
 
     if (tab === "active") {
       indicator.classList.replace("translate-x-27.5", "translate-x-0");
+
       activeBtn.classList.replace(
         "text-secondary",
         "text-(--color-btn-primary-text)",
@@ -348,6 +350,7 @@ export const HabitController = {
       );
     } else {
       indicator.classList.replace("translate-x-0", "translate-x-27.5");
+
       archivedBtn.classList.replace(
         "text-secondary",
         "text-(--color-btn-primary-text)",

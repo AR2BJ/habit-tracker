@@ -30,7 +30,7 @@ export const HabitController = {
     const input = document.getElementById("habit-input");
     const addBtn = document.getElementById("add-habit-btn");
 
-    addBtn?.addEventListener("click", () => {
+    const addHabit = () => {
       const name = input.value;
       if (!name.trim()) return;
 
@@ -39,6 +39,14 @@ export const HabitController = {
       StateManager.save(updated);
       input.value = "";
       this.refreshUI();
+    };
+
+    addBtn?.addEventListener("click", addHabit);
+
+    input?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        addHabit();
+      }
     });
 
     document

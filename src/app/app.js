@@ -1,36 +1,9 @@
-// =============================
-// APP BOOTSTRAP START
-// =============================
-
-import { getTheme, setTheme, toggleTheme } from "../services/theme.service.js";
-
-import { initState } from "../models/state.js";
-
-function updateThemeToggleIcon(theme) {
-  const themeToggleBtn = document.getElementById("theme-toggle");
-  if (!themeToggleBtn) return;
-
-  themeToggleBtn.innerHTML =
-    theme === "dark"
-      ? `<i class="fa-regular fa-sun text-yellow-400"></i>`
-      : `<i class="fa-regular fa-moon"></i>`;
-}
+import { HabitController } from "../controllers/habit.controller.js";
+import { NavigationController } from "../controllers/navigation.controller.js";
+import { ThemeController } from "../controllers/theme.controller.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  const theme = getTheme();
-
-  initState();
-  setTheme(theme);
-  updateThemeToggleIcon(theme);
+  ThemeController.init();
+  NavigationController.init();
+  HabitController.initApplication();
 });
-
-document.addEventListener("click", (e) => {
-  if (e.target.closest("#theme-toggle")) {
-    toggleTheme();
-    updateThemeToggleIcon(getTheme());
-  }
-});
-
-// =============================
-// APP BOOTSTRAP END
-// =============================

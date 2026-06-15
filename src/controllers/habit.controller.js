@@ -1,600 +1,342 @@
-// =============================
-// HABIT EVENTS START
-// =============================
+import { StateManager, state } from "../models/state.js";
 
-import {
-  archiveHabit,
-  createHabit,
-  deleteHabit,
-  editHabit,
-  restoreHabit,
-  toggleHabit,
-  toggleHabitDate,
-} from "../services/habit.service.js";
-import { getFilteredHabits, state } from "../models/state.js";
-
-import { formatDate } from "../utils/helpers.js";
+import { HabitService } from "../services/habit.service.js";
 import { renderDashboard } from "../views/dashboard/dashboard.ui.js";
 import { renderHabits } from "../views/habits/habit.ui.js";
-import { saveToStorage } from "../models/storage.js";
-
-// =============================
-// EDIT MODAL STATE START
-// =============================
-
-let pendingEditId = null;
-
-// =============================
-// EDIT MODAL STATE END
-// =============================
-
-// =============================
-// DELETE MODAL STATE START
-// =============================
 
 let pendingDeleteId = null;
-
-// =============================
-// UNDO DELETE STATE START
-// =============================
-
-let lastDeletedHabit = null;
+let pendingEditId = null;
 let undoTimer = null;
+let undoInterval = null;
 
-// =============================
-// UNDO DELETE STATE END
-// =============================
+export const HabitController = {
+  initApplication() {
+    StateManager.init();
+    this.refreshUI();
+    this.bindStaticEvents();
+    this.bindDynamicEvents();
+  },
 
-// =============================
-// DELETE MODAL STATE END
-// =============================
+  refreshUI() {
+    const allHabits = StateManager.getHabits();
+    const filteredHabits = StateManager.getFilteredHabits();
 
-export function bindHabitEvents() {
-  const input = document.getElementById("habit-input");
-  const button = document.getElementById("add-habit-btn");
+    renderHabits(filteredHabits, state.activeTab);
+    renderDashboard(allHabits);
+    this.updateNavigationDOM();
+  },
 
-  button.addEventListener("click", () => {
-    const value = input.value.trim();
-    if (!value) return;
+  bindStaticEvents() {
+    const input = document.getElementById("habit-input");
+    const addBtn = document.getElementById("add-habit-btn");
 
-    createHabit(value);
-    renderHabits(getFilteredHabits());
-    renderDashboard(state.habits);
-    input.value = "";
-  });
+    addBtn?.addEventListener("click", () => {
+      const name = input.value;
+      if (!name.trim()) return;
 
-  // =============================
-  // ADD HABIT ENTER KEY START
-  // =============================
+      const currentHabits = StateManager.getHabits();
+      const updated = HabitService.createHabit(currentHabits, name);
+      StateManager.save(updated);
+      input.value = "";
+      this.refreshUI();
+    });
 
-  document.getElementById("habit-input")?.addEventListener("keydown", (e) => {
-    if (e.key !== "Enter") return;
+    document
+      .getElementById("tab-active")
+      ?.addEventListener("click", () => this.handleTabSwitch("active"));
+    document
+      .getElementById("tab-archived")
+      ?.addEventListener("click", () => this.handleTabSwitch("archived"));
 
-    document.getElementById("add-habit-btn")?.click();
-  });
+    ["habits", "analytics", "settings"].forEach((view) => {
+      document
+        .getElementById(`nav-${view}`)
+        ?.addEventListener("click", () => this.handleViewSwitch(view));
+      document
+        .getElementById(`mobile-${view}`)
+        ?.addEventListener("click", () => this.handleViewSwitch(view));
+    });
 
-  // =============================
-  // ADD HABIT ENTER KEY END
-  // =============================
+    document.addEventListener("keydown", (e) => {
+      const deleteModal = document.getElementById("delete-modal");
+      const editModal = document.getElementById("edit-modal");
 
-  // =============================
-  // EDIT & DELETE MODAL ENTER/ESCAPE START
-  // =============================
+      const deleteOpen =
+        deleteModal && !deleteModal.classList.contains("hidden");
+      const editOpen = editModal && !editModal.classList.contains("hidden");
 
-  document.addEventListener("keydown", (e) => {
-    const deleteModal = document.getElementById("delete-modal");
+      if (!deleteOpen && !editOpen) return;
 
-    const editModal = document.getElementById("edit-modal");
-
-    const deleteOpen = !deleteModal.classList.contains("hidden");
-
-    const editOpen = !editModal.classList.contains("hidden");
-
-    if (!deleteOpen && !editOpen) return;
-
-    if (e.key === "Escape") {
-      if (deleteOpen) closeDeleteModal();
-      if (editOpen) closeEditModal();
-    }
-
-    if (e.key === "Enter") {
-      if (deleteOpen) {
-        document.getElementById("confirm-delete")?.click();
+      if (e.key === "Escape") {
+        if (deleteOpen) this.toggleModal("delete-modal", false);
+        if (editOpen) this.toggleModal("edit-modal", false);
       }
 
-      if (editOpen) {
-        document.getElementById("confirm-edit")?.click();
+      if (e.key === "Enter") {
+        if (deleteOpen) {
+          document.getElementById("confirm-delete-btn")?.click();
+          document.getElementById("confirm-delete")?.click();
+        }
+
+        if (editOpen) {
+          document.getElementById("confirm-edit-btn")?.click();
+          document.getElementById("confirm-edit")?.click();
+        }
       }
-    }
-  });
+    });
 
-  // =============================
-  // EDIT & DELETE MODAL ENTER/ESCAPE END
-  // =============================
+    const addClick = (id, cb) =>
+      document.getElementById(id)?.addEventListener("click", cb);
 
-  // =============================
-  // TOGGLE EVENT BINDING START
-  // =============================
+    addClick("confirm-delete-btn", () => this.executeDelete());
+    addClick("confirm-delete", () => this.executeDelete());
+    addClick("cancel-delete-btn", () =>
+      this.toggleModal("delete-modal", false),
+    );
+    addClick("cancel-delete", () => this.toggleModal("delete-modal", false));
 
-  document.addEventListener("click", (e) => {
-    if (e.target.classList.contains("toggle-btn")) {
-      const habit = state.habits.find((h) => h.id === e.target.dataset.id);
+    addClick("confirm-edit-btn", () => this.executeEdit());
+    addClick("confirm-edit", () => this.executeEdit());
+    addClick("cancel-edit-btn", () => this.toggleModal("edit-modal", false));
+    addClick("cancel-edit", () => this.toggleModal("edit-modal", false));
 
-      if (habit?.archived) return;
+    addClick("undo-delete-btn", () => this.executeUndo());
+    addClick("undo-delete", () => this.executeUndo());
+  },
 
-      const id = e.target.dataset.id;
+  bindDynamicEvents() {
+    const listContainer = document.getElementById("habit-list");
 
-      toggleHabit(id);
-      renderHabits(getFilteredHabits());
-      renderDashboard(state.habits);
-    }
+    listContainer?.addEventListener("click", (e) => {
+      const target = e.target;
 
-    // =============================
-    // CALENDAR BACKFILL START
-    // =============================
+      const toggleBtn = target.closest(".toggle-btn");
+      if (toggleBtn && toggleBtn.dataset.id) {
+        const id = toggleBtn.dataset.id;
+        const habit = StateManager.getHabits().find((h) => h.id === id);
+        if (habit?.archived) return;
 
-    if (e.target.classList.contains("calendar-day")) {
-      const date = e.target.dataset.date;
-
-      const habitId = e.target.dataset.habitId;
-
-      const habit = state.habits.find((h) => h.id === habitId);
-
-      if (habit?.archived) return;
-
-      const today = formatDate(new Date());
-
-      const yesterday = formatDate(new Date(Date.now() - 86400000));
-
-      if (date !== today && date !== yesterday) {
+        const updated = HabitService.toggleHabit(StateManager.getHabits(), id);
+        StateManager.save(updated);
+        this.refreshUI();
         return;
       }
 
-      toggleHabitDate(habitId, date);
+      const dayBtn = target.closest(".calendar-day");
+      if (dayBtn && dayBtn.dataset.habitId) {
+        const id = dayBtn.dataset.habitId;
+        const date = dayBtn.dataset.date;
+        const updated = HabitService.toggleHabitDate(
+          StateManager.getHabits(),
+          id,
+          date,
+        );
+        StateManager.save(updated);
+        this.refreshUI();
+        return;
+      }
 
-      renderHabits(getFilteredHabits());
-      renderDashboard(state.habits);
+      const editBtn = target.closest(".edit-btn");
+      if (editBtn) {
+        pendingEditId = editBtn.dataset.id;
+        const habit = StateManager.getHabits().find(
+          (h) => h.id === pendingEditId,
+        );
+        const editInput = document.getElementById("edit-habit-input");
+        if (editInput && habit) editInput.value = habit.name;
+        this.toggleModal("edit-modal", true);
+      }
 
-      return;
-    }
+      const deleteBtn = target.closest(".delete-btn");
+      if (deleteBtn) {
+        pendingDeleteId = deleteBtn.dataset.id;
+        this.toggleModal("delete-modal", true);
+        return;
+      }
 
-    // =============================
-    // CALENDAR BACKFILL END
-    // =============================
+      const archiveBtn = target.closest(".archive-btn");
+      if (archiveBtn) {
+        const id = archiveBtn.dataset.id;
+        const updated = HabitService.archiveHabit(StateManager.getHabits(), id);
+        StateManager.save(updated);
+        this.refreshUI();
+        this.showArchiveToast();
+        return;
+      }
 
-    // =============================
-    // ARCHIVE EVENT HANDLER START
-    // =============================
-
-    if (e.target.closest(".archive-btn")) {
-      const button = e.target.closest(".archive-btn");
-
-      archiveHabit(button.dataset.id);
-
-      renderHabits(getFilteredHabits());
-
-      renderDashboard(state.habits);
-
-      showArchiveToast();
-
-      return;
-    }
-
-    // =============================
-    // ARCHIVE EVENT HANDLER END
-    // =============================
-
-    // =============================
-    // RESTORE EVENT HANDLER START
-    // =============================
-
-    if (e.target.closest(".restore-btn")) {
-      const button = e.target.closest(".restore-btn");
-
-      restoreHabit(button.dataset.id);
-
-      renderHabits(getFilteredHabits());
-
-      renderDashboard(state.habits);
-
-      showRestoreToast();
-
-      return;
-    }
-
-    // =============================
-    // RESTORE EVENT HANDLER END
-    // =============================
-
-    // =============================
-    // EDIT EVENT HANDLER START
-    // =============================
-
-    if (e.target.closest(".edit-btn")) {
-      const button = e.target.closest(".edit-btn");
-
-      openEditModal(button.dataset.id, button.dataset.name);
-
-      return;
-    }
-
-    // =============================
-    // EDIT EVENT HANDLER END
-    // =============================
-
-    // =============================
-    // EDIT MODAL EVENTS START
-    // =============================
-
-    document.getElementById("confirm-edit")?.addEventListener("click", () => {
-      if (!pendingEditId) return;
-
-      const input = document.getElementById("edit-habit-input");
-
-      editHabit(pendingEditId, input.value);
-
-      renderHabits(getFilteredHabits());
-      renderDashboard(state.habits);
-
-      closeEditModal();
+      const restoreBtn = target.closest(".restore-btn");
+      if (restoreBtn) {
+        const id = restoreBtn.dataset.id;
+        const updated = HabitService.restoreHabit(StateManager.getHabits(), id);
+        StateManager.save(updated);
+        this.refreshUI();
+        this.showRestoreToast();
+        return;
+      }
     });
+  },
 
-    document.getElementById("cancel-edit")?.addEventListener("click", () => {
-      closeEditModal();
-    });
+  handleTabSwitch(tab) {
+    StateManager.setTab(tab);
+    this.refreshUI();
+    this.updateTabStyles(tab);
+  },
 
-    // =============================
-    // EDIT MODAL EVENTS END
-    // =============================
+  handleViewSwitch(view) {
+    StateManager.setView(view);
+    this.refreshUI();
+  },
 
-    // =============================
-    // DELETE EVENT HANDLER START
-    // =============================
+  executeDelete() {
+    if (!pendingDeleteId) return;
+    const currentHabits = StateManager.getHabits();
+    const habitToDelete = currentHabits.find((h) => h.id === pendingDeleteId);
 
-    if (e.target.closest(".delete-btn")) {
-      const button = e.target.closest(".delete-btn");
-
-      openDeleteModal(button.dataset.id);
-
-      return;
+    if (habitToDelete) {
+      state.lastDeletedHabit = habitToDelete;
+      const updated = HabitService.deleteHabit(currentHabits, pendingDeleteId);
+      StateManager.save(updated);
+      this.toggleModal("delete-modal", false);
+      this.refreshUI();
+      this.showUndoToast();
     }
+  },
 
-    // =============================
-    // DELETE EVENT HANDLER END
-    // =============================
+  executeEdit() {
+    const editInput = document.getElementById("edit-habit-input");
+    if (!pendingEditId || !editInput) return;
 
-    // =============================
-    // DELETE MODAL EVENTS START
-    // =============================
+    const newName = editInput.value.trim();
+    if (!newName) return;
 
-    document.getElementById("confirm-delete")?.addEventListener("click", () => {
-      if (!pendingDeleteId) return;
+    const currentHabits = StateManager.getHabits();
+    const updated = HabitService.editHabit(
+      currentHabits,
+      pendingEditId,
+      newName,
+    );
+    StateManager.save(updated);
+    this.toggleModal("edit-modal", false);
+    this.refreshUI();
+  },
 
-      lastDeletedHabit = state.habits.find((h) => h.id === pendingDeleteId);
+  showUndoToast() {
+    const toast = document.getElementById("undo-toast");
+    const countdown = document.getElementById("undo-countdown");
+    if (!toast || !countdown) return;
 
-      deleteHabit(pendingDeleteId);
+    toast.classList.remove("hidden");
 
-      renderHabits(getFilteredHabits());
-      renderDashboard(state.habits);
+    clearTimeout(undoTimer);
+    clearInterval(undoInterval);
 
-      closeDeleteModal();
-
-      showUndoToast();
-    });
-
-    document.getElementById("cancel-delete")?.addEventListener("click", () => {
-      closeDeleteModal();
-    });
-
-    // =============================
-    // DELETE MODAL EVENTS END
-    // =============================
-  });
-
-  // =============================
-  // UNDO DELETE EVENT START
-  // =============================
-
-  document.getElementById("undo-delete-btn")?.addEventListener("click", () => {
-    if (!lastDeletedHabit) return;
-
-    state.habits.push(lastDeletedHabit);
-
-    renderHabits(getFilteredHabits());
-    renderDashboard(state.habits);
-
-    saveToStorage(state);
-
-    lastDeletedHabit = null;
-
-    hideUndoToast();
-  });
-
-  // =============================
-  // UNDO DELETE EVENT END
-  // =============================
-
-  // ======================
-  // CHANGE TAB EVENT START
-  // ======================
-
-  document.getElementById("tab-active").addEventListener("click", () => {
-    state.activeTab = "active";
-    updateTabUI();
-
-    renderHabits(getFilteredHabits());
-    renderDashboard(state.habits);
-  });
-
-  document.getElementById("tab-archived").addEventListener("click", () => {
-    state.activeTab = "archived";
-    updateTabUI();
-
-    renderHabits(getFilteredHabits());
-    renderDashboard(state.habits);
-  });
-
-  // ====================
-  // CHANGE TAB EVENT END
-  // ====================
-
-  document.getElementById("nav-habits")?.addEventListener("click", () => {
-    state.currentView = "habits";
-
-    updateNavUI();
-    updateView();
-  });
-
-  document.getElementById("nav-analytics")?.addEventListener("click", () => {
-    state.currentView = "analytics";
-
-    updateNavUI();
-    updateView();
-  });
-
-  document.getElementById("nav-settings")?.addEventListener("click", () => {
-    state.currentView = "settings";
-
-    updateNavUI();
-    updateView();
-  });
-
-  document.getElementById("mobile-habits")?.addEventListener("click", () => {
-    state.currentView = "habits";
-
-    updateNavUI();
-    updateView();
-  });
-
-  document.getElementById("mobile-analytics")?.addEventListener("click", () => {
-    state.currentView = "analytics";
-
-    updateNavUI();
-    updateView();
-  });
-
-  document.getElementById("mobile-settings")?.addEventListener("click", () => {
-    state.currentView = "settings";
-
-    updateNavUI();
-    updateView();
-  });
-
-  // =============================
-  // TOGGLE EVENT BINDING END
-  // =============================
-}
-
-// =============================
-// EDIT MODAL HELPERS START
-// =============================
-
-function openEditModal(id, currentName) {
-  pendingEditId = id;
-
-  document.getElementById("edit-habit-input").value = currentName;
-
-  document.getElementById("edit-modal").classList.replace("hidden", "flex");
-}
-
-function closeEditModal() {
-  pendingEditId = null;
-
-  document.getElementById("edit-modal").classList.replace("flex", "hidden");
-}
-
-// =============================
-// EDIT MODAL HELPERS END
-// =============================
-
-// =============================
-// DELETE MODAL HELPERS START
-// =============================
-
-function openDeleteModal(id) {
-  pendingDeleteId = id;
-
-  document.getElementById("delete-modal").classList.replace("hidden", "flex");
-}
-
-function closeDeleteModal() {
-  pendingDeleteId = null;
-
-  document.getElementById("delete-modal").classList.replace("flex", "hidden");
-}
-
-// =============================
-// DELETE MODAL HELPERS END
-// =============================
-
-// =============================
-// UNDO TOAST HELPERS START
-// =============================
-
-function showUndoToast() {
-  const toast = document.getElementById("undo-toast");
-
-  toast.classList.remove("hidden");
-
-  clearTimeout(undoTimer);
-
-  let seconds = 5;
-
-  const countdown = document.getElementById("undo-countdown");
-
-  countdown.textContent = `${seconds}s`;
-
-  const interval = setInterval(() => {
-    seconds--;
-
+    let seconds = 5;
     countdown.textContent = `${seconds}s`;
 
-    if (seconds <= 1) {
-      clearInterval(interval);
-    }
-  }, 1000);
+    undoInterval = setInterval(() => {
+      seconds--;
+      countdown.textContent = `${seconds}s`;
 
-  undoTimer = setTimeout(() => {
-    clearInterval(interval);
+      if (seconds <= 1) {
+        clearInterval(undoInterval);
+      }
+    }, 1000);
+
+    undoTimer = setTimeout(() => {
+      clearInterval(undoInterval);
+      toast.classList.add("hidden");
+      state.lastDeletedHabit = null;
+      countdown.textContent = `5s`;
+    }, 5000);
+  },
+
+  hideUndoToast() {
+    const toast = document.getElementById("undo-toast");
+    const countdown = document.getElementById("undo-countdown");
+    if (!toast) return;
 
     toast.classList.add("hidden");
+    clearTimeout(undoTimer);
+    clearInterval(undoInterval);
+    if (countdown) countdown.textContent = `5s`;
+  },
 
-    lastDeletedHabit = null;
-  }, 5000);
-}
+  executeUndo() {
+    if (!state.lastDeletedHabit) return;
+    const currentHabits = StateManager.getHabits();
+    const updated = [state.lastDeletedHabit, ...currentHabits];
+    StateManager.save(updated);
 
-function hideUndoToast() {
-  document.getElementById("undo-toast").classList.add("hidden");
+    this.hideUndoToast();
+    state.lastDeletedHabit = null;
+    this.refreshUI();
+  },
 
-  clearTimeout(undoTimer);
-}
+  showRestoreToast() {
+    const toast = document.getElementById("restore-toast");
+    if (!toast) return;
+    toast.classList.remove("hidden");
+    setTimeout(() => {
+      toast.classList.add("hidden");
+    }, 2500);
+  },
 
-// =============================
-// UNDO TOAST HELPERS END
-// =============================
+  showArchiveToast() {
+    const toast = document.getElementById("archive-toast");
+    if (!toast) return;
+    toast.classList.remove("hidden");
+    setTimeout(() => {
+      toast.classList.add("hidden");
+    }, 2500);
+  },
 
-// =============================
-// ARCHIVE TOAST HELPERS START
-// =============================
+  toggleModal(modalId, show) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
 
-function showArchiveToast() {
-  const toast = document.getElementById("archive-toast");
+    if (show) modal.classList.replace("hidden", "flex");
+    else modal.classList.replace("flex", "hidden");
+  },
 
-  toast.classList.remove("hidden");
-
-  setTimeout(() => {
-    toast.classList.add("hidden");
-  }, 2500);
-}
-
-// =============================
-// ARCHIVE TOAST HELPERS END
-// =============================
-
-// =============================
-// RESTORE TOAST HELPERS START
-// =============================
-
-function showRestoreToast() {
-  const toast = document.getElementById("restore-toast");
-
-  toast.classList.remove("hidden");
-
-  setTimeout(() => {
-    toast.classList.add("hidden");
-  }, 2500);
-}
-
-// =============================
-// RESTORE TOAST HELPERS END
-// =============================
-
-export function updateNavUI() {
-  const map = {
-    habits: ["nav-habits", "mobile-habits"],
-    analytics: ["nav-analytics", "mobile-analytics"],
-    settings: ["nav-settings", "mobile-settings"],
-  };
-
-  Object.values(map)
-    .flat()
-    .forEach((id) => {
-      document.getElementById(id)?.classList.remove("active");
+  updateNavigationDOM() {
+    const views = ["habits", "analytics", "settings"];
+    views.forEach((v) => {
+      const el = document.getElementById(`${v}-view`);
+      if (el) {
+        if (state.currentView === v) el.classList.replace("hidden", "flex");
+        else el.classList.replace("flex", "hidden");
+      }
     });
+  },
 
-  map[state.currentView].forEach((id) => {
-    document.getElementById(id)?.classList.add("active");
-  });
-}
+  updateTabStyles(tab) {
+    const indicator = document.getElementById("tab-indicator");
 
-export function updateView() {
-  const habitsView = document.getElementById("habits-view");
+    const activeBtn = document.getElementById("tab-active");
 
-  const analyticsView = document.getElementById("analytics-view");
+    const archivedBtn = document.getElementById("tab-archived");
+    if (!indicator) return;
 
-  const settingsView = document.getElementById("settings-view");
-
-  if (state.currentView === "habits") {
-    habitsView.classList.replace("hidden", "flex");
-    analyticsView.classList.replace("flex", "hidden");
-    settingsView.classList.replace("flex", "hidden");
-  }
-
-  if (state.currentView === "analytics") {
-    habitsView.classList.replace("flex", "hidden");
-    analyticsView.classList.replace("hidden", "flex");
-    settingsView.classList.replace("flex", "hidden");
-  }
-
-  if (state.currentView === "settings") {
-    habitsView.classList.replace("flex", "hidden");
-    analyticsView.classList.replace("flex", "hidden");
-    settingsView.classList.replace("hidden", "flex");
-  }
-}
-
-// =============================
-// TAB UI START
-// =============================
-
-function updateTabUI() {
-  const indicator = document.getElementById("tab-indicator");
-
-  const activeBtn = document.getElementById("tab-active");
-
-  const archivedBtn = document.getElementById("tab-archived");
-
-  if (state.activeTab === "active") {
-    indicator.classList.replace("translate-x-27.5", "translate-x-0");
-
-    activeBtn.classList.replace(
-      "text-secondary",
-      "text-(--color-btn-primary-text)",
-    );
-
-    archivedBtn.classList.replace(
-      "text-(--color-btn-primary-text)",
-      "text-secondary",
-    );
-  } else {
-    indicator.classList.replace("translate-x-0", "translate-x-27.5");
-
-    archivedBtn.classList.replace(
-      "text-secondary",
-      "text-(--color-btn-primary-text)",
-    );
-
-    activeBtn.classList.replace(
-      "text-(--color-btn-primary-text)",
-      "text-secondary",
-    );
-  }
-}
-
-// =============================
-// TAB UI END
-// =============================
-
-// =============================
-// HABIT EVENTS END
-// =============================
+    if (tab === "active") {
+      indicator.classList.replace("translate-x-27.5", "translate-x-0");
+      activeBtn.classList.replace(
+        "text-secondary",
+        "text-(--color-btn-primary-text)",
+      );
+      archivedBtn.classList.replace(
+        "text-(--color-btn-primary-text)",
+        "text-secondary",
+      );
+    } else {
+      indicator.classList.replace("translate-x-0", "translate-x-27.5");
+      archivedBtn.classList.replace(
+        "text-secondary",
+        "text-(--color-btn-primary-text)",
+      );
+      activeBtn.classList.replace(
+        "text-(--color-btn-primary-text)",
+        "text-secondary",
+      );
+    }
+  },
+};

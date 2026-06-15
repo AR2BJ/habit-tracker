@@ -1,64 +1,31 @@
-// =============================
-// HABIT UI START
-// =============================
-
 import { calculateStreak, todayISO } from "../../utils/helpers.js";
 
 import { renderCalendar } from "../habits/habit.calendar.js";
 import { state } from "../../models/state.js";
 
-export function renderHabits(habits) {
+export function renderHabits(habits, activeTab = "active") {
   const container = document.getElementById("habit-list");
+  if (!container) return;
 
   container.innerHTML = "";
 
-  const isArchived = state.activeTab === "archived";
-
+  const isArchived = activeTab === "archived";
   const emoji = isArchived ? "🗃️" : "🎯";
-
   const title = isArchived ? "No archived habits" : "No habits yet";
-
   const description = isArchived
     ? "Archived habits will appear here."
     : "Create your first habit and start building consistency.";
 
-  // =============================
-  // EMPTY STATE START
-  // =============================
-
   if (habits.length === 0) {
     container.innerHTML = `
-  
-    <div
-      class="border border-dashed border-border rounded-3xl p-16 text-center bg-surface-2"
-    >
-
-      <div class="text-6xl mb-6">
-        ${emoji}
+      <div class="border border-dashed border-border rounded-3xl p-16 text-center bg-surface-2">
+        <div class="text-6xl mb-6">${emoji}</div>
+        <h2 class="text-2xl font-bold text-primary">${title}</h2>
+        <p class="mt-3 text-secondary max-w-sm mx-auto">${description}</p>
       </div>
-
-      <h2
-        class="text-2xl font-bold text-primary"
-      >
-        ${title}
-      </h2>
-
-      <p
-        class="mt-3 text-secondary max-w-sm mx-auto"
-      >
-        ${description}
-      </p>
-
-    </div>
-
-  `;
-
+    `;
     return;
   }
-
-  // =============================
-  // EMPTY STATE END
-  // =============================
 
   habits.forEach((habit) => {
     const { current, best } = calculateStreak(habit.completedDates);
@@ -69,16 +36,8 @@ export function renderHabits(habits) {
 
     const item = document.createElement("div");
 
-    // =============================
-    // HABIT CARD START
-    // =============================
-
     item.className =
       "bg-surface border border-border p-7 rounded-3xl transition-all duration-300 hover:border-brand/30 hover:shadow-2xl hover:shadow-brand/5";
-
-    // =============================
-    // HABIT CARD END
-    // =============================
 
     item.innerHTML = `
 <div class="space-y-8">
@@ -213,7 +172,3 @@ export function renderHabits(habits) {
     container.appendChild(item);
   });
 }
-
-// =============================
-// HABIT UI END
-// =============================

@@ -1,4 +1,5 @@
 import { StateManager, state } from "../models/state.js";
+import { formatDate, todayISO } from "../utils/helpers.js";
 
 import { HabitService } from "../services/habit.service.js";
 import { renderDashboard } from "../views/dashboard/dashboard.ui.js";
@@ -134,6 +135,16 @@ export const HabitController = {
       if (dayBtn && dayBtn.dataset.habitId) {
         const id = dayBtn.dataset.habitId;
         const date = dayBtn.dataset.date;
+        const habit = StateManager.getHabits().find((h) => h.id === id);
+        if (habit?.archived) return;
+
+        const today = todayISO();
+        const yesterday = formatDate(new Date(Date.now() - 86400000));
+
+        if (date !== today && date !== yesterday) {
+          return;
+        }
+
         const updated = HabitService.toggleHabitDate(
           StateManager.getHabits(),
           id,

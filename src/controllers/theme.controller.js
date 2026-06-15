@@ -6,8 +6,11 @@ export const ThemeController = {
     if (!btn) return;
     btn.innerHTML =
       theme === "dark"
-        ? `<i class="fa-regular fa-sun text-yellow-400"></i>`
+        ? `<i class="fa-regular fa-sun text-yellow-500"></i>`
         : `<i class="fa-regular fa-moon"></i>`;
+    theme === "dark"
+      ? btn.classList.replace("hover:bg-gray-600/10", "hover:bg-yellow-600/10")
+      : btn.classList.replace("hover:bg-yellow-600/10", "hover:bg-gray-600/10");
   },
 
   init() {

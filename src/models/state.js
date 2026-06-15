@@ -1,10 +1,10 @@
 // =============================
 // GLOBAL STATE START
 // =============================
-import { bindHabitEvents } from "./habits/habit.events.js";
-import { loadFromStorage } from "./storage.js";
-import { renderDashboard } from "./dashboard/dashboard.ui.js";
-import { renderHabits } from "./habits/habit.ui.js";
+import { bindHabitEvents } from "../controllers/habit.controller.js";
+import { loadFromStorage } from "../models/storage.js";
+import { renderDashboard } from "../views/dashboard/dashboard.ui.js";
+import { renderHabits } from "../views/habits/habit.ui.js";
 
 export const state = {
   habits: [],

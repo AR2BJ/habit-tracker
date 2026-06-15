@@ -2,7 +2,7 @@
 // HABIT CALENDAR START
 // =============================
 
-import { formatDate } from "../utils/helpers";
+import { formatDate } from "../../utils/helpers.js";
 
 export function renderCalendar(dates, habitId, createdAt, isArchived = false) {
   const dateSet = new Set(dates);

@@ -5,8 +5,8 @@
 import { formatDate, todayISO } from "../utils/helpers.js";
 
 import { generateId } from "../utils/helpers.js";
-import { saveToStorage } from "../storage.js";
-import { state } from "../state.js";
+import { saveToStorage } from "../models/storage.js";
+import { state } from "../models/state.js";
 
 export function createHabit(name) {
   // =============================

@@ -2,9 +2,9 @@
 // APP BOOTSTRAP START
 // =============================
 
-import { getTheme, setTheme, toggleTheme } from "./theme.js";
+import { getTheme, setTheme, toggleTheme } from "../services/theme.service.js";
 
-import { initState } from "./state.js";
+import { initState } from "../models/state.js";
 
 function updateThemeToggleIcon(theme) {
   const themeToggleBtn = document.getElementById("theme-toggle");

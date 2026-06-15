@@ -2,17 +2,21 @@
 // HABIT EVENTS START
 // =============================
 
-import { archiveHabit, restoreHabit } from "./habit.service.js";
-import { getFilteredHabits, state } from "../state.js";
-import { toggleHabit, toggleHabitDate } from "./habit.service.js";
+import {
+  archiveHabit,
+  createHabit,
+  deleteHabit,
+  editHabit,
+  restoreHabit,
+  toggleHabit,
+  toggleHabitDate,
+} from "../services/habit.service.js";
+import { getFilteredHabits, state } from "../models/state.js";
 
-import { createHabit } from "./habit.service.js";
-import { deleteHabit } from "./habit.service.js";
-import { editHabit } from "./habit.service.js";
 import { formatDate } from "../utils/helpers.js";
-import { renderDashboard } from "../dashboard/dashboard.ui.js";
-import { renderHabits } from "./habit.ui.js";
-import { saveToStorage } from "../storage.js";
+import { renderDashboard } from "../views/dashboard/dashboard.ui.js";
+import { renderHabits } from "../views/habits/habit.ui.js";
+import { saveToStorage } from "../models/storage.js";
 
 // =============================
 // EDIT MODAL STATE START

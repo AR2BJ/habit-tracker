@@ -6,7 +6,7 @@ import {
   calculateStreak,
   calculateSuccessRate,
   formatDate,
-} from "../utils/helpers.js";
+} from "../../utils/helpers.js";
 
 export function renderDashboard(habits) {
   const dashboard = document.getElementById("dashboard");

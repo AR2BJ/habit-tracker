@@ -2,10 +2,10 @@
 // HABIT UI START
 // =============================
 
-import { calculateStreak, todayISO } from "../utils/helpers.js";
+import { calculateStreak, todayISO } from "../../utils/helpers.js";
 
-import { renderCalendar } from "./habit.calendar.js";
-import { state } from "../state.js";
+import { renderCalendar } from "../habits/habit.calendar.js";
+import { state } from "../../models/state.js";
 
 export function renderHabits(habits) {
   const container = document.getElementById("habit-list");

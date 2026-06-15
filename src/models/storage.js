@@ -2,7 +2,7 @@
 // STORAGE LAYER START
 // =============================
 
-import { formatDate } from "./utils/helpers";
+import { formatDate } from "../utils/helpers.js";
 
 const STORAGE_KEY = "habit_tracker";
 const STORAGE_VERSION = 2;

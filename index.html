@@ -1,7 +1,7 @@
 <!doctype html>
 <html
   lang="en"
-  class="h-full bg-gray-950 text-white"
+  class="bg-surface text-primary"
 >
   <head>
     <meta charset="UTF-8" />
@@ -26,16 +26,14 @@
     />
   </head>
 
-  <body
-    class="h-full bg-linear-to-b from-gray-950 via-gray-900 to-gray-950 text-white"
-  >
+  <body class="min-h-screen bg-surface text-primary">
     <!-- ============================= -->
     <!-- APP CONTAINER START -->
     <!-- ============================= -->
 
     <div
       id="app"
-      class="max-w-5xl mx-auto px-8 py-12"
+      class="max-w-6xl mx-auto px-8 py-12 lg:pl-28"
     >
       <!-- ============================= -->
       <!-- HEADER SECTION START -->
@@ -62,6 +60,39 @@
           <i class="fa-regular fa-sun text-yellow-400"></i>
         </button>
       </header>
+
+      <div
+        id="desktop-nav"
+        class="hidden lg:flex fixed left-5 top-5 bottom-5 w-20 flex-col justify-between items-center bg-gray-900/90 dark:bg-surface/80 backdrop-blur-xl border border-border rounded-3xl py-4 shadow-2xl z-50"
+      >
+        <div class="flex flex-col gap-6 w-full px-3">
+          <button
+            id="nav-habits"
+            class="nav-item justify-center"
+            title="Habits"
+          >
+            <i class="fa-solid fa-list text-xl"></i>
+          </button>
+
+          <button
+            id="nav-analytics"
+            class="nav-item justify-center"
+            title="Analytics"
+          >
+            <i class="fa-solid fa-chart-line text-xl"></i>
+          </button>
+        </div>
+
+        <div class="w-full px-3">
+          <button
+            id="nav-settings"
+            class="nav-item justify-center"
+            title="Settings"
+          >
+            <i class="fa-solid fa-gear text-xl"></i>
+          </button>
+        </div>
+      </div>
 
       <!-- ============================= -->
       <!-- DASHBOARD SECTION START -->
@@ -108,140 +139,171 @@
       <!-- ============================= -->
 
       <section
-        id="habits"
-        class="mt-6 space-y-6"
+        id="habits-view"
+        class="flex"
       >
-        <!-- ============================= -->
-        <!-- CREATE HABIT SECTION START -->
-        <!-- ============================= -->
+        <div
+          id="habits"
+          class="w-full"
+        >
+          <!-- ============================= -->
+          <!-- CREATE HABIT SECTION START -->
+          <!-- ============================= -->
 
-        <div class="bg-surface p-6 rounded-2xl border border-border">
-          <div class="flex gap-4">
-            <input
-              id="habit-input"
-              type="text"
-              maxlength="50"
-              placeholder="Enter new habit..."
-              class="flex-1 px-4 py-3 bg-surface-2 text-primary placeholder:text-(--color-tertiary) rounded-xl outline-none focus:ring-2 focus:ring-brand"
-            />
-            <button
-              id="add-habit-btn"
-              class="px-6 py-3 bg-brand hover:bg-(--color-brand-hover) text-(--color-btn-primary-text) transition rounded-xl font-semibold cursor-pointer"
+          <div class="bg-surface p-6 rounded-2xl border border-border">
+            <div class="flex gap-4">
+              <input
+                id="habit-input"
+                type="text"
+                maxlength="50"
+                placeholder="Enter new habit..."
+                class="flex-1 px-4 py-3 bg-surface-2 text-primary placeholder:text-(--color-tertiary) rounded-xl outline-none focus:ring-2 focus:ring-brand"
+              />
+              <button
+                id="add-habit-btn"
+                class="px-6 py-3 bg-brand hover:bg-(--color-brand-hover) text-(--color-btn-primary-text) transition rounded-xl font-semibold cursor-pointer"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+
+          <!-- ============================= -->
+          <!-- CREATE HABIT SECTION END -->
+          <!-- ============================= -->
+
+          <!-- ============================= -->
+          <!-- HABIT LIST START -->
+          <!-- ============================= -->
+          <div
+            id="habit-list"
+            class="space-y-4 mt-6"
+          ></div>
+          <!-- ============================= -->
+          <!-- HABIT LIST END -->
+          <!-- ============================= -->
+
+          <!-- ============================= -->
+          <!-- EDIT MODAL START -->
+          <!-- ============================= -->
+
+          <div
+            id="edit-modal"
+            class="min-h-screen fixed inset-0 z-50 hidden items-center justify-center"
+          >
+            <div
+              id="edit-modal-backdrop"
+              class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            ></div>
+
+            <div
+              class="relative w-full max-w-md mx-4 bg-surface border border-border rounded-3xl p-6 shadow-2xl"
             >
-              Add
-            </button>
-          </div>
-        </div>
+              <h2 class="text-xl font-bold">Edit Habit</h2>
 
-        <!-- ============================= -->
-        <!-- CREATE HABIT SECTION END -->
-        <!-- ============================= -->
+              <input
+                id="edit-habit-input"
+                type="text"
+                maxlength="50"
+                class="w-full mt-4 px-4 py-3 rounded-xl bg-surface-2 border border-border text-primary placeholder:text-(--color-tertiary) outline-none focus:ring-2 focus:ring-brand"
+              />
 
-        <!-- ============================= -->
-        <!-- HABIT LIST START -->
-        <!-- ============================= -->
-        <div
-          id="habit-list"
-          class="space-y-4"
-        ></div>
-        <!-- ============================= -->
-        <!-- HABIT LIST END -->
-        <!-- ============================= -->
+              <div class="flex justify-end gap-2 mt-6">
+                <button
+                  id="cancel-edit"
+                  class="px-4 py-2 rounded-xl bg-surface-2 hover:bg-(--color-surface-3) text-primary transition cursor-pointer"
+                >
+                  Cancel
+                </button>
 
-        <!-- ============================= -->
-        <!-- EDIT MODAL START -->
-        <!-- ============================= -->
-
-        <div
-          id="edit-modal"
-          class="min-h-screen fixed inset-0 z-50 hidden items-center justify-center"
-        >
-          <div
-            id="edit-modal-backdrop"
-            class="absolute inset-0 bg-black/60 backdrop-blur-sm"
-          ></div>
-
-          <div
-            class="relative w-full max-w-md mx-4 bg-surface border border-border rounded-3xl p-6 shadow-2xl"
-          >
-            <h2 class="text-xl font-bold">Edit Habit</h2>
-
-            <input
-              id="edit-habit-input"
-              type="text"
-              maxlength="50"
-              class="w-full mt-4 px-4 py-3 rounded-xl bg-surface-2 border border-border text-primary placeholder:text-(--color-tertiary) outline-none focus:ring-2 focus:ring-brand"
-            />
-
-            <div class="flex justify-end gap-2 mt-6">
-              <button
-                id="cancel-edit"
-                class="px-4 py-2 rounded-xl bg-surface-2 hover:bg-(--color-surface-3) text-primary transition cursor-pointer"
-              >
-                Cancel
-              </button>
-
-              <button
-                id="confirm-edit"
-                class="px-4 py-2 rounded-xl bg-brand hover:bg-(--color-brand-hover) text-(--color-btn-primary-text) transition cursor-pointer font-medium"
-              >
-                Save
-              </button>
+                <button
+                  id="confirm-edit"
+                  class="px-4 py-2 rounded-xl bg-brand hover:bg-(--color-brand-hover) text-(--color-btn-primary-text) transition cursor-pointer font-medium"
+                >
+                  Save
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- ============================= -->
-        <!-- EDIT MODAL END -->
-        <!-- ============================= -->
+          <!-- ============================= -->
+          <!-- EDIT MODAL END -->
+          <!-- ============================= -->
 
-        <!-- ============================= -->
-        <!-- DELETE MODAL START -->
-        <!-- ============================= -->
-
-        <div
-          id="delete-modal"
-          class="min-h-screen fixed inset-0 z-50 hidden items-center justify-center"
-        >
-          <!-- backdrop -->
+          <!-- ============================= -->
+          <!-- DELETE MODAL START -->
+          <!-- ============================= -->
 
           <div
-            id="delete-modal-backdrop"
-            class="absolute inset-0 bg-black/60 backdrop-blur-sm"
-          ></div>
-
-          <!-- modal -->
-
-          <div
-            class="relative w-full max-w-md mx-4 bg-surface border border-border rounded-3xl p-6 shadow-2xl"
+            id="delete-modal"
+            class="min-h-screen fixed inset-0 z-50 hidden items-center justify-center"
           >
-            <h2 class="text-xl font-bold text-primary">Delete Habit</h2>
+            <!-- backdrop -->
 
-            <p class="mt-3 text-secondary">
-              Are you sure you want to delete this habit?
-            </p>
+            <div
+              id="delete-modal-backdrop"
+              class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            ></div>
 
-            <div class="flex justify-end gap-2 mt-6">
-              <button
-                id="cancel-delete"
-                class="px-4 py-2 rounded-xl bg-surface-2 hover:bg-(--color-surface-3) text-primary transition cursor-pointer"
-              >
-                Cancel
-              </button>
+            <!-- modal -->
 
-              <button
-                id="confirm-delete"
-                class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-(--color-btn-primary-text) transition cursor-pointer font-medium"
-              >
-                Delete
-              </button>
+            <div
+              class="relative w-full max-w-md mx-4 bg-surface border border-border rounded-3xl p-6 shadow-2xl"
+            >
+              <h2 class="text-xl font-bold text-primary">Delete Habit</h2>
+
+              <p class="mt-3 text-secondary">
+                Are you sure you want to delete this habit?
+              </p>
+
+              <div class="flex justify-end gap-2 mt-6">
+                <button
+                  id="cancel-delete"
+                  class="px-4 py-2 rounded-xl bg-surface-2 hover:bg-(--color-surface-3) text-primary transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  id="confirm-delete"
+                  class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-(--color-btn-primary-text) transition cursor-pointer font-medium"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- ============================= -->
-        <!-- DELETE MODAL END -->
-        <!-- ============================= -->
+          <!-- ============================= -->
+          <!-- DELETE MODAL END -->
+          <!-- ============================= -->
+        </div>
+      </section>
+
+      <section
+        id="analytics-view"
+        class="hidden"
+      >
+        <div class="w-full bg-surface border border-border rounded-3xl p-8">
+          <h2 class="text-2xl font-bold text-primary">Analytics</h2>
+
+          <p class="mt-3 text-gray-400">
+            Analytics dashboard will be available in V4.
+          </p>
+        </div>
+      </section>
+
+      <section
+        id="settings-view"
+        class="hidden"
+      >
+        <div class="w-full bg-surface border border-border rounded-3xl p-8">
+          <h2 class="text-2xl font-bold text-primary">Settings</h2>
+
+          <p class="mt-3 text-gray-400">
+            Application settings will be available in V4.
+          </p>
+        </div>
       </section>
 
       <!-- ============================= -->
@@ -334,6 +396,34 @@
     <!-- ============================= -->
     <!-- APP CONTAINER END -->
     <!-- ============================= -->
+
+    <nav
+      class="lg:hidden fixed bottom-0 left-0 right-0 z-40 flex justify-around items-center bg-surface/90 backdrop-blur-2xl border-t border-border px-6 py-3 shadow-[0_-10px_30px_rgba(0,0,0,0.3)]"
+    >
+      <button
+        id="mobile-habits"
+        class="mobile-nav-btn flex flex-col items-center justify-center gap-1 text-secondary"
+      >
+        <i class="fa-solid fa-list text-lg"></i>
+        <span class="text-[10px] font-medium tracking-wide">Habits</span>
+      </button>
+
+      <button
+        id="mobile-analytics"
+        class="mobile-nav-btn flex flex-col items-center justify-center gap-1 text-secondary"
+      >
+        <i class="fa-solid fa-chart-line text-lg"></i>
+        <span class="text-[10px] font-medium tracking-wide">Analytics</span>
+      </button>
+
+      <button
+        id="mobile-settings"
+        class="mobile-nav-btn flex flex-col items-center justify-center gap-1 text-secondary"
+      >
+        <i class="fa-solid fa-gear text-lg"></i>
+        <span class="text-[10px] font-medium tracking-wide">Settings</span>
+      </button>
+    </nav>
 
     <script
       type="module"

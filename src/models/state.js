@@ -1,7 +1,11 @@
 // =============================
 // GLOBAL STATE START
 // =============================
-import { bindHabitEvents } from "../controllers/habit.controller.js";
+import {
+  bindHabitEvents,
+  updateView,
+} from "../controllers/habit.controller.js";
+
 import { loadFromStorage } from "../models/storage.js";
 import { renderDashboard } from "../views/dashboard/dashboard.ui.js";
 import { renderHabits } from "../views/habits/habit.ui.js";
@@ -28,6 +32,8 @@ export const state = {
   // =============================
   // TAB STATE START
   // =============================
+
+  currentView: "habits",
 };
 
 // =============================
@@ -44,6 +50,7 @@ export function initState() {
   renderHabits(getFilteredHabits());
   renderDashboard(state.habits);
   bindHabitEvents();
+  updateView();
 
   console.log("App Initialized");
 }

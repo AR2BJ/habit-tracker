@@ -147,10 +147,20 @@
 body {
   background: var(--color-bg);
   color: var(--color-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
   transition:
     background 0.3s ease,
     color 0.3s ease,
     border-color 0.3s ease;
+}
+
+@media (max-width: 1023px) {
+  body {
+    padding-bottom: 100px;
+  }
 }
 
 .btn-primary {
@@ -173,4 +183,61 @@ body {
 .text-stat-title {
   color: var(--color-tertiary);
   font-weight: 600;
+}
+
+/* ============================================ */
+/* NEW PREMIUM NAV & SIDEBAR STYLES             */
+/* ============================================ */
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 52px;
+  border-radius: 16px;
+  color: var(--color-secondary);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.nav-item:hover {
+  background: var(--color-surface-2);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.nav-item.active {
+  background: var(--color-brand);
+  color: white;
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+}
+
+.dark .nav-item.active {
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+}
+
+.mobile-nav-btn {
+  position: relative;
+  width: 64px;
+  height: 48px;
+  border: none;
+  background: transparent;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.mobile-nav-btn.active {
+  color: var(--color-brand);
+}
+
+.mobile-nav-btn.active i {
+  transform: scale(1.1);
+  color: var(--color-brand);
+  text-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+}
+
+@media (max-width: 1023px) {
+  body {
+    padding-bottom: 80px;
+  }
 }

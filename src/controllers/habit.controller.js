@@ -338,6 +338,48 @@ export function bindHabitEvents() {
   // CHANGE TAB EVENT END
   // ====================
 
+  document.getElementById("nav-habits")?.addEventListener("click", () => {
+    state.currentView = "habits";
+
+    updateNavUI();
+    updateView();
+  });
+
+  document.getElementById("nav-analytics")?.addEventListener("click", () => {
+    state.currentView = "analytics";
+
+    updateNavUI();
+    updateView();
+  });
+
+  document.getElementById("nav-settings")?.addEventListener("click", () => {
+    state.currentView = "settings";
+
+    updateNavUI();
+    updateView();
+  });
+
+  document.getElementById("mobile-habits")?.addEventListener("click", () => {
+    state.currentView = "habits";
+
+    updateNavUI();
+    updateView();
+  });
+
+  document.getElementById("mobile-analytics")?.addEventListener("click", () => {
+    state.currentView = "analytics";
+
+    updateNavUI();
+    updateView();
+  });
+
+  document.getElementById("mobile-settings")?.addEventListener("click", () => {
+    state.currentView = "settings";
+
+    updateNavUI();
+    updateView();
+  });
+
   // =============================
   // TOGGLE EVENT BINDING END
   // =============================
@@ -466,6 +508,50 @@ function showRestoreToast() {
 // =============================
 // RESTORE TOAST HELPERS END
 // =============================
+
+export function updateNavUI() {
+  const map = {
+    habits: ["nav-habits", "mobile-habits"],
+    analytics: ["nav-analytics", "mobile-analytics"],
+    settings: ["nav-settings", "mobile-settings"],
+  };
+
+  Object.values(map)
+    .flat()
+    .forEach((id) => {
+      document.getElementById(id)?.classList.remove("active");
+    });
+
+  map[state.currentView].forEach((id) => {
+    document.getElementById(id)?.classList.add("active");
+  });
+}
+
+export function updateView() {
+  const habitsView = document.getElementById("habits-view");
+
+  const analyticsView = document.getElementById("analytics-view");
+
+  const settingsView = document.getElementById("settings-view");
+
+  if (state.currentView === "habits") {
+    habitsView.classList.replace("hidden", "flex");
+    analyticsView.classList.replace("flex", "hidden");
+    settingsView.classList.replace("flex", "hidden");
+  }
+
+  if (state.currentView === "analytics") {
+    habitsView.classList.replace("flex", "hidden");
+    analyticsView.classList.replace("hidden", "flex");
+    settingsView.classList.replace("flex", "hidden");
+  }
+
+  if (state.currentView === "settings") {
+    habitsView.classList.replace("flex", "hidden");
+    analyticsView.classList.replace("flex", "hidden");
+    settingsView.classList.replace("hidden", "flex");
+  }
+}
 
 // =============================
 // TAB UI START

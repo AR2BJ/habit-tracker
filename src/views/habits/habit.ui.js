@@ -1,4 +1,8 @@
-import { calculateStreak, todayISO } from "../../utils/helpers.js";
+import {
+  calculateStreak,
+  calculateSuccessRate,
+  todayISO,
+} from "../../utils/helpers.js";
 
 import { renderCalendar } from "../habits/habit.calendar.js";
 import { state } from "../../models/state.js";
@@ -32,7 +36,11 @@ export function renderHabits(habits, activeTab = "active") {
 
     const completedToday = habit.completedDates.includes(todayISO());
 
+    const totalChecks = habit.completedDates.length;
+
     const isArchived = habit.archived;
+
+    const successRate = calculateSuccessRate(habit);
 
     const item = document.createElement("div");
 
@@ -40,7 +48,7 @@ export function renderHabits(habits, activeTab = "active") {
       "bg-surface border border-border p-7 rounded-3xl transition-all duration-300 hover:border-brand/30 hover:shadow-2xl hover:shadow-brand/5";
 
     item.innerHTML = `
-<div class="space-y-8">
+      <div class="space-y-8">
         <!-- Header -->
         <div class="flex justify-between items-center">
           <div class="flex items-center gap-6">
@@ -61,26 +69,56 @@ export function renderHabits(habits, activeTab = "active") {
 
             <div>
               <h3 class="text-2xl font-bold text-primary">${habit.name}</h3>
-
-              <div class="mt-2 text-sm text-brand">
-                🔥 ${current} day streak
+              <div
+                class="mt-2 text-sm text-secondary flex items-center gap-1.5"
+              >
+                <i
+                  class="fa-regular fa-check-double text-lg opacity-75 text-emerald-500"
+                ></i>
+                Total: ${totalChecks} ticks
               </div>
             </div>
           </div>
 
           <div class="flex items-center gap-8">
             <div class="text-center">
-              <div class="text-2xl font-bold text-primary">${current}</div>
+              <div class="text-2xl font-bold">${successRate}%</div>
+              <div
+                class="text-sm text-secondary flex flex-row justify-center items-center gap-2"
+              >
+                <i
+                  class="fa-solid fa-chart-line text-lg text-brand opacity-70"
+                ></i>
+                success rate
+              </div>
+            </div>
 
-              <div class="text-sm text-secondary">🔥 day streak</div>
+            <div class="w-px h-16 bg-border"></div>
+
+            <div class="text-center">
+              <div class="text-2xl font-bold text-primary">${current}</div>
+              <div
+                class="text-sm text-secondary flex flex-row justify-center items-center gap-2"
+              >
+                <i
+                  class="fa-regular fa-fire text-lg text-orange-500 opacity-70"
+                ></i>
+                day streak
+              </div>
             </div>
 
             <div class="w-px h-16 bg-border"></div>
 
             <div class="text-center">
               <div class="text-2xl font-bold text-primary">${best}</div>
-
-              <div class="text-sm text-secondary">🏆 best streak</div>
+              <div
+                class="text-sm text-secondary flex flex-row justify-center items-center gap-2"
+              >
+                <i
+                  class="fa-regular fa-trophy text-lg text-yellow-500 opacity-70"
+                ></i>
+                best streak
+              </div>
             </div>
 
             <div class="w-px h-16 bg-border"></div>
@@ -103,14 +141,11 @@ export function renderHabits(habits, activeTab = "active") {
                     flex items-center justify-center hover:cursor-pointer peer transition"
                 >
                   <i
-                    class="
-                      fa-regular
-                      ${
-                        state.activeTab === "archived"
-                          ? "fa-arrow-rotate-left text-emerald-500"
-                          : "fa-box-archive text-yellow-500"
-                      }
-                    "
+                    class="fa-regular ${
+                      state.activeTab === "archived"
+                        ? "fa-arrow-rotate-left text-emerald-500"
+                        : "fa-box-archive text-yellow-500"
+                    }"
                   ></i>
                 </button>
 

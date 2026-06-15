@@ -16,7 +16,13 @@ export const ThemeController = {
     const btn = document.getElementById("theme-toggle");
     btn?.addEventListener("click", () => {
       toggleTheme();
-      this.updateIcon(getTheme());
+      const newTheme = getTheme();
+      this.updateIcon(newTheme);
+
+      const themeEvent = new CustomEvent("themeChanged", {
+        detail: { theme: newTheme },
+      });
+      document.dispatchEvent(themeEvent);
     });
   },
 };

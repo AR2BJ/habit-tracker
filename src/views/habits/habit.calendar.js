@@ -41,7 +41,7 @@ export function renderCalendar(dates, habitId, createdAt, isArchived = false) {
   }
 
   return `
-    <div class="space-y-4 p-1 overflow-hidden">
+    <div class="space-y-4 p-4 overflow-hidden">
       <!-- Timeline -->
 
       <div class="flex justify-between text-secondary text-sm select-none">
@@ -51,7 +51,7 @@ export function renderCalendar(dates, habitId, createdAt, isArchived = false) {
 
       <!-- Calendar Grid -->
 
-      <div class="grid grid-cols-30 grid-rows-2 gap-2 w-max">
+      <div class="grid gap-2 grid-cols-10 md:grid-cols-12 lg:grid-cols-30">
         ${days
           .map((day) => {
             const today = formatDate(new Date());
@@ -71,11 +71,11 @@ export function renderCalendar(dates, habitId, createdAt, isArchived = false) {
                 data-date="${day.date}"
                 data-habit-id="${habitId}"
                 title="${tooltip}"
-                class="calendar-day ${
+                class="calendar-day w-full aspect-square ${
                   editable && !isArchived
                     ? "cursor-pointer hover:scale-110"
                     : "cursor-not-allowed opacity-60"
-                } w-5.5 h-5.5 rounded-md flex flex-row justify-center items-center transition-all duration-200 ${
+                } rounded-md flex flex-row justify-center items-center transition-all duration-200 ${
                   day.completed
                     ? "bg-emerald-500 shadow-lg shadow-emerald-500/20"
                     : "bg-(--color-surface-3)"
@@ -85,7 +85,11 @@ export function renderCalendar(dates, habitId, createdAt, isArchived = false) {
                     : ""
                 }"
               >
-                ${day.completed ? "✓" : ""}
+                ${
+                  day.completed
+                    ? `<span class="text-2xl lg:text-xl leading-none">✓</span>`
+                    : ""
+                }
               </button>
             `;
           })

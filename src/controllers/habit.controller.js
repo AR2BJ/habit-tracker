@@ -16,6 +16,7 @@ export const HabitController = {
     this.refreshUI();
     this.bindStaticEvents();
     this.bindDynamicEvents();
+    this.bindMenuToggle();
   },
 
   refreshUI() {
@@ -25,6 +26,32 @@ export const HabitController = {
     renderHabits(filteredHabits, state.activeTab);
     renderDashboard(allHabits);
     this.updateNavigationDOM();
+  },
+
+  bindMenuToggle() {
+    const menuToggle = document.getElementById("menu-toggle");
+    const desktopNav = document.getElementById("desktop-nav");
+    const app = document.getElementById("app");
+
+    let isMenuOpen = false;
+
+    menuToggle?.addEventListener("click", () => {
+      isMenuOpen = !isMenuOpen;
+
+      if (isMenuOpen) {
+        desktopNav?.classList.replace(
+          "-translate-x-[calc(100%+2rem)]",
+          "translate-x-0",
+        );
+        app?.classList.replace("lg:pl-8", "lg:pl-30");
+      } else {
+        desktopNav?.classList.replace(
+          "translate-x-0",
+          "-translate-x-[calc(100%+2rem)]",
+        );
+        app?.classList.replace("lg:pl-30", "lg:pl-8");
+      }
+    });
   },
 
   bindStaticEvents() {

@@ -8,6 +8,7 @@ import { renderHabits } from "../views/habits/habit.ui.js";
 
 let pendingDeleteId = null;
 let pendingEditId = null;
+let clickTimeout = null;
 
 export const HabitController = {
   initApplication() {
@@ -57,25 +58,44 @@ export const HabitController = {
     const input = document.getElementById("habit-input");
     const addBtn = document.getElementById("add-habit-btn");
 
+    const categorySelect = document.getElementById("habit-category-select");
+    const frequencySelect = document.getElementById("habit-frequency-select");
+
     const addHabit = () => {
       const name = input.value;
+      const category = categorySelect ? categorySelect.value : "General";
+      const frequency = frequencySelect ? frequencySelect.value : 7;
+
       if (!name.trim()) return;
 
       try {
         const currentHabits = StateManager.getHabits();
-        const updated = HabitService.createHabit(currentHabits, name);
+        const updated = HabitService.createHabit(
+          currentHabits,
+          name,
+          category,
+          frequency,
+        );
         StateManager.save(updated);
+
         input.value = "";
         this.refreshUI();
 
         NotificationService.show({
           type: "success",
+          message: `Habit "${name}" [${category}] created successfully!`,
           icon: "fa-check",
-          message: `Habit "${name}" created successfully!`,
+          iconColor: "text-emerald-500",
           duration: 3000,
         });
       } catch (error) {
-        alert(error.message);
+        NotificationService.show({
+          type: "error",
+          message: error.message,
+          icon: "fa-triangle-exclamation",
+          iconColor: "text-rose-500",
+          duration: 4000,
+        });
       }
     };
 
@@ -87,20 +107,59 @@ export const HabitController = {
       }
     });
 
-    document
-      .getElementById("tab-active")
-      ?.addEventListener("click", () => this.handleTabSwitch("active"));
-    document
-      .getElementById("tab-archived")
-      ?.addEventListener("click", () => this.handleTabSwitch("archived"));
+    const filterButtons = document.querySelectorAll(".category-filter-btn");
+    filterButtons.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const selectedCategory = e.currentTarget.dataset.category;
+        StateManager.setCategory(selectedCategory);
 
-    ["habits", "analytics", "settings"].forEach((view) => {
-      document
-        .getElementById(`nav-${view}`)
-        ?.addEventListener("click", () => this.handleViewSwitch(view));
-      document
-        .getElementById(`mobile-${view}`)
-        ?.addEventListener("click", () => this.handleViewSwitch(view));
+        filterButtons.forEach((b) => {
+          b.classList.remove("bg-brand", "text-white");
+          b.classList.add("bg-surface-2", "text-secondary");
+        });
+
+        e.currentTarget.classList.remove("bg-surface-2", "text-secondary");
+        e.currentTarget.classList.add("bg-brand", "text-white");
+
+        this.refreshUI();
+      });
+    });
+
+    const activeBtn = document.getElementById("tab-active");
+    const archivedBtn = document.getElementById("tab-archived");
+
+    activeBtn?.addEventListener("click", () => {
+      state.activeTab = "active";
+      this.updateTabStyles("active");
+      this.refreshUI();
+    });
+
+    archivedBtn?.addEventListener("click", () => {
+      state.activeTab = "archived";
+      this.updateTabStyles("archived");
+      this.refreshUI();
+    });
+
+    const navButtons = ["habits", "analytics", "settings"];
+    navButtons.forEach((v) => {
+      const desktopBtn = document.getElementById(`nav-${v}`);
+      const mobileBtn = document.getElementById(`mobile-${v}`);
+
+      const handleNav = () => {
+        state.currentView = v;
+        navButtons.forEach((nav) => {
+          const dEl = document.getElementById(`nav-${nav}`);
+          const mEl = document.getElementById(`mobile-${nav}`);
+          dEl?.classList.replace("text-brand", "text-secondary");
+          mEl?.classList.replace("text-brand", "text-secondary");
+        });
+        desktopBtn?.classList.replace("text-secondary", "text-brand");
+        mobileBtn?.classList.replace("text-secondary", "text-brand");
+        this.refreshUI();
+      };
+
+      desktopBtn?.addEventListener("click", handleNav);
+      mobileBtn?.addEventListener("click", handleNav);
     });
 
     document.addEventListener("keydown", (e) => {
@@ -148,6 +207,25 @@ export const HabitController = {
 
     addClick("undo-delete-btn", () => this.executeUndo());
     addClick("undo-delete", () => this.executeUndo());
+
+    const helpToggle = document.getElementById("help-toggle");
+    const helpModal = document.getElementById("help-modal");
+    const closeHelpModal = document.getElementById("close-help-modal");
+    const btnCloseHelp = document.getElementById("btn-close-help");
+    const helpBackdrop = document.getElementById("help-modal-backdrop");
+
+    const openHelp = () => {
+      if (helpModal) helpModal.classList.replace("hidden", "flex");
+    };
+
+    const closeHelp = () => {
+      if (helpModal) helpModal.classList.replace("flex", "hidden");
+    };
+
+    helpToggle?.addEventListener("click", openHelp);
+    closeHelpModal?.addEventListener("click", closeHelp);
+    btnCloseHelp?.addEventListener("click", closeHelp);
+    helpBackdrop?.addEventListener("click", closeHelp);
   },
 
   bindDynamicEvents() {
@@ -162,24 +240,34 @@ export const HabitController = {
         const currentHabits = StateManager.getHabits();
         const habit = currentHabits.find((h) => h.id === id);
 
-        if (habit) {
-          const updated = HabitService.toggleHabit(currentHabits, id);
-          StateManager.save(updated);
-          this.refreshUI();
+        try {
+          if (habit) {
+            const updated = HabitService.toggleHabit(currentHabits, id);
+            StateManager.save(updated);
+            this.refreshUI();
 
-          const todayStr = formatDate(new Date());
-          const isNowCompleted = updated
-            .find((h) => h.id === id)
-            .completedDates.includes(todayStr);
+            const todayStr = formatDate(new Date());
+            const isNowCompleted = updated
+              .find((h) => h.id === id)
+              .completedDates.includes(todayStr);
 
+            NotificationService.show({
+              type: "info",
+              message: isNowCompleted
+                ? `Completed "${habit.name}" for today! ✨`
+                : `Removed completion for "${habit.name}".`,
+              icon: isNowCompleted ? "fa-circle-check" : "fa-circle",
+              iconColor: isNowCompleted ? "text-emerald-500" : "text-slate-400",
+              duration: 3000,
+            });
+          }
+        } catch (error) {
           NotificationService.show({
-            type: "info",
-            message: isNowCompleted
-              ? `Completed "${habit.name}" for today! ✨`
-              : `Removed completion for "${habit.name}".`,
-            icon: isNowCompleted ? "fa-circle-check" : "fa-circle",
-            iconColor: isNowCompleted ? "text-emerald-500" : "text-gray-400",
-            duration: 3000,
+            type: "error",
+            message: error.message,
+            icon: "fa-circle-exclamation",
+            iconColor: "text-rose-500",
+            duration: 4000,
           });
         }
         return;
@@ -195,33 +283,72 @@ export const HabitController = {
         const today = todayISO();
         const yesterday = formatDate(new Date(Date.now() - 86400000));
 
-        if (date !== today && date !== yesterday) {
-          return;
+        if (date !== today && date !== yesterday) return;
+
+        if (clickTimeout) {
+          clearTimeout(clickTimeout);
+          clickTimeout = null;
+
+          try {
+            const updated = HabitService.toggleSkipHabitDate(
+              StateManager.getHabits(),
+              id,
+              date,
+            );
+            StateManager.save(updated);
+            this.refreshUI();
+
+            const isNowSkipped = updated
+              .find((h) => h.id === id)
+              .skippedDates?.includes(date);
+            NotificationService.show({
+              type: "info",
+              message: isNowSkipped
+                ? `Safeguard activated: Skipped day for "${habit.name}".`
+                : `Removed safeguard for "${habit.name}".`,
+              icon: isNowSkipped ? "fa-shield-halved" : "fa-calendar",
+              iconColor: isNowSkipped ? "text-amber-500" : "text-slate-400",
+              duration: 3000,
+            });
+          } catch (error) {
+            NotificationService.show({ type: "error", message: error.message });
+          }
+        } else {
+          clickTimeout = setTimeout(() => {
+            clickTimeout = null;
+            try {
+              const updated = HabitService.toggleHabitDate(
+                StateManager.getHabits(),
+                id,
+                date,
+              );
+              StateManager.save(updated);
+              this.refreshUI();
+
+              const isNowCompleted = updated
+                .find((h) => h.id === id)
+                .completedDates.includes(date);
+              const dateLabel = date === today ? "Today" : "Yesterday";
+
+              NotificationService.show({
+                type: "info",
+                message: isNowCompleted
+                  ? `Marked "${habit.name}" as done for ${dateLabel}! ✨`
+                  : `Unchecked "${habit.name}" for ${dateLabel}.`,
+                icon: isNowCompleted ? "fa-square-check" : "fa-square-xmark",
+                iconColor: isNowCompleted
+                  ? "text-emerald-500"
+                  : "text-gary-400",
+                duration: 3000,
+              });
+            } catch (error) {
+              NotificationService.show({
+                type: "error",
+                message: error.message,
+              });
+            }
+          }, 250);
         }
-
-        const updated = HabitService.toggleHabitDate(
-          StateManager.getHabits(),
-          id,
-          date,
-        );
-        StateManager.save(updated);
-        this.refreshUI();
-
-        const isNowCompleted = updated
-          .find((h) => h.id === id)
-          .completedDates.includes(date);
-        const dateLabel = date === today ? "Today" : "Yesterday";
-
-        NotificationService.show({
-          type: "info",
-          message: isNowCompleted
-            ? `Marked "${habit.name}" as done for ${dateLabel}! ✨`
-            : `Unchecked "${habit.name}" for ${dateLabel}.`,
-          icon: isNowCompleted ? "fa-square-check" : "fa-square",
-          iconColor: isNowCompleted ? "text-emerald-500" : "text-gray-400",
-          duration: 3000,
-        });
-
         return;
       }
 

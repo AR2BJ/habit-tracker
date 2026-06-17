@@ -24,28 +24,20 @@ export function todayISO() {
 // STREAK CALCULATION START
 // =============================
 
-export function calculateStreak(dates) {
-  if (!dates.length) return { current: 0, best: 0 };
+export function calculateStreak(completedDates = [], skippedDates = []) {
+  if (!completedDates.length) return { current: 0, best: 0 };
 
-  const sorted = [...dates].sort();
+  const sortedCompletes = [...completedDates].sort();
+  const dateSet = new Set(sortedCompletes);
+  const skipSet = new Set(skippedDates || []);
   const today = todayISO();
 
   let current = 0;
   let best = 0;
-  let temp = 0;
 
-  const dateSet = new Set(sorted);
+  let cursor = new Date(today);
 
-  // =============================
-  // CURRENT STREAK WITH GRACE DAY START
-  // =============================
-
-  let cursor;
-
-  if (dateSet.has(today)) {
-    cursor = new Date(today);
-  } else {
-    cursor = new Date(today);
+  if (!dateSet.has(today) && !skipSet.has(today)) {
     cursor.setDate(cursor.getDate() - 1);
   }
 
@@ -54,28 +46,39 @@ export function calculateStreak(dates) {
 
     if (dateSet.has(iso)) {
       current++;
-
+      cursor.setDate(cursor.getDate() - 1);
+    } else if (skipSet.has(iso)) {
       cursor.setDate(cursor.getDate() - 1);
     } else {
       break;
     }
   }
 
-  // =============================
-  // CURRENT STREAK WITH GRACE DAY END
-  // =============================
+  const allTimelineDates = Array.from(
+    new Set([...completedDates, ...skippedDates]),
+  ).sort();
 
-  // ---- Best Streak ----
-  for (let i = 0; i < sorted.length; i++) {
-    const currentDate = new Date(sorted[i]);
+  let temp = 0;
+  for (let i = 0; i < allTimelineDates.length; i++) {
+    const currentDate = new Date(allTimelineDates[i]);
+    const isoCheck = formatDate(currentDate);
+
+    if (!dateSet.has(isoCheck)) continue;
+
     temp = 1;
-
     let nextDate = new Date(currentDate);
     nextDate.setDate(nextDate.getDate() + 1);
 
-    while (dateSet.has(formatDate(nextDate))) {
-      temp++;
-      nextDate.setDate(nextDate.getDate() + 1);
+    while (true) {
+      const nextIso = formatDate(nextDate);
+      if (dateSet.has(nextIso)) {
+        temp++;
+        nextDate.setDate(nextDate.getDate() + 1);
+      } else if (skipSet.has(nextIso)) {
+        nextDate.setDate(nextDate.getDate() + 1);
+      } else {
+        break;
+      }
     }
 
     if (temp > best) best = temp;

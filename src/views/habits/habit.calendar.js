@@ -4,41 +4,43 @@
 
 import { formatDate } from "../../utils/helpers.js";
 
-export function renderCalendar(dates, habitId, createdAt, isArchived = false) {
+export function renderCalendar(
+  dates,
+  habitId,
+  createdAt,
+  isArchived = false,
+  skippedDates = [],
+) {
   const dateSet = new Set(dates);
+  const skipSet = new Set(skippedDates);
 
   const days = [];
-
   const created = new Date(createdAt);
+  const todayDate = new Date();
 
-  const today = new Date();
-
-  const diffDays = Math.floor((today - created) / 86400000);
-
+  const diffDays = Math.floor((todayDate - created) / 86400000);
   const periodIndex = Math.max(0, Math.floor(diffDays / 59));
 
-  const showCreatedAt = periodIndex > 0;
-
   const periodStart = new Date(created);
-
   periodStart.setDate(periodStart.getDate() + periodIndex * 59);
 
   const periodEnd = new Date(periodStart);
-
   periodEnd.setDate(periodEnd.getDate() + 59);
 
   for (let i = 0; i < 60; i++) {
     const date = new Date(periodStart);
-
     date.setDate(periodStart.getDate() + i);
-
     const iso = formatDate(date);
 
     days.push({
       date: iso,
       completed: dateSet.has(iso),
+      skipped: skipSet.has(iso),
     });
   }
+
+  const today = formatDate(new Date());
+  const yesterday = formatDate(new Date(Date.now() - 86400000));
 
   return `
     <div class="space-y-4 p-4 overflow-hidden">
@@ -54,17 +56,19 @@ export function renderCalendar(dates, habitId, createdAt, isArchived = false) {
       <div class="grid gap-2 grid-cols-10 md:grid-cols-12 lg:grid-cols-30">
         ${days
           .map((day) => {
-            const today = formatDate(new Date());
-
-            const yesterday = formatDate(new Date(Date.now() - 86400000));
-
-            const tooltip = day.completed
-              ? `Completed • ${day.date}`
-              : day.date < today
-                ? `Missed • ${day.date}`
-                : `Upcoming • ${day.date}`;
+            let tooltip = `Status: Pending • ${day.date}`;
+            if (day.completed) tooltip = `Status: Completed • ${day.date}`;
+            if (day.skipped)
+              tooltip = `Status: Skipped (Safeguard) • ${day.date}`;
 
             const editable = day.date === today || day.date === yesterday;
+
+            let bgClass = "bg-(--color-surface-4)";
+            if (day.completed) {
+              bgClass = "bg-emerald-500 shadow-lg shadow-emerald-500/20";
+            } else if (day.skipped) {
+              bgClass = "bg-amber-500 shadow-lg shadow-amber-500/20";
+            }
 
             return `
               <button
@@ -74,37 +78,25 @@ export function renderCalendar(dates, habitId, createdAt, isArchived = false) {
                 class="calendar-day w-full aspect-square ${
                   editable && !isArchived
                     ? "cursor-pointer hover:scale-110"
-                    : "cursor-not-allowed opacity-60"
-                } rounded-md flex flex-row justify-center items-center transition-all duration-200 ${
-                  day.completed
-                    ? "bg-emerald-500 shadow-lg shadow-emerald-500/20"
-                    : "bg-(--color-surface-3)"
-                } ${
-                  editable && !isArchived && !day.completed
-                    ? "hover:bg-(--color-surface-3)/70"
+                    : "cursor-not-allowed opacity-45"
+                } rounded-md flex flex-row justify-center items-center transition-all duration-200 ${bgClass} ${
+                  editable && !isArchived && !day.completed && !day.skipped
+                    ? "hover:bg-(--color-surface-4)/60"
                     : ""
                 }"
               >
                 ${
                   day.completed
-                    ? `<span class="text-2xl lg:text-xl leading-none">✓</span>`
-                    : ""
+                    ? `<span class="text-2xl lg:text-xl leading-none text-white">✓</span>`
+                    : day.skipped
+                      ? `<span class="text-xs lg:text-xs leading-none text-white"><i class="fa-regular fa-shield text-xl lg:text-lg leading-none text-white"></i></span>`
+                      : ""
                 }
               </button>
             `;
           })
           .join("")}
       </div>
-      ${
-        showCreatedAt
-          ? `
-            <div class="ps-1.5 pt-3 text-xs text-gray-500 italic text-left">
-              Created: ${createdAt}
-            </div>
-          `
-          : ""
-      }
-
     </div>
   `;
 }

@@ -5,17 +5,21 @@
 import { formatDate } from "../utils/helpers.js";
 
 const STORAGE_KEY = "habit_tracker";
-const STORAGE_VERSION = 2;
+const STORAGE_VERSION = 4;
 
 function migrateHabit(habit) {
   return {
     id: habit.id,
     name: habit.name,
+    category: habit.category ?? "General",
+    frequency: Number(habit.frequency ?? 7),
     createdAt: habit.createdAt ?? formatDate(new Date()),
     archived: habit.archived ?? false,
     completedDates: habit.completedDates ?? [],
+    skippedDates: habit.skippedDates ?? [],
     stats: {
       bestStreak: habit.stats?.bestStreak ?? 0,
+      allowedSkipsPerMonth: habit.stats?.allowedSkipsPerMonth ?? 3,
     },
   };
 }
@@ -26,7 +30,7 @@ function migrateData(data) {
   switch (version) {
     case 1:
       return {
-        version: 2,
+        version: 4,
 
         habits: (data.habits || []).map(migrateHabit),
       };

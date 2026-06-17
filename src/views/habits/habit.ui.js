@@ -14,7 +14,9 @@ export function renderHabits(habits, activeTab = "active") {
   container.innerHTML = "";
 
   const isArchived = activeTab === "archived";
-  const emoji = isArchived ? "🗃️" : "🎯";
+  const icon = isArchived
+    ? "<i class='fa-regular fa-box-open'></i>"
+    : "<i class='fa-regular fa-bullseye-arrow'></i>";
   const title = isArchived ? "No archived habits" : "No habits yet";
   const description = isArchived
     ? "Archived habits will appear here."
@@ -23,7 +25,7 @@ export function renderHabits(habits, activeTab = "active") {
   if (habits.length === 0) {
     container.innerHTML = `
       <div class="border border-dashed border-border rounded-3xl p-16 text-center bg-surface-2">
-        <div class="text-6xl mb-6">${emoji}</div>
+        <div class="text-6xl mb-6">${icon}</div>
         <h2 class="text-2xl font-bold text-primary">${title}</h2>
         <p class="mt-3 text-secondary max-w-sm mx-auto">${description}</p>
       </div>
@@ -32,144 +34,106 @@ export function renderHabits(habits, activeTab = "active") {
   }
 
   habits.forEach((habit) => {
-    const { current, best } = calculateStreak(habit.completedDates);
-
+    const { current, best } = calculateStreak(
+      habit.completedDates,
+      habit.skippedDates || [],
+    );
     const completedToday = habit.completedDates.includes(todayISO());
-
     const totalChecks = habit.completedDates.length;
-
-    const isArchived = habit.archived;
-
-    const successRate = calculateSuccessRate(habit);
+    const isHabitArchived = habit.archived;
 
     const item = document.createElement("div");
-
     item.className =
-      "bg-surface border border-border p-7 rounded-3xl transition-all duration-300 hover:border-brand/30 hover:shadow-2xl hover:shadow-brand/5";
+      "bg-surface-2 border border-border/60 hover:border-border rounded-3xl p-6 transition duration-300";
+
+    const categoryColors = {
+      General: "bg-amber-500/10 text-amber-500 border-amber-500/20",
+      Health: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+      Work: "bg-sky-500/10 text-sky-500 border-sky-500/20",
+      Finance: "bg-violet-500/10 text-violet-500 border-violet-500/20",
+      Mind: "bg-rose-500/10 text-rose-500 border-rose-500/20",
+      Harmful: "bg-mauve-500/10 text-mauve-500 border-mauve-500/20",
+    };
+    const badgeClass = categoryColors[habit.category] || categoryColors.General;
+
+    const actionButtonClass = isHabitArchived
+      ? "restore-btn hover:bg-emerald-600/10"
+      : "archive-btn hover:bg-yellow-600/10";
+    const actionTooltip = isHabitArchived ? "Restore" : "Archive";
+    const actionIcon = isHabitArchived
+      ? "fa-arrow-rotate-left text-emerald-500"
+      : "fa-box-archive text-amber-500";
 
     item.innerHTML = `
-      <div class="space-y-8">
-        <!-- Header -->
-        <div class="flex justify-between items-center">
-          <div class="flex items-center gap-6">
-            <button
-              data-id="${habit.id}"
-              class="toggle-btn w-7 h-7 rounded-full border-[3px] flex items-center justify-center transition-all duration-300 ${
-                completedToday
-                  ? "bg-emerald-500 border-emerald-500"
-                  : "border-border"
-              } ${
-                isArchived
-                  ? "cursor-not-allowed opacity-60 border-border"
-                  : "hover:cursor-pointer hover:scale-110"
-              }"
-            >
-              ${completedToday ? "✓" : ""}
-            </button>
+      <div class="flex flex-col gap-4">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex items-center gap-4">
+            ${
+              isHabitArchived
+                ? ""
+                : `
+              <button
+                data-id="${habit.id}"
+                class="toggle-btn w-12 h-12 rounded-2xl border-2 flex items-center justify-center transition hover:cursor-pointer ${
+                  completedToday
+                    ? "bg-brand border-brand text-(--color-btn-primary-text) shadow-lg shadow-brand/20"
+                    : "border-border text-secondary hover:border-brand hover:text-brand"
+                }"
+              >
+                <i class="fa-regular ${completedToday ? "fa-check text-xl font-bold" : "fa-square text-lg"}"></i>
+              </button>
+            `
+            }
 
             <div>
-              <h3 class="text-2xl font-bold text-primary">${habit.name}</h3>
-              <div
-                class="mt-2 text-sm text-secondary flex items-center gap-1.5"
-              >
-                <i
-                  class="fa-regular fa-check-double text-lg opacity-75 text-emerald-500"
-                ></i>
-                Total: ${totalChecks} ticks
+              <div class="flex items-center flex-wrap gap-2">
+                <h3 class="text-lg font-semibold text-primary">${habit.name}</h3>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeClass}">
+                  ${habit.category ?? "General"}
+                </span>
+                <span class="text-[10px] font-medium px-2 py-0.5 rounded-full bg-surface-3 border border-border text-secondary">
+                  ${habit.frequency ?? 7} days/wk
+                </span>
               </div>
+              <p class="text-xs text-secondary mt-1">
+                Created on ${habit.createdAt} • Total ${totalChecks} check-ins
+              </p>
             </div>
           </div>
 
-          <div class="flex items-center gap-8">
-            <div class="text-center">
-              <div class="text-2xl font-bold">${successRate}%</div>
-              <div
-                class="text-sm text-secondary flex flex-row justify-center items-center gap-2"
-              >
-                <i
-                  class="fa-regular fa-chart-line text-lg text-brand opacity-70"
-                ></i>
-                success rate
+          <div class="flex items-center gap-2">
+            <div class="hidden sm:flex items-center gap-4 mr-2 border-r border-border pr-4">
+              <div class="text-center">
+                <span class="block text-xs font-bold text-primary">${current}d</span>
+                <span class="text-[10px] text-secondary uppercase tracking-wider font-semibold">Streak</span>
+              </div>
+              <div class="text-center">
+                <span class="block text-xs font-bold text-primary">${best}d</span>
+                <span class="text-[10px] text-secondary uppercase tracking-wider font-semibold">Best</span>
               </div>
             </div>
 
-            <div class="w-px h-16 bg-border"></div>
-
-            <div class="text-center">
-              <div class="text-2xl font-bold text-primary">${current}</div>
-              <div
-                class="text-sm text-secondary flex flex-row justify-center items-center gap-2"
-              >
-                <i
-                  class="fa-regular fa-fire text-lg text-orange-500 opacity-70"
-                ></i>
-                day streak
-              </div>
-            </div>
-
-            <div class="w-px h-16 bg-border"></div>
-
-            <div class="text-center">
-              <div class="text-2xl font-bold text-primary">${best}</div>
-              <div
-                class="text-sm text-secondary flex flex-row justify-center items-center gap-2"
-              >
-                <i
-                  class="fa-regular fa-trophy text-lg text-yellow-500 opacity-70"
-                ></i>
-                best streak
-              </div>
-            </div>
-
-            <div class="w-px h-16 bg-border"></div>
-
-            <div class="flex flex-row justify-center items-center gap-3">
+            <div class="flex items-center gap-2">
               <div class="relative">
                 <button
                   data-id="${habit.id}"
-                  class="${
-                    state.activeTab === "archived"
-                      ? "restore-btn"
-                      : "archive-btn"
-                  }
-                    w-10 h-10 rounded-xl
-                    ${
-                      state.activeTab === "archived"
-                        ? "bg-surface-2 hover:bg-green-600/10"
-                        : "bg-surface-2 hover:bg-yellow-600/10"
-                    }
-                    flex items-center justify-center hover:cursor-pointer peer transition"
+                  class="${actionButtonClass} w-10 h-10 rounded-xl bg-surface-3 border border-border flex items-center justify-center hover:cursor-pointer peer transition"
                 >
-                  <i
-                    class="fa-regular ${
-                      state.activeTab === "archived"
-                        ? "fa-arrow-rotate-left text-emerald-500"
-                        : "fa-box-archive text-yellow-500"
-                    }"
-                  ></i>
+                  <i class="fa-regular ${actionIcon} text-lg"></i>
                 </button>
-
-                <div
-                  class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-surface-2 text-xs text-primary opacity-0 cursor-default peer-hover:opacity-100 transition"
-                >
-                  ${state.activeTab === "archived" ? "Restore" : "Archive"}
+                <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-surface-2 text-xs text-primary opacity-0 cursor-default peer-hover:opacity-100 transition z-10">
+                  ${actionTooltip}
                 </div>
               </div>
 
               <div class="relative">
                 <button
                   data-id="${habit.id}"
-                  data-name="${habit.name}"
-                  class="edit-btn w-10 h-10 rounded-xl bg-surface-2 hover:bg-blue-600/10 flex items-center justify-center hover:cursor-pointer peer transition"
+                  class="edit-btn w-10 h-10 rounded-xl bg-surface-3 hover:bg-blue-600/10 border border-border flex items-center justify-center hover:cursor-pointer peer transition"
                 >
-                  <i
-                    class="fa-regular fa-pen-to-square text-blue-500 text-lg"
-                  ></i>
+                  <i class="fa-regular fa-pen-to-square text-blue-500 text-lg"></i>
                 </button>
-
-                <div
-                  class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-surface-2 text-xs text-primary opacity-0 cursor-default peer-hover:opacity-100 transition"
-                >
+                <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-surface-2 text-xs text-primary opacity-0 cursor-default peer-hover:opacity-100 transition z-10">
                   Edit
                 </div>
               </div>
@@ -177,14 +141,11 @@ export function renderHabits(habits, activeTab = "active") {
               <div class="relative">
                 <button
                   data-id="${habit.id}"
-                  class="delete-btn w-10 h-10 rounded-xl bg-surface-2 hover:bg-red-600/10 flex items-center justify-center hover:cursor-pointer peer transition"
+                  class="delete-btn w-10 h-10 rounded-xl bg-surface-3 hover:bg-red-600/10 border border-border flex items-center justify-center hover:cursor-pointer peer transition"
                 >
-                  <i class="fa-regular fa-trash-can text-red-500 text-xl"></i>
+                  <i class="fa-regular fa-trash-can text-red-500 text-lg"></i>
                 </button>
-
-                <div
-                  class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-surface-2 text-xs text-primary opacity-0 cursor-default peer-hover:opacity-100 transition"
-                >
+                <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-surface-2 text-xs text-primary opacity-0 cursor-default peer-hover:opacity-100 transition z-10">
                   Delete
                 </div>
               </div>
@@ -192,13 +153,13 @@ export function renderHabits(habits, activeTab = "active") {
           </div>
         </div>
 
-        <!-- Calendar -->
-        <div class="pt-4 overflow-x-auto">
+        <div class="pt-2 overflow-x-auto">
           ${renderCalendar(
             habit.completedDates,
             habit.id,
             habit.createdAt,
             habit.archived,
+            habit.skippedDates || [],
           )}
         </div>
       </div>

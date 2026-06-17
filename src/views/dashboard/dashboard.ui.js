@@ -408,7 +408,7 @@ export function renderDashboard(habits) {
 
   dashboard.innerHTML = `
     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 w-full col-span-full">
-      <div class="bg-surface border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition shadow-sm flex flex-col justify-between min-h-36">
+      <div class="bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition shadow-sm flex flex-col justify-between min-h-36">
         <div class="flex items-center justify-between gap-2 text-secondary">
           <span class="text-sm font-bold tracking-wide truncate">Total Habits</span>
           <i class="fa-regular fa-layer-group text-6xl opacity-70 text-sky-500"></i>
@@ -416,7 +416,7 @@ export function renderDashboard(habits) {
         <div class="text-4xl font-extrabold tracking-tight text-primary mt-3">${totalHabits}</div>
       </div>
 
-      <div class="bg-surface border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition shadow-sm flex flex-col justify-between min-h-36">
+      <div class="bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition shadow-sm flex flex-col justify-between min-h-36">
         <div class="flex items-center justify-between gap-2 text-secondary">
           <span class="text-sm font-bold tracking-wide truncate">Completed Today</span>
           <i class="fa-regular fa-circle-check text-6xl opacity-70 text-emerald-500"></i>
@@ -424,7 +424,7 @@ export function renderDashboard(habits) {
         <div class="text-4xl font-extrabold tracking-tight text-primary mt-3">${completedToday}</div>
       </div>
 
-      <div class="bg-surface border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition shadow-sm flex flex-col justify-between min-h-36">
+      <div class="bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition shadow-sm flex flex-col justify-between min-h-36">
         <div class="flex items-center justify-between gap-2 text-secondary">
           <span class="text-sm font-bold tracking-wide truncate">Best Streak</span>
           <i class="fa-regular fa-fire text-6xl text-orange-500 opacity-70"></i>
@@ -432,7 +432,7 @@ export function renderDashboard(habits) {
         <div class="text-4xl font-extrabold tracking-tight text-primary mt-3">${bestStreak}<span class="text-sm font-bold text-secondary ml-1">days</span></div>
       </div>
 
-      <div class="bg-surface border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition shadow-sm flex flex-col justify-between min-h-36">
+      <div class="bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition shadow-sm flex flex-col justify-between min-h-36">
         <div class="flex items-center justify-between gap-2 text-secondary">
           <span class="text-sm font-bold tracking-wide truncate">Avg Success</span>
           <i class="fa-regular fa-chart-line text-6xl text-brand opacity-70"></i>
@@ -440,7 +440,7 @@ export function renderDashboard(habits) {
         <div class="text-4xl font-extrabold tracking-tight text-primary mt-3">${averageSuccessRate}%</div>
       </div>
 
-      <div class="col-span-2 md:col-span-4 lg:col-span-1 bg-surface border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition shadow-sm flex flex-col justify-between min-h-36">
+      <div class="col-span-2 md:col-span-4 lg:col-span-1 bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition shadow-sm flex flex-col justify-between min-h-36">
         <div class="flex items-center justify-between gap-2 text-secondary">
           <span class="text-sm font-bold tracking-wide truncate">Archived</span>
           <i class="fa-regular fa-box-archive text-6xl opacity-70"></i>
@@ -450,7 +450,7 @@ export function renderDashboard(habits) {
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full col-span-full mt-6">
-      <div class="lg:col-span-2 bg-surface border border-border rounded-3xl p-6 flex flex-col justify-between shadow-sm">
+      <div class="lg:col-span-2 bg-surface-2 border border-border rounded-3xl p-6 flex flex-col justify-between shadow-sm">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h4 class="text-lg font-bold text-primary flex items-center gap-2">
@@ -470,7 +470,7 @@ export function renderDashboard(habits) {
         <div id="apex-heatmap-chart" class="w-full mt-6"></div>
       </div>
 
-      <div class="bg-surface border border-border rounded-3xl p-6 flex flex-col justify-between shadow-sm">
+      <div class="bg-surface-2 border border-border rounded-3xl p-6 flex flex-col justify-between shadow-sm">
         <div>
           <h4 class="text-lg font-bold text-primary flex items-center gap-2">
             <i class="fa-regular fa-chart-simple text-amber-500 text-2xl"></i> Weekday Distribution
@@ -488,7 +488,7 @@ export function renderDashboard(habits) {
       <div class="grid grid-cols-1 gap-4">
         ${
           activeHabits.length === 0
-            ? `<div class="text-center py-12 text-secondary text-base bg-surface rounded-3xl border border-dashed border-border flex flex-col items-center justify-center gap-2">
+            ? `<div class="text-center py-12 text-secondary text-base bg-surface-2 rounded-3xl border border-dashed border-border flex flex-col items-center justify-center gap-2">
                 <i class="fa-regular fa-box-open text-2xl opacity-40"></i>
                 <span>No active habits to review.</span>
                </div>`
@@ -516,7 +516,7 @@ export function renderDashboard(habits) {
                   }
 
                   return `
-                    <div class="bg-surface border border-border rounded-3xl p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:shadow-md transition duration-200">
+                    <div class="bg-surface-2 border border-border rounded-3xl p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:shadow-md transition duration-200">
                       <div>
                         <h4 class="text-lg font-bold text-primary">${habit.name}</h4>
                         <p class="text-sm text-secondary mt-1"><i class="fa-regular fa-clock text-xs"></i> Since: ${habit.createdAt}</p>
@@ -574,7 +574,7 @@ export function renderDashboard(habits) {
   const isDark =
     document.documentElement.classList.contains("dark") ||
     localStorage.getItem("theme") === "dark";
-  const axisTextColor = isDark ? "#9ca3af" : "#4b5563";
+  const axisTextColor = isDark ? "#e5e7eb" : "#4b5563";
   const currentTabCounts = heatmapSeries.flatMap((s) => s.data.map((d) => d.y));
   let maxCommit = Math.max(1, ...currentTabCounts);
   const step = maxCommit / 4;
@@ -614,7 +614,7 @@ export function renderDashboard(habits) {
     stroke: {
       show: true,
       width: currentHeatmapView === "weekly" ? 4 : 2,
-      colors: [isDark ? "#161f30" : "#ffffff"],
+      colors: [isDark ? "#222f47" : "#e2e8f0"],
     },
     xaxis: {
       type: "category",
@@ -671,7 +671,7 @@ export function renderDashboard(habits) {
       style: {
         fontSize: "12px",
         fontWeight: "bold",
-        colors: [isDark ? "#ffffff" : "#1f2937"],
+        colors: [isDark ? "#e2e8f0" : "#222f47"],
       },
       formatter: (val) => val + " ticks",
     },
@@ -688,7 +688,7 @@ export function renderDashboard(habits) {
     },
     grid: {
       show: true,
-      borderColor: isDark ? "#374151" : "#e5e7eb",
+      borderColor: isDark ? "#e5e7eb" : "#111827",
       strokeDashArray: 4,
     },
     tooltip: { theme: isDark ? "dark" : "light" },

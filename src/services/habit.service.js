@@ -1,7 +1,7 @@
 import { formatDate, generateId } from "../utils/helpers.js";
 
 export const HabitService = {
-  createHabit(currentHabits, name) {
+  createHabit(currentHabits, name, category = "General", frequency = 7) {
     const cleaned = name.trim().replace(/\s+/g, " ");
     if (!cleaned || cleaned.length < 2 || cleaned.length > 20) {
       throw new Error("Invalid habit name length (2-20 chars).");
@@ -17,10 +17,16 @@ export const HabitService = {
     const newHabit = {
       id: generateId(),
       name: cleaned,
+      category: category,
+      frequency: Number(frequency),
       createdAt: formatDate(new Date()),
       archived: false,
       completedDates: [],
-      stats: { bestStreak: 0 },
+      skippedDates: [],
+      stats: {
+        bestStreak: 0,
+        allowedSkipsPerMonth: 3,
+      },
     };
 
     return [newHabit, ...currentHabits];
@@ -39,6 +45,35 @@ export const HabitService = {
         completedDates.push(today);
       }
       return { ...habit, completedDates };
+    });
+  },
+
+  toggleSkipHabitDate(currentHabits, habitId, date) {
+    return currentHabits.map((habit) => {
+      if (habit.id !== habitId) return habit;
+
+      let completedDates = [...habit.completedDates];
+      const compIndex = completedDates.indexOf(date);
+      if (compIndex > -1) completedDates.splice(compIndex, 1);
+
+      let skippedDates = [...(habit.skippedDates || [])];
+      const skipIndex = skippedDates.indexOf(date);
+
+      if (skipIndex > -1) {
+        skippedDates.splice(skipIndex, 1);
+      } else {
+        const currentMonthStr = date.substring(0, 7);
+        const skipsThisMonth = skippedDates.filter((d) =>
+          d.startsWith(currentMonthStr),
+        ).length;
+
+        if (skipsThisMonth >= (habit.stats?.allowedSkipsPerMonth || 3)) {
+          throw new Error("Monthly streak safeguards (Skips) limit reached!");
+        }
+        skippedDates.push(date);
+      }
+
+      return { ...habit, completedDates, skippedDates };
     });
   },
 

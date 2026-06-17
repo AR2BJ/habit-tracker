@@ -5,6 +5,7 @@ export const state = {
   lastDeletedHabit: null,
   activeTab: "active",
   currentView: "habits",
+  currentCategory: "all",
 };
 
 export const StateManager = {
@@ -21,10 +22,23 @@ export const StateManager = {
   },
 
   getFilteredHabits() {
-    if (state.activeTab === "archived") {
-      return state.habits.filter((h) => h.archived);
+    let list = this.getHabits();
+
+    if (state.activeTab === "active") {
+      list = list.filter((h) => !h.archived);
+    } else {
+      list = list.filter((h) => h.archived);
     }
-    return state.habits.filter((h) => !h.archived);
+
+    if (state.currentCategory && state.currentCategory !== "all") {
+      list = list.filter((h) => h.category === state.currentCategory);
+    }
+
+    return list;
+  },
+
+  setCategory(category) {
+    state.currentCategory = category;
   },
 
   setTab(tab) {

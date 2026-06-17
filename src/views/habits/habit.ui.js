@@ -87,7 +87,7 @@ export function renderHabits(habits, activeTab = "active") {
                 class="text-sm text-secondary flex flex-row justify-center items-center gap-2"
               >
                 <i
-                  class="fa-solid fa-chart-line text-lg text-brand opacity-70"
+                  class="fa-regular fa-chart-line text-lg text-brand opacity-70"
                 ></i>
                 success rate
               </div>

@@ -591,7 +591,9 @@ export function renderDashboard(habits) {
       id: "lifetime-heatmap",
       type: "heatmap",
       height: currentHeatmapView === "monthly" ? 380 : 300,
-      toolbar: { show: true },
+      toolbar: {
+        show: false,
+      },
       fontFamily: "inherit",
       animations: {
         enabled: true,
@@ -650,7 +652,7 @@ export function renderDashboard(habits) {
       id: "weekday-bar",
       type: "bar",
       height: 300,
-      toolbar: { show: true },
+      toolbar: { show: false },
       fontFamily: "inherit",
     },
     colors: ["#00bc7d"],

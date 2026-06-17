@@ -2,13 +2,12 @@ import { StateManager, state } from "../models/state.js";
 import { formatDate, todayISO } from "../utils/helpers.js";
 
 import { HabitService } from "../services/habit.service.js";
+import { NotificationService } from "../services/notification.service.js";
 import { renderDashboard } from "../views/dashboard/dashboard.ui.js";
 import { renderHabits } from "../views/habits/habit.ui.js";
 
 let pendingDeleteId = null;
 let pendingEditId = null;
-let undoTimer = null;
-let undoInterval = null;
 
 export const HabitController = {
   initApplication() {
@@ -62,11 +61,22 @@ export const HabitController = {
       const name = input.value;
       if (!name.trim()) return;
 
-      const currentHabits = StateManager.getHabits();
-      const updated = HabitService.createHabit(currentHabits, name);
-      StateManager.save(updated);
-      input.value = "";
-      this.refreshUI();
+      try {
+        const currentHabits = StateManager.getHabits();
+        const updated = HabitService.createHabit(currentHabits, name);
+        StateManager.save(updated);
+        input.value = "";
+        this.refreshUI();
+
+        NotificationService.show({
+          type: "success",
+          icon: "fa-check",
+          message: `Habit "${name}" created successfully!`,
+          duration: 3000,
+        });
+      } catch (error) {
+        alert(error.message);
+      }
     };
 
     addBtn?.addEventListener("click", addHabit);
@@ -147,14 +157,31 @@ export const HabitController = {
       const target = e.target;
 
       const toggleBtn = target.closest(".toggle-btn");
-      if (toggleBtn && toggleBtn.dataset.id) {
+      if (toggleBtn) {
         const id = toggleBtn.dataset.id;
-        const habit = StateManager.getHabits().find((h) => h.id === id);
-        if (habit?.archived) return;
+        const currentHabits = StateManager.getHabits();
+        const habit = currentHabits.find((h) => h.id === id);
 
-        const updated = HabitService.toggleHabit(StateManager.getHabits(), id);
-        StateManager.save(updated);
-        this.refreshUI();
+        if (habit) {
+          const updated = HabitService.toggleHabit(currentHabits, id);
+          StateManager.save(updated);
+          this.refreshUI();
+
+          const todayStr = formatDate(new Date());
+          const isNowCompleted = updated
+            .find((h) => h.id === id)
+            .completedDates.includes(todayStr);
+
+          NotificationService.show({
+            type: "info",
+            message: isNowCompleted
+              ? `Completed "${habit.name}" for today! ✨`
+              : `Removed completion for "${habit.name}".`,
+            icon: isNowCompleted ? "fa-circle-check" : "fa-circle",
+            iconColor: isNowCompleted ? "text-emerald-500" : "text-gray-400",
+            duration: 3000,
+          });
+        }
         return;
       }
 
@@ -179,6 +206,22 @@ export const HabitController = {
         );
         StateManager.save(updated);
         this.refreshUI();
+
+        const isNowCompleted = updated
+          .find((h) => h.id === id)
+          .completedDates.includes(date);
+        const dateLabel = date === today ? "Today" : "Yesterday";
+
+        NotificationService.show({
+          type: "info",
+          message: isNowCompleted
+            ? `Marked "${habit.name}" as done for ${dateLabel}! ✨`
+            : `Unchecked "${habit.name}" for ${dateLabel}.`,
+          icon: isNowCompleted ? "fa-square-check" : "fa-square",
+          iconColor: isNowCompleted ? "text-emerald-500" : "text-gray-400",
+          duration: 3000,
+        });
+
         return;
       }
 
@@ -203,20 +246,52 @@ export const HabitController = {
       const archiveBtn = target.closest(".archive-btn");
       if (archiveBtn) {
         const id = archiveBtn.dataset.id;
-        const updated = HabitService.archiveHabit(StateManager.getHabits(), id);
-        StateManager.save(updated);
-        this.refreshUI();
-        this.showArchiveToast();
+        const currentHabits = StateManager.getHabits();
+        const targetHabit = currentHabits.find((h) => h.id === id);
+
+        if (targetHabit) {
+          const updated = HabitService.archiveHabit(currentHabits, id);
+          StateManager.save(updated);
+          this.refreshUI();
+
+          NotificationService.show({
+            type: "archive",
+            message: `Archived: "${targetHabit.name}"`,
+            duration: 4000,
+            undoAction: () => {
+              const rollbackHabits = StateManager.getHabits();
+              const restored = HabitService.restoreHabit(rollbackHabits, id);
+              StateManager.save(restored);
+              this.refreshUI();
+            },
+          });
+        }
         return;
       }
 
       const restoreBtn = target.closest(".restore-btn");
       if (restoreBtn) {
         const id = restoreBtn.dataset.id;
-        const updated = HabitService.restoreHabit(StateManager.getHabits(), id);
-        StateManager.save(updated);
-        this.refreshUI();
-        this.showRestoreToast();
+        const currentHabits = StateManager.getHabits();
+        const targetHabit = currentHabits.find((h) => h.id === id);
+
+        if (targetHabit) {
+          const updated = HabitService.restoreHabit(currentHabits, id);
+          StateManager.save(updated);
+          this.refreshUI();
+
+          NotificationService.show({
+            type: "restore",
+            message: `Restored: "${targetHabit.name}"`,
+            duration: 4000,
+            undoAction: () => {
+              const rollbackHabits = StateManager.getHabits();
+              const archived = HabitService.archiveHabit(rollbackHabits, id);
+              StateManager.save(archived);
+              this.refreshUI();
+            },
+          });
+        }
         return;
       }
     });
@@ -234,17 +309,35 @@ export const HabitController = {
   },
 
   executeDelete() {
-    if (!pendingDeleteId) return;
+    const deleteModalId = document.getElementById("confirm-delete-btn")
+      ? "delete-modal"
+      : "delete-modal";
+
+    const id = pendingDeleteId;
+    if (!id) return;
+
     const currentHabits = StateManager.getHabits();
-    const habitToDelete = currentHabits.find((h) => h.id === pendingDeleteId);
+    const habitToDelete = currentHabits.find((h) => h.id === id);
 
     if (habitToDelete) {
-      state.lastDeletedHabit = habitToDelete;
-      const updated = HabitService.deleteHabit(currentHabits, pendingDeleteId);
+      const capturedHabit = { ...habitToDelete };
+
+      const updated = HabitService.deleteHabit(currentHabits, id);
       StateManager.save(updated);
       this.toggleModal("delete-modal", false);
+      pendingDeleteId = null;
       this.refreshUI();
-      this.showUndoToast();
+
+      NotificationService.show({
+        type: "delete",
+        message: `Deleted "${capturedHabit.name}"`,
+        duration: 5000,
+        undoAction: () => {
+          const latestHabits = StateManager.getHabits();
+          StateManager.save([capturedHabit, ...latestHabits]);
+          this.refreshUI();
+        },
+      });
     }
   },
 
@@ -264,76 +357,6 @@ export const HabitController = {
     StateManager.save(updated);
     this.toggleModal("edit-modal", false);
     this.refreshUI();
-  },
-
-  showUndoToast() {
-    const toast = document.getElementById("undo-toast");
-    const countdown = document.getElementById("undo-countdown");
-    if (!toast || !countdown) return;
-
-    toast.classList.remove("hidden");
-
-    clearTimeout(undoTimer);
-    clearInterval(undoInterval);
-
-    let seconds = 5;
-    countdown.textContent = `${seconds}s`;
-
-    undoInterval = setInterval(() => {
-      seconds--;
-      countdown.textContent = `${seconds}s`;
-
-      if (seconds <= 1) {
-        clearInterval(undoInterval);
-      }
-    }, 1000);
-
-    undoTimer = setTimeout(() => {
-      clearInterval(undoInterval);
-      toast.classList.add("hidden");
-      state.lastDeletedHabit = null;
-      countdown.textContent = `5s`;
-    }, 5000);
-  },
-
-  hideUndoToast() {
-    const toast = document.getElementById("undo-toast");
-    const countdown = document.getElementById("undo-countdown");
-    if (!toast) return;
-
-    toast.classList.add("hidden");
-    clearTimeout(undoTimer);
-    clearInterval(undoInterval);
-    if (countdown) countdown.textContent = `5s`;
-  },
-
-  executeUndo() {
-    if (!state.lastDeletedHabit) return;
-    const currentHabits = StateManager.getHabits();
-    const updated = [state.lastDeletedHabit, ...currentHabits];
-    StateManager.save(updated);
-
-    this.hideUndoToast();
-    state.lastDeletedHabit = null;
-    this.refreshUI();
-  },
-
-  showRestoreToast() {
-    const toast = document.getElementById("restore-toast");
-    if (!toast) return;
-    toast.classList.remove("hidden");
-    setTimeout(() => {
-      toast.classList.add("hidden");
-    }, 2500);
-  },
-
-  showArchiveToast() {
-    const toast = document.getElementById("archive-toast");
-    if (!toast) return;
-    toast.classList.remove("hidden");
-    setTimeout(() => {
-      toast.classList.add("hidden");
-    }, 2500);
   },
 
   toggleModal(modalId, show) {

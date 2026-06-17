@@ -293,91 +293,10 @@
         </div>
       </section>
 
-      <!-- ============================= -->
-      <!-- UNDO TOAST START -->
-      <!-- ============================= -->
-
       <div
-        id="undo-toast"
-        class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-surface/95 backdrop-blur-md border border-border rounded-3xl px-5 py-4 shadow-2xl min-w-75"
-      >
-        <div class="flex flex-row justify-between items-center gap-2">
-          <!-- Timer -->
-
-          <div class="flex items-center gap-3 text-secondary">
-            <span id="undo-countdown"> 5s </span>
-
-            <!-- Message -->
-
-            <span class="text-primary text-sm font-medium">
-              Habit deleted
-            </span>
-          </div>
-
-          <!-- Restore Button -->
-
-          <button
-            id="undo-delete-btn"
-            class="h-8 px-3 transition flex items-center text-brand hover:text-(--color-brand-hover) justify-center gap-1 cursor-pointer rounded-lg bg-surface-2 hover:bg-(--color-surface-3) text-sm font-medium"
-          >
-            <i class="fa-regular fa-rotate-left"></i>
-
-            <!-- Label -->
-
-            <span class="text-sm font-medium"> Undo </span>
-          </button>
-        </div>
-
-        <!-- ============================= -->
-        <!-- UNDO TOAST END -->
-        <!-- ============================= -->
-      </div>
-
-      <!-- ============================= -->
-      <!-- ARCHIVE TOAST START -->
-      <!-- ============================= -->
-
-      <div
-        id="archive-toast"
-        class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-surface/95 backdrop-blur-md border border-border rounded-full px-5 py-4 shadow-2xl min-w-75"
-      >
-        <div class="flex flex-row justify-between items-center gap-2">
-          <div class="py-1.5 flex items-center gap-3 text-secondary">
-            <i class="fa-regular fa-box-archive text-yellow-500"></i>
-
-            <span class="text-primary text-sm font-medium">
-              Habit archived
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ============================= -->
-      <!-- ARCHIVE TOAST START -->
-      <!-- ============================= -->
-
-      <!-- ============================= -->
-      <!-- RESTORE TOAST START -->
-      <!-- ============================= -->
-
-      <div
-        id="restore-toast"
-        class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-surface/95 backdrop-blur-md border border-border rounded-full px-5 py-4 shadow-2xl min-w-75"
-      >
-        <div class="flex flex-row justify-between items-center gap-2">
-          <div class="py-1.5 flex items-center gap-3 text-secondary">
-            <i class="fa-regular fa-rotate-left text-brand"></i>
-
-            <span class="text-primary text-sm font-medium">
-              Habit restored
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ============================= -->
-      <!-- RESTORE TOAST END -->
-      <!-- ============================= -->
+        id="notification-container"
+        class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-3 min-w-80 max-w-md"
+      ></div>
     </div>
 
     <!-- ============================= -->
@@ -389,26 +308,26 @@
     >
       <button
         id="mobile-habits"
-        class="mobile-nav-btn flex flex-col items-center justify-center gap-1 text-secondary"
+        class="mobile-nav-btn flex flex-col items-center justify-center gap-2 text-secondary"
       >
-        <i class="fa-regular fa-list text-lg"></i>
-        <span class="text-[10px] font-medium tracking-wide">Habits</span>
+        <i class="fa-regular fa-list text-2xl"></i>
+        <span class="text-xs font-medium tracking-wide">Habits</span>
       </button>
 
       <button
         id="mobile-analytics"
-        class="mobile-nav-btn flex flex-col items-center justify-center gap-1 text-secondary"
+        class="mobile-nav-btn flex flex-col items-center justify-center gap-2 text-secondary"
       >
-        <i class="fa-regular fa-chart-line text-lg"></i>
-        <span class="text-[10px] font-medium tracking-wide">Analytics</span>
+        <i class="fa-regular fa-chart-line text-2xl"></i>
+        <span class="text-xs font-medium tracking-wide">Analytics</span>
       </button>
 
       <button
         id="mobile-settings"
-        class="mobile-nav-btn flex flex-col items-center justify-center gap-1 text-secondary"
+        class="mobile-nav-btn flex flex-col items-center justify-center gap-2 text-secondary"
       >
-        <i class="fa-regular fa-gear text-lg"></i>
-        <span class="text-[10px] font-medium tracking-wide">Settings</span>
+        <i class="fa-regular fa-gear text-2xl"></i>
+        <span class="text-xs font-medium tracking-wide">Settings</span>
       </button>
     </nav>
 

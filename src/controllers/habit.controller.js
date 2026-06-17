@@ -1,4 +1,4 @@
-import { StateManager, state } from "../models/state.js";
+import { StateManager, state } from "../models/state.model.js";
 import { formatDate, todayISO } from "../utils/helpers.js";
 
 import { HabitService } from "../services/habit.service.js";

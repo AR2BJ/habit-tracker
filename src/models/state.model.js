@@ -1,4 +1,4 @@
-import { loadFromStorage, saveToStorage } from "./storage.js";
+import { loadFromStorage, saveToStorage } from "./storage.model.js";
 
 export const state = {
   habits: [],

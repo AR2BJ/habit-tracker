@@ -5,7 +5,7 @@ import {
 } from "../../utils/helpers.js";
 
 import ApexCharts from "apexcharts";
-import { StateManager } from "../../models/state.js";
+import { StateManager } from "../../models/state.model.js";
 
 let heatmapChartInstance = null;
 let barChartInstance = null;

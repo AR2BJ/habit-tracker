@@ -5,7 +5,7 @@ import {
 } from "../../utils/helpers.js";
 
 import { renderCalendar } from "../habits/habit.calendar.js";
-import { state } from "../../models/state.js";
+import { state } from "../../models/state.model.js";
 
 export function renderHabits(habits, activeTab = "active") {
   const container = document.getElementById("habit-list");

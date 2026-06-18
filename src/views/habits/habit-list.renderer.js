@@ -1,4 +1,4 @@
-import { HabitCardComponent } from "../../components/features/habits/habit-card.component";
+import { HabitCardComponent } from "@/components/features/habits/habit-card.component";
 
 export function renderHabitList(habits, activeTab = "active") {
   const container = document.getElementById("habit-list");

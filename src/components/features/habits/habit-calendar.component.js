@@ -1,4 +1,4 @@
-import { formatDate } from "../../../utils/helpers";
+import { formatDate } from "@/utils/helpers";
 
 export const HabitCalendarComponent = {
   render(dates, habitId, createdAt, isArchived = false, skippedDates = []) {

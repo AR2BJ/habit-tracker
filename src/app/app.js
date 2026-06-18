@@ -1,6 +1,6 @@
-import { HabitController } from "../controllers/habit.controller.js";
-import { NavigationController } from "../controllers/navigation.controller.js";
-import { ThemeController } from "../controllers/theme.controller.js";
+import { HabitController } from "@/controllers/habit.controller.js";
+import { NavigationController } from "@/controllers/navigation.controller.js";
+import { ThemeController } from "@/controllers/theme.controller.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   HabitController.initApplication();

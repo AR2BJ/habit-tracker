@@ -1,7 +1,3 @@
-// =============================
-// HELPERS START
-// =============================
-
 export function generateId() {
   return crypto.randomUUID();
 }
@@ -19,10 +15,6 @@ export function formatDate(date) {
 export function todayISO() {
   return formatDate(new Date());
 }
-
-// =============================
-// STREAK CALCULATION START
-// =============================
 
 export function calculateStreak(completedDates = [], skippedDates = []) {
   if (!completedDates.length) return { current: 0, best: 0 };
@@ -87,14 +79,6 @@ export function calculateStreak(completedDates = [], skippedDates = []) {
   return { current, best };
 }
 
-// =============================
-// STREAK CALCULATION END
-// =============================
-
-// =============================
-// SUCCESS RATE START
-// =============================
-
 export function calculateSuccessRate(habit) {
   const createdAt = new Date(habit.createdAt);
 
@@ -106,11 +90,3 @@ export function calculateSuccessRate(habit) {
 
   return Math.round((habit.completedDates.length / diffDays) * 100);
 }
-
-// =============================
-// SUCCESS RATE END
-// =============================
-
-// =============================
-// HELPERS END
-// =============================

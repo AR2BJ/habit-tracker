@@ -1,7 +1,3 @@
-// ========================================================
-// HABITS VIEW CONTAINER - V4 ENTERPRISE ARCHITECTURE
-// ========================================================
-
 export const HabitsView = {
   render() {
     return `

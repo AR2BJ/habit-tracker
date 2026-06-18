@@ -1,7 +1,7 @@
-import { AnalyticsAdapter } from "../../utils/analytics.adapter.js";
-import { AnalyticsController } from "../../controllers/analytics.controller.js";
+import { AnalyticsAdapter } from "@/utils/analytics.adapter.js";
+import { AnalyticsController } from "@/controllers/analytics.controller.js";
 import ApexCharts from "apexcharts";
-import { DashboardComponent } from "../../components/features/analytics/dashboard.component.js";
+import { DashboardComponent } from "@/components/features/analytics/dashboard.component.js";
 
 let heatmapChartInstance = null;
 let barChartInstance = null;

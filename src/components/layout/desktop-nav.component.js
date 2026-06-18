@@ -1,7 +1,3 @@
-// ========================================================
-// DESKTOP SIDEBAR NAVIGATION COMPONENT - V4
-// ========================================================
-
 export const DesktopNavComponent = {
   render() {
     return `

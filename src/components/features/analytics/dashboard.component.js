@@ -2,7 +2,7 @@ import {
   calculateStreak,
   calculateSuccessRate,
   formatDate,
-} from "../../../utils/helpers";
+} from "@/utils/helpers";
 
 export const DashboardComponent = {
   render(habits) {

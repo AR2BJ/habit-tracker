@@ -1,7 +1,3 @@
-// ========================================================
-// CORE APPLICATION MODALS COMPONENT (EDIT) - V4
-// ========================================================
-
 export const EditModalsComponent = {
   render() {
     return `

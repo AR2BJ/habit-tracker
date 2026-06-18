@@ -1,7 +1,6 @@
-import { StateManager, state } from "../../models/state.model.js";
-
-import { HabitService } from "../../services/habit.service.js";
-import { NotificationService } from "../../services/notification.service.js";
+import { HabitService } from "@/services/habit.service.js";
+import { NotificationService } from "@/services/notification.service.js";
+import { StateManager } from "@/models/state.model.js";
 
 export let pendingDeleteId = null;
 export let pendingEditId = null;
@@ -68,7 +67,6 @@ export const HabitFormController = {
       if (e.key === "Enter") addHabit();
     });
 
-    // مدیریت کلیدهای کیبورد (Escape و Enter) برای مادال‌ها
     document.addEventListener("keydown", (e) => {
       const deleteModal = document.getElementById("delete-modal");
       const editModal = document.getElementById("edit-modal");

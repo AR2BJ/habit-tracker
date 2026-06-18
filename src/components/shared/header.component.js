@@ -1,7 +1,3 @@
-// ========================================================
-// REUSABLE HEADER COMPONENT - V4 ENTERPRISE
-// ========================================================
-
 export const HeaderComponent = {
   render() {
     return `

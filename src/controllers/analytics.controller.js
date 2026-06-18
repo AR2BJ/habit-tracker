@@ -2,9 +2,9 @@ import {
   renderAnalyticsCharts,
   updateHeatmapChart,
   updateTabStyles,
-} from "../views/analytics/analytics.renderer.js";
+} from "@/views/analytics/analytics.renderer.js";
 
-import { StateManager } from "../models/state.model.js";
+import { StateManager } from "@/models/state.model.js";
 
 export let currentHeatmapView = "weekly";
 

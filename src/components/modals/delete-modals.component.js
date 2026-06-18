@@ -1,7 +1,3 @@
-// ========================================================
-// CORE APPLICATION MODALS COMPONENT (DELETE) - V4
-// ========================================================
-
 export const DeleteModalsComponent = {
   render() {
     return `

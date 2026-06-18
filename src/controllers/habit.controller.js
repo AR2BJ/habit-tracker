@@ -1,18 +1,17 @@
-import { StateManager, state } from "../models/state.model.js";
+import { StateManager, state } from "@/models/state.model.js";
 
 import { AnalyticsController } from "./analytics.controller.js";
-import { AnalyticsView } from "../views/analytics-view.js";
-import { DeleteModalsComponent } from "../components/modals/delete-modals.component.js";
-import { DesktopNavComponent } from "../components/layout/desktop-nav.component.js";
-import { EditModalsComponent } from "../components/modals/edit-modals.component.js";
+import { AnalyticsView } from "@/views/analytics-view.js";
+import { DeleteModalsComponent } from "@/components/modals/delete-modals.component.js";
+import { DesktopNavComponent } from "@/components/layout/desktop-nav.component.js";
+import { EditModalsComponent } from "@/components/modals/edit-modals.component.js";
 import { HabitActionController } from "./habits/habit-action.controller";
 import { HabitFormController } from "./habits/habit-form.controller";
-import { HabitsView } from "../views/habits-view.js";
-import { HeaderComponent } from "../components/shared/header.component.js";
-import { InfoModalComponent } from "../components/modals/info-modal.component.js";
-import { MobileNavComponent } from "../components/layout/mobile-nav.component.js";
-import { renderAnalytics } from "../views/analytics/analytics.renderer.js";
-import { renderHabitList } from "../views/habits/habit-list.renderer.js";
+import { HabitsView } from "@/views/habits-view.js";
+import { HeaderComponent } from "@/components/shared/header.component.js";
+import { InfoModalComponent } from "@/components/modals/info-modal.component.js";
+import { MobileNavComponent } from "@/components/layout/mobile-nav.component.js";
+import { renderHabitList } from "@/views/habits/habit-list.renderer.js";
 
 export const HabitController = {
   initApplication() {

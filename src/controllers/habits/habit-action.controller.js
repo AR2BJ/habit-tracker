@@ -1,12 +1,12 @@
-import { StateManager, state } from "../../models/state.model.js";
-import { formatDate, todayISO } from "../../utils/helpers.js";
+import { formatDate, todayISO } from "@/utils/helpers.js";
 import {
   setPendingDeleteId,
   setPendingEditId,
 } from "./habit-form.controller.js";
 
-import { HabitService } from "../../services/habit.service.js";
-import { NotificationService } from "../../services/notification.service.js";
+import { HabitService } from "@/services/habit.service.js";
+import { NotificationService } from "@/services/notification.service.js";
+import { StateManager } from "@/models/state.model.js";
 
 let clickTimeout = null;
 
@@ -23,7 +23,6 @@ export const HabitActionController = {
     listContainer.addEventListener("click", (e) => {
       const target = e.target;
 
-      // ۱. دکمه تیک زدن امروز
       const toggleBtn = target.closest(".toggle-btn");
       if (toggleBtn) {
         const id = toggleBtn.dataset.id;
@@ -63,7 +62,6 @@ export const HabitActionController = {
         return;
       }
 
-      // ۲. کلیک روی روزهای تقویم (تک‌کلیک تیک / دبل‌کلیک اسکیپ)
       const dayBtn = target.closest(".calendar-day");
       if (dayBtn && dayBtn.dataset.habitId) {
         const id = dayBtn.dataset.habitId;
@@ -143,7 +141,6 @@ export const HabitActionController = {
         return;
       }
 
-      // ۳. دکمه ویرایش کارت
       const editBtn = target.closest(".edit-btn");
       if (editBtn) {
         const id = editBtn.dataset.id;
@@ -155,7 +152,6 @@ export const HabitActionController = {
         return;
       }
 
-      // ۴. دکمه حذف کارت
       const deleteBtn = target.closest(".delete-btn");
       if (deleteBtn) {
         setPendingDeleteId(deleteBtn.dataset.id);
@@ -163,7 +159,6 @@ export const HabitActionController = {
         return;
       }
 
-      // ۵. دکمه آرشیو کارت
       const archiveBtn = target.closest(".archive-btn");
       if (archiveBtn) {
         const id = archiveBtn.dataset.id;
@@ -190,7 +185,6 @@ export const HabitActionController = {
         return;
       }
 
-      // ۶. دکمه بازگردانی از آرشیو
       const restoreBtn = target.closest(".restore-btn");
       if (restoreBtn) {
         const id = restoreBtn.dataset.id;

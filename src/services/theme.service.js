@@ -1,7 +1,3 @@
-// =============================
-// DARK / LIGHT MODE TOGGLE START
-// =============================
-
 export function setTheme(mode) {
   const root = document.documentElement;
 
@@ -27,7 +23,3 @@ export function toggleTheme() {
 
   setTheme(next);
 }
-
-// =============================
-// DARK / LIGHT MODE TOGGLE END
-// =============================

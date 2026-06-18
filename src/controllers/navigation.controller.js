@@ -5,7 +5,6 @@ export class NavigationController {
   }
 
   static setupNavigationListeners() {
-    // Desktop navigation
     document.getElementById('nav-habits')?.addEventListener('click', () => {
       this.setActiveTab('habits');
     });
@@ -16,7 +15,6 @@ export class NavigationController {
       this.setActiveTab('settings');
     });
 
-    // Mobile navigation
     document.getElementById('mobile-habits')?.addEventListener('click', () => {
       this.setActiveTab('habits');
     });
@@ -29,19 +27,16 @@ export class NavigationController {
   }
 
   static setActiveTab(tabType) {
-    // Remove active from desktop nav
     document.querySelectorAll('.nav-item').forEach(btn => {
       btn.classList.remove('active');
     });
     document.getElementById(`nav-${tabType}`)?.classList.add('active');
 
-    // Remove active from mobile nav
     document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
       btn.classList.remove('active');
     });
     document.getElementById(`mobile-${tabType}`)?.classList.add('active');
 
-    // Show/hide sections
     this.showSection(tabType);
   }
 

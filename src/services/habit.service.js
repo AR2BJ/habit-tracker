@@ -1,4 +1,4 @@
-import { formatDate, generateId } from "../utils/helpers.js";
+import { formatDate, generateId } from "@/utils/helpers.js";
 
 export const HabitService = {
   createHabit(currentHabits, name, category = "General", frequency = 7) {

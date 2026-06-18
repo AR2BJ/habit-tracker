@@ -1,4 +1,4 @@
-import { getTheme, setTheme, toggleTheme } from "../services/theme.service.js";
+import { getTheme, setTheme, toggleTheme } from "@/services/theme.service.js";
 
 export const ThemeController = {
   updateIcon(theme) {

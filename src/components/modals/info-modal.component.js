@@ -1,7 +1,3 @@
-// ========================================================
-// STREAK SAFEGUARD INFO MODAL COMPONENT
-// ========================================================
-
 export const InfoModalComponent = {
   render() {
     return `

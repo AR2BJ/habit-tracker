@@ -1,7 +1,3 @@
-// ========================================================
-// ANALYTICS VIEW CONTAINER - V4 ENTERPRISE
-// ========================================================
-
 export const AnalyticsView = {
   render() {
     return `

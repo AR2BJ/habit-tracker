@@ -1,8 +1,4 @@
-// =============================
-// STORAGE LAYER START
-// =============================
-
-import { formatDate } from "../utils/helpers.js";
+import { formatDate } from "@/utils/helpers.js";
 
 const STORAGE_KEY = "habit_tracker";
 const STORAGE_VERSION = 4;
@@ -65,7 +61,3 @@ export function loadFromStorage() {
     habits: (migrated.habits || []).map(migrateHabit),
   };
 }
-
-// =============================
-// STORAGE LAYER END
-// =============================

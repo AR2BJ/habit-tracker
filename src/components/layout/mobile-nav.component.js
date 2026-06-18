@@ -1,7 +1,3 @@
-// ========================================================
-// MOBILE NAVIGATION COMPONENT - V4 ENTERPRISE
-// ========================================================
-
 export const MobileNavComponent = {
   render() {
     return `

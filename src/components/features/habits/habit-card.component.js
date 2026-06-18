@@ -1,13 +1,9 @@
-import {
-  calculateStreak,
-  calculateSuccessRate,
-  todayISO,
-} from "../../../utils/helpers.js";
+import { calculateStreak, todayISO } from "@/utils/helpers.js";
 
 import { HabitCalendarComponent } from "./habit-calendar.component";
 
 export const HabitCardComponent = {
-  render(habit, isArchived) {
+  render(habit) {
     const { current, best } = calculateStreak(
       habit.completedDates,
       habit.skippedDates || [],

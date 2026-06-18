@@ -3,7 +3,6 @@ import { StateManager, state } from "../../models/state.model.js";
 import { HabitService } from "../../services/habit.service.js";
 import { NotificationService } from "../../services/notification.service.js";
 
-// متغیرهای وضعیت داخلی برای عملیات معلق
 export let pendingDeleteId = null;
 export let pendingEditId = null;
 

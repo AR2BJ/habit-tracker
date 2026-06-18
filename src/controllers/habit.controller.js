@@ -1,5 +1,6 @@
 import { StateManager, state } from "../models/state.model.js";
 
+import { AnalyticsController } from "./analytics.controller.js";
 import { AnalyticsView } from "../views/analytics-view.js";
 import { DeleteModalsComponent } from "../components/modals/delete-modals.component.js";
 import { DesktopNavComponent } from "../components/layout/desktop-nav.component.js";
@@ -10,7 +11,7 @@ import { HabitsView } from "../views/habits-view.js";
 import { HeaderComponent } from "../components/shared/header.component.js";
 import { InfoModalComponent } from "../components/modals/info-modal.component.js";
 import { MobileNavComponent } from "../components/layout/mobile-nav.component.js";
-import { renderAnalytics } from "../views/dashboard/analytics.renderer.js";
+import { renderAnalytics } from "../views/analytics/analytics.renderer.js";
 import { renderHabitList } from "../views/habits/habit-list.renderer.js";
 
 export const HabitController = {
@@ -49,7 +50,7 @@ export const HabitController = {
     const filteredHabits = StateManager.getFilteredHabits();
 
     renderHabitList(filteredHabits, state.activeTab);
-    renderAnalytics(allHabits);
+    AnalyticsController.dispatchRender(allHabits);
     this.updateNavigationDOM();
   },
 
@@ -151,6 +152,15 @@ export const HabitController = {
     closeHelpModal?.addEventListener("click", closeHelp);
     btnCloseHelp?.addEventListener("click", closeHelp);
     helpBackdrop?.addEventListener("click", closeHelp);
+
+    if (window.currentThemeListener) {
+      document.removeEventListener("themeChanged", window.currentThemeListener);
+    }
+    window.currentThemeListener = () => {
+      const allHabits = StateManager.getHabits();
+      AnalyticsController.dispatchRender(allHabits);
+    };
+    document.addEventListener("themeChanged", window.currentThemeListener);
   },
 
   handleTabSwitch(tab) {

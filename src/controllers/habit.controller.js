@@ -11,6 +11,8 @@ import { HabitsView } from "@/views/habits-view.js";
 import { HeaderComponent } from "@/components/shared/header.component.js";
 import { InfoModalComponent } from "@/components/modals/info-modal.component.js";
 import { MobileNavComponent } from "@/components/layout/mobile-nav.component.js";
+import { SettingsController } from "./settings.controller.js";
+import { SettingsViewComponent } from "@/components/features/settings/settings-view.component.js";
 import { renderHabitList } from "@/views/habits/habit-list.renderer.js";
 
 export const HabitController = {
@@ -33,6 +35,7 @@ export const HabitController = {
       "mobile-nav-container": MobileNavComponent.render,
       "habits-view-container": HabitsView.render,
       "analytics-view-container": AnalyticsView.render,
+      "settings-view-container": SettingsViewComponent.render,
       "help-modal-container": InfoModalComponent.render,
       "edit-modals-container": EditModalsComponent.render,
       "delete-modals-container": DeleteModalsComponent.render,
@@ -50,6 +53,7 @@ export const HabitController = {
 
     renderHabitList(filteredHabits, state.activeTab);
     AnalyticsController.dispatchRender(allHabits);
+    SettingsController.init(this);
     this.updateNavigationDOM();
   },
 

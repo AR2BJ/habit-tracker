@@ -1,48 +1,39 @@
-// =============================
-// HABIT CALENDAR START
-// =============================
+import { formatDate } from "../../../utils/helpers";
 
-import { formatDate } from "../../utils/helpers.js";
+export const HabitCalendarComponent = {
+  render(dates, habitId, createdAt, isArchived = false, skippedDates = []) {
+    const dateSet = new Set(dates);
+    const skipSet = new Set(skippedDates);
 
-export function renderCalendar(
-  dates,
-  habitId,
-  createdAt,
-  isArchived = false,
-  skippedDates = [],
-) {
-  const dateSet = new Set(dates);
-  const skipSet = new Set(skippedDates);
+    const days = [];
+    const created = new Date(createdAt);
+    const todayDate = new Date();
 
-  const days = [];
-  const created = new Date(createdAt);
-  const todayDate = new Date();
+    const diffDays = Math.floor((todayDate - created) / 86400000);
+    const periodIndex = Math.max(0, Math.floor(diffDays / 59));
 
-  const diffDays = Math.floor((todayDate - created) / 86400000);
-  const periodIndex = Math.max(0, Math.floor(diffDays / 59));
+    const periodStart = new Date(created);
+    periodStart.setDate(periodStart.getDate() + periodIndex * 59);
 
-  const periodStart = new Date(created);
-  periodStart.setDate(periodStart.getDate() + periodIndex * 59);
+    const periodEnd = new Date(periodStart);
+    periodEnd.setDate(periodEnd.getDate() + 59);
 
-  const periodEnd = new Date(periodStart);
-  periodEnd.setDate(periodEnd.getDate() + 59);
+    for (let i = 0; i < 60; i++) {
+      const date = new Date(periodStart);
+      date.setDate(periodStart.getDate() + i);
+      const iso = formatDate(date);
 
-  for (let i = 0; i < 60; i++) {
-    const date = new Date(periodStart);
-    date.setDate(periodStart.getDate() + i);
-    const iso = formatDate(date);
+      days.push({
+        date: iso,
+        completed: dateSet.has(iso),
+        skipped: skipSet.has(iso),
+      });
+    }
 
-    days.push({
-      date: iso,
-      completed: dateSet.has(iso),
-      skipped: skipSet.has(iso),
-    });
-  }
+    const today = formatDate(new Date());
+    const yesterday = formatDate(new Date(Date.now() - 86400000));
 
-  const today = formatDate(new Date());
-  const yesterday = formatDate(new Date(Date.now() - 86400000));
-
-  return `
+    return `
     <div class="space-y-4 p-4 overflow-hidden">
       <!-- Timeline -->
 
@@ -99,8 +90,5 @@ export function renderCalendar(
       </div>
     </div>
   `;
-}
-
-// =============================
-// HABIT CALENDAR END
-// =============================
+  },
+};

@@ -1,10 +1,18 @@
 import { StateManager, state } from "../models/state.model.js";
 import { formatDate, todayISO } from "../utils/helpers.js";
 
+import { AnalyticsView } from "../views/analytics-view.js";
+import { DeleteModalsComponent } from "../components/modals/delete-modals.component.js";
+import { DesktopNavComponent } from "../components/layout/desktop-nav.component.js";
+import { EditModalsComponent } from "../components/modals/edit-modals.component.js";
 import { HabitService } from "../services/habit.service.js";
+import { HabitsView } from "../views/habits-view.js";
+import { HeaderComponent } from "../components/shared/header.component.js";
+import { InfoModalComponent } from "../components/modals/info-modal.component.js";
+import { MobileNavComponent } from "../components/layout/mobile-nav.component.js";
 import { NotificationService } from "../services/notification.service.js";
-import { renderDashboard } from "../views/dashboard/dashboard.ui.js";
-import { renderHabits } from "../views/habits/habit.ui.js";
+import { renderAnalytics } from "../views/dashboard/analytics.renderer.js";
+import { renderHabitList } from "../views/habits/habit-list.renderer.js";
 
 let pendingDeleteId = null;
 let pendingEditId = null;
@@ -13,18 +21,56 @@ let clickTimeout = null;
 export const HabitController = {
   initApplication() {
     StateManager.init();
+    this.renderComponent();
     this.refreshUI();
     this.bindStaticEvents();
     this.bindDynamicEvents();
     this.bindMenuToggle();
   },
 
+  renderComponent() {
+    const headerContainer = document.getElementById("header-container");
+    const desktopNavContainer = document.getElementById(
+      "desktop-nav-container",
+    );
+    const mobileNavContainer = document.getElementById("mobile-nav-container");
+    const habitsViewContainer = document.getElementById(
+      "habits-view-container",
+    );
+    const analyticsViewContainer = document.getElementById(
+      "analytics-view-container",
+    );
+    const helpModalContainer = document.getElementById("help-modal-container");
+    const editModalsContainer = document.getElementById(
+      "edit-modals-container",
+    );
+    const deleteModalsContainer = document.getElementById(
+      "delete-modals-container",
+    );
+
+    if (headerContainer) headerContainer.innerHTML = HeaderComponent.render();
+    if (desktopNavContainer)
+      desktopNavContainer.innerHTML = DesktopNavComponent.render();
+    if (mobileNavContainer)
+      mobileNavContainer.innerHTML = MobileNavComponent.render();
+    if (habitsViewContainer)
+      habitsViewContainer.innerHTML = HabitsView.render();
+    if (analyticsViewContainer)
+      analyticsViewContainer.innerHTML = AnalyticsView.render();
+    if (helpModalContainer)
+      helpModalContainer.innerHTML = InfoModalComponent.render();
+    if (editModalsContainer)
+      editModalsContainer.innerHTML = EditModalsComponent.render();
+    if (deleteModalsContainer)
+      deleteModalsContainer.innerHTML = DeleteModalsComponent.render();
+  },
+
   refreshUI() {
     const allHabits = StateManager.getHabits();
     const filteredHabits = StateManager.getFilteredHabits();
 
-    renderHabits(filteredHabits, state.activeTab);
-    renderDashboard(allHabits);
+    renderHabitList(filteredHabits, state.activeTab);
+    renderAnalytics(allHabits);
     this.updateNavigationDOM();
   },
 

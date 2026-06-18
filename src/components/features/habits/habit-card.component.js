@@ -2,38 +2,12 @@ import {
   calculateStreak,
   calculateSuccessRate,
   todayISO,
-} from "../../utils/helpers.js";
+} from "../../../utils/helpers.js";
 
-import { renderCalendar } from "../habits/habit.calendar.js";
-import { state } from "../../models/state.model.js";
+import { HabitCalendarComponent } from "./habit-calendar.component";
 
-export function renderHabits(habits, activeTab = "active") {
-  const container = document.getElementById("habit-list");
-  if (!container) return;
-
-  container.innerHTML = "";
-
-  const isArchived = activeTab === "archived";
-  const icon = isArchived
-    ? "<i class='fa-regular fa-box-open'></i>"
-    : "<i class='fa-regular fa-bullseye-arrow'></i>";
-  const title = isArchived ? "No archived habits" : "No habits yet";
-  const description = isArchived
-    ? "Archived habits will appear here."
-    : "Create your first habit and start building consistency.";
-
-  if (habits.length === 0) {
-    container.innerHTML = `
-      <div class="border border-dashed border-border rounded-3xl p-16 text-center bg-surface-2">
-        <div class="text-6xl mb-6">${icon}</div>
-        <h2 class="text-2xl font-bold text-primary">${title}</h2>
-        <p class="mt-3 text-secondary max-w-sm mx-auto">${description}</p>
-      </div>
-    `;
-    return;
-  }
-
-  habits.forEach((habit) => {
+export const HabitCardComponent = {
+  render(habit, isArchived) {
     const { current, best } = calculateStreak(
       habit.completedDates,
       habit.skippedDates || [],
@@ -41,10 +15,6 @@ export function renderHabits(habits, activeTab = "active") {
     const completedToday = habit.completedDates.includes(todayISO());
     const totalChecks = habit.completedDates.length;
     const isHabitArchived = habit.archived;
-
-    const item = document.createElement("div");
-    item.className =
-      "bg-surface-2 border border-border/60 hover:border-border rounded-3xl p-6 transition duration-300";
 
     const categoryColors = {
       General: "bg-amber-500/10 text-amber-500 border-amber-500/20",
@@ -64,7 +34,7 @@ export function renderHabits(habits, activeTab = "active") {
       ? "fa-arrow-rotate-left text-emerald-500"
       : "fa-box-archive text-amber-500";
 
-    item.innerHTML = `
+    return `
       <div class="flex flex-col gap-4">
         <div class="flex items-start justify-between gap-4">
           <div class="flex items-center gap-4">
@@ -72,26 +42,32 @@ export function renderHabits(habits, activeTab = "active") {
               isHabitArchived
                 ? ""
                 : `
-              <button
-                data-id="${habit.id}"
-                class="toggle-btn w-12 h-12 rounded-2xl border-2 flex items-center justify-center transition hover:cursor-pointer ${
-                  completedToday
-                    ? "bg-brand border-brand text-(--color-btn-primary-text) shadow-lg shadow-brand/20"
-                    : "border-border text-secondary hover:border-brand hover:text-brand"
-                }"
-              >
-                <i class="fa-regular ${completedToday ? "fa-check text-xl font-bold" : "fa-square text-lg"}"></i>
-              </button>
-            `
+                  <button
+                    data-id="${habit.id}"
+                    class="toggle-btn w-12 h-12 rounded-2xl border-2 flex items-center justify-center transition hover:cursor-pointer ${
+                      completedToday
+                        ? "bg-brand border-brand text-(--color-btn-primary-text) shadow-lg shadow-brand/20"
+                        : "border-border text-secondary hover:border-brand hover:text-brand"
+                    }"
+                  >
+                    <i class="fa-regular ${completedToday ? "fa-check text-xl font-bold" : "fa-square text-lg"}"></i>
+                  </button>
+                `
             }
 
             <div>
               <div class="flex items-center flex-wrap gap-2">
-                <h3 class="text-lg font-semibold text-primary">${habit.name}</h3>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeClass}">
+                <h3 class="text-lg font-semibold text-primary">
+                  ${habit.name}
+                </h3>
+                <span
+                  class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeClass}"
+                >
                   ${habit.category ?? "General"}
                 </span>
-                <span class="text-[10px] font-medium px-2 py-0.5 rounded-full bg-surface-3 border border-border text-secondary">
+                <span
+                  class="text-[10px] font-medium px-2 py-0.5 rounded-full bg-surface-3 border border-border text-secondary"
+                >
                   ${habit.frequency ?? 7} days/wk
                 </span>
               </div>
@@ -102,14 +78,26 @@ export function renderHabits(habits, activeTab = "active") {
           </div>
 
           <div class="flex items-center gap-2">
-            <div class="hidden sm:flex items-center gap-4 mr-2 border-r border-border pr-4">
+            <div
+              class="hidden sm:flex items-center gap-4 mr-2 border-r border-border pr-4"
+            >
               <div class="text-center">
-                <span class="block text-xs font-bold text-primary">${current}d</span>
-                <span class="text-[10px] text-secondary uppercase tracking-wider font-semibold">Streak</span>
+                <span class="block text-xs font-bold text-primary"
+                  >${current}d</span
+                >
+                <span
+                  class="text-[10px] text-secondary uppercase tracking-wider font-semibold"
+                  >Streak</span
+                >
               </div>
               <div class="text-center">
-                <span class="block text-xs font-bold text-primary">${best}d</span>
-                <span class="text-[10px] text-secondary uppercase tracking-wider font-semibold">Best</span>
+                <span class="block text-xs font-bold text-primary"
+                  >${best}d</span
+                >
+                <span
+                  class="text-[10px] text-secondary uppercase tracking-wider font-semibold"
+                  >Best</span
+                >
               </div>
             </div>
 
@@ -121,7 +109,9 @@ export function renderHabits(habits, activeTab = "active") {
                 >
                   <i class="fa-regular ${actionIcon} text-lg"></i>
                 </button>
-                <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-surface-2 text-xs text-primary opacity-0 cursor-default peer-hover:opacity-100 transition z-10">
+                <div
+                  class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-surface-2 text-xs text-primary opacity-0 cursor-default peer-hover:opacity-100 transition z-10"
+                >
                   ${actionTooltip}
                 </div>
               </div>
@@ -131,9 +121,13 @@ export function renderHabits(habits, activeTab = "active") {
                   data-id="${habit.id}"
                   class="edit-btn w-10 h-10 rounded-xl bg-surface-3 hover:bg-blue-600/10 border border-border flex items-center justify-center hover:cursor-pointer peer transition"
                 >
-                  <i class="fa-regular fa-pen-to-square text-blue-500 text-lg"></i>
+                  <i
+                    class="fa-regular fa-pen-to-square text-blue-500 text-lg"
+                  ></i>
                 </button>
-                <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-surface-2 text-xs text-primary opacity-0 cursor-default peer-hover:opacity-100 transition z-10">
+                <div
+                  class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-surface-2 text-xs text-primary opacity-0 cursor-default peer-hover:opacity-100 transition z-10"
+                >
                   Edit
                 </div>
               </div>
@@ -145,7 +139,9 @@ export function renderHabits(habits, activeTab = "active") {
                 >
                   <i class="fa-regular fa-trash-can text-red-500 text-lg"></i>
                 </button>
-                <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-surface-2 text-xs text-primary opacity-0 cursor-default peer-hover:opacity-100 transition z-10">
+                <div
+                  class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-surface-2 text-xs text-primary opacity-0 cursor-default peer-hover:opacity-100 transition z-10"
+                >
                   Delete
                 </div>
               </div>
@@ -154,7 +150,7 @@ export function renderHabits(habits, activeTab = "active") {
         </div>
 
         <div class="pt-2 overflow-x-auto">
-          ${renderCalendar(
+          ${HabitCalendarComponent.render(
             habit.completedDates,
             habit.id,
             habit.createdAt,
@@ -164,7 +160,5 @@ export function renderHabits(habits, activeTab = "active") {
         </div>
       </div>
     `;
-
-    container.appendChild(item);
-  });
-}
+  },
+};

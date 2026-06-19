@@ -1,7 +1,7 @@
 import { formatDate } from "@/utils/helpers.js";
 
-const STORAGE_KEY = "habit_tracker";
-const STORAGE_VERSION = 4;
+export const STORAGE_KEY = "habit_tracker";
+export const STORAGE_VERSION = 4;
 
 function migrateHabit(habit) {
   return {
@@ -26,7 +26,7 @@ function migrateData(data) {
   switch (version) {
     case 1:
       return {
-        version: 4,
+        version: STORAGE_VERSION,
 
         habits: (data.habits || []).map(migrateHabit),
       };

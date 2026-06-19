@@ -25,6 +25,7 @@ export const HabitController = {
     HabitActionController.init(this);
 
     SettingsController.init(this);
+    SettingsController.runAutoArchivePipeline();
 
     this.bindStaticEvents();
     this.bindMenuToggle();
@@ -193,7 +194,7 @@ export const HabitController = {
         if (state.currentView === v) el.classList.replace("hidden", "flex");
         else el.classList.replace("flex", "hidden");
       }
-      
+
       const desktopBtn = document.getElementById(`nav-${v}`);
       const mobileBtn = document.getElementById(`mobile-${v}`);
 

@@ -228,7 +228,7 @@ export const AnalyticsAdapter = {
           color: isDark ? "#22a25f" : "#22a25f",
           name: "very high",
         },
-        { from: 85, to: 100, color: "#00bc7d", name: "extreme" },
+        { from: 85, to: maxVal, color: "#00bc7d", name: "extreme" },
       ];
     }
 

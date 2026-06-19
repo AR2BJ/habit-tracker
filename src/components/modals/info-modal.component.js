@@ -26,7 +26,7 @@ export const InfoModalComponent = {
               id="close-help-modal"
               class="w-8 h-8 rounded-lg bg-surface-2 hover:bg-red-600/10 border border-border text-secondary hover:text-primary flex items-center justify-center transition cursor-pointer"
             >
-              <i class="fa-solid fa-xmark text-sm"></i>
+              <i class="fa-regular fa-xmark text-sm"></i>
             </button>
           </div>
 

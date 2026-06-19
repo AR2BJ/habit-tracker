@@ -1,5 +1,7 @@
+import { HabitController } from "./habit.controller";
+import { NavigationController } from "./navigation.controller";
 import { NotificationService } from "@/services/notification.service.js";
-import { StateManager } from "@/models/state.model.js";
+import { state } from "@/models/state.model.js";
 
 export const SettingsController = {
   init(mainController) {
@@ -8,18 +10,14 @@ export const SettingsController = {
   },
 
   bindSettingsEvents() {
-    const settingsView = document.getElementById("settings-view");
+    const settingsView = document.getElementById("settings-view-container");
     if (!settingsView) return;
 
-    const themeRadios = settingsView.querySelectorAll(
-      'input[name="theme-toggle"]',
-    );
-    themeRadios.forEach((radio) => {
-      radio.addEventListener("change", (e) => {
-        const selectedTheme = e.target.value;
-        this.executeThemeChange(selectedTheme);
-      });
-    });
+    const btnLight = document.getElementById("sett-theme-light");
+    const btnDark = document.getElementById("sett-theme-dark");
+
+    btnLight?.addEventListener("click", () => this.handleThemeSwitch("light"));
+    btnDark?.addEventListener("click", () => this.handleThemeSwitch("dark"));
 
     const triggerResetBtn = document.getElementById("trigger-reset-btn");
     const resetModal = document.getElementById("settings-reset-modal");
@@ -40,36 +38,55 @@ export const SettingsController = {
     });
   },
 
-  executeThemeChange(theme) {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+  handleThemeSwitch(targetTheme) {
+    const currentTheme = localStorage.getItem("theme") || "light";
+    if (currentTheme === targetTheme) return;
+
+    const globalThemeBtn = document.getElementById("theme-toggle");
+    globalThemeBtn?.click();
+
+    const indicator = document.getElementById("theme-tab-indicator");
+    const btnLight = document.getElementById("sett-theme-light");
+    const btnDark = document.getElementById("sett-theme-dark");
+
+    if (indicator && btnLight && btnDark) {
+      if (targetTheme === "dark") {
+        indicator.classList.replace("translate-x-0", "translate-x-full");
+        btnDark.classList.replace(
+          "text-secondary",
+          "text-(--color-btn-primary-text)",
+        );
+        btnLight.classList.replace(
+          "text-(--color-btn-primary-text)",
+          "text-secondary",
+        );
+      } else {
+        indicator.classList.replace("translate-x-full", "translate-x-0");
+        btnLight.classList.replace(
+          "text-secondary",
+          "text-(--color-btn-primary-text)",
+        );
+        btnDark.classList.replace(
+          "text-(--color-btn-primary-text)",
+          "text-secondary",
+        );
+      }
     }
-
-    document.dispatchEvent(
-      new CustomEvent("themeChanged", { detail: { theme } }),
-    );
-
-    NotificationService.show({
-      type: "success",
-      message: `Interface theme swapped to ${theme} workspace environment!`,
-      icon: theme === "dark" ? "fa-moon" : "fa-sun",
-      iconColor: theme === "dark" ? "text-indigo-400" : "text-amber-500",
-      duration: 2500,
-    });
   },
 
-  executeApplicationReset() {
-    localStorage.removeItem("habits_v4");
+  async executeApplicationReset() {
+    localStorage.removeItem("habit_tracker");
 
-    StateManager.init();
+    state.habits = [];
+    state.activeTab = "active";
+    state.currentView = "habits";
+    state.currentCategory = "all";
 
-    if (this.mainController) {
-      this.mainController.refreshUI();
-    }
+    const { renderHabitList } =
+      await import("@/views/habits/habit-list.renderer.js");
+    renderHabitList([], state.activeTab);
+
+    HabitController.refreshUI();
 
     NotificationService.show({
       type: "delete",
@@ -77,7 +94,7 @@ export const SettingsController = {
         "Application synchronization storage has been completely cleared.",
       icon: "fa-triangle-exclamation",
       iconColor: "text-rose-500",
-      duration: 4000,
+      duration: 3500,
     });
   },
 };

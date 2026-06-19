@@ -24,6 +24,8 @@ export const HabitController = {
     HabitFormController.init(this);
     HabitActionController.init(this);
 
+    SettingsController.init(this);
+
     this.bindStaticEvents();
     this.bindMenuToggle();
   },
@@ -53,7 +55,6 @@ export const HabitController = {
 
     renderHabitList(filteredHabits, state.activeTab);
     AnalyticsController.dispatchRender(allHabits);
-    SettingsController.init(this);
     this.updateNavigationDOM();
   },
 
@@ -191,6 +192,21 @@ export const HabitController = {
       if (el) {
         if (state.currentView === v) el.classList.replace("hidden", "flex");
         else el.classList.replace("flex", "hidden");
+      }
+      
+      const desktopBtn = document.getElementById(`nav-${v}`);
+      const mobileBtn = document.getElementById(`mobile-${v}`);
+
+      if (state.currentView === v) {
+        desktopBtn?.classList.replace("text-secondary", "text-brand");
+        desktopBtn?.classList.add("active");
+        mobileBtn?.classList.replace("text-secondary", "text-brand");
+        mobileBtn?.classList.add("active");
+      } else {
+        desktopBtn?.classList.replace("text-brand", "text-secondary");
+        desktopBtn?.classList.remove("active");
+        mobileBtn?.classList.replace("text-brand", "text-secondary");
+        mobileBtn?.classList.remove("active");
       }
     });
   },

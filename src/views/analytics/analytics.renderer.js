@@ -171,8 +171,7 @@ export function renderAnalyticsCharts(habits, currentHeatmapView) {
     tooltip: {
       theme: isDark ? "dark" : "light",
       y: {
-        formatter: (val) =>
-          currentHeatmapView === "weekly" ? `${val} ticks` : `${val}% density`,
+        formatter: (val) => `${val} ticks`,
       },
     },
   };

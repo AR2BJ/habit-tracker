@@ -133,11 +133,7 @@ export const AnalyticsAdapter = {
             }
           }
 
-          const monthlyDensityScore =
-            totalPossibleTicksInWeek > 0
-              ? Math.round((weeklyTicks / totalPossibleTicksInWeek) * 100)
-              : 0;
-          return { x: `${mInfo.name} ${mInfo.year}`, y: monthlyDensityScore };
+          return { x: `${mInfo.name} ${mInfo.year}`, y: weeklyTicks };
         });
 
         return { name: weekLabel, data: rowData };
@@ -169,11 +165,7 @@ export const AnalyticsAdapter = {
             }
           }
 
-          const densityScore =
-            validDaysInTracking > 0
-              ? Math.round((monthlyTotalTicks / validDaysInTracking) * 100)
-              : 0;
-          return { x: monthName, y: densityScore };
+          return { x: monthName, y: monthlyTotalTicks };
         });
 
         return { name: String(year), data: rowData };

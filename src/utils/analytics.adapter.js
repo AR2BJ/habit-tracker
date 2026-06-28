@@ -193,7 +193,7 @@ export const AnalyticsAdapter = {
         {
           from: 1,
           to: 16,
-          color: isDark ? "#d1f7e0" : "#e6fbef",
+          color: isDark ? "#c5fada" : "#dcfae9",
           name: "very low",
         },
         {
@@ -228,7 +228,7 @@ export const AnalyticsAdapter = {
       const s = Math.max(1, Math.ceil(maxVal / 4));
       return [
         { from: 0, to: 0, color: isDark ? "#111827" : "#f3f4f6", name: "none" },
-        { from: 1, to: s, color: isDark ? "#e6f7ee" : "#e6fbef", name: "low" },
+        { from: 1, to: s, color: isDark ? "#c5fada" : "#dcfae9", name: "low" },
         {
           from: s + 1,
           to: s * 2,
@@ -253,7 +253,7 @@ export const AnalyticsAdapter = {
 
     return [
       { from: 0, to: 0, color: isDark ? "#1f2937" : "#e2e8f0", name: "none" },
-      { from: 1, to: maxVal, color: "#00bc7d", name: "default" },
+      { from: 1, to: maxVal, color: "#00bc7d", name: "completed" },
     ];
   },
 };

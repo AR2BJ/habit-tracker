@@ -143,7 +143,7 @@ export const SettingsViewComponent = {
               
               <button
                 id="trigger-reset-btn"
-                class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-800 text-white font-medium text-sm transition shadow-sm cursor-pointer flex items-center justify-center gap-2"
+                class="w-full sm:w-36 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-800 text-white font-medium text-sm transition shadow-sm cursor-pointer flex items-center justify-center gap-2"
               >
                 <i class="fa-regular fa-trash-can text-xs"></i>
                 <span>Reset Data</span>

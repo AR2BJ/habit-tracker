@@ -1,5 +1,7 @@
 import { getTheme, setTheme, toggleTheme } from "@/services/theme.service.js";
 
+import { SettingsController } from "./settings.controller";
+
 export const ThemeController = {
   updateIcon(theme) {
     const btn = document.getElementById("theme-toggle");

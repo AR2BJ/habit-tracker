@@ -23,6 +23,14 @@ export const SettingsController = {
       .getElementById("sett-theme-dark")
       ?.addEventListener("click", () => this.handleThemeSwitch("dark"));
 
+    document.addEventListener("themeChanged", (event) => {
+      this.syncThemeControls(
+        event.detail?.theme || localStorage.getItem("theme") || "light",
+      );
+    });
+
+    this.syncThemeControls(localStorage.getItem("theme") || "light");
+
     document
       .getElementById("sett-export-btn")
       ?.addEventListener("click", () => this.handleDataExport());
@@ -40,11 +48,42 @@ export const SettingsController = {
     this.initResetModalEvents();
   },
 
+  syncThemeControls(targetTheme) {
+    const indicator = document.getElementById("theme-tab-indicator");
+    const btnLight = document.getElementById("sett-theme-light");
+    const btnDark = document.getElementById("sett-theme-dark");
+
+    if (!indicator || !btnLight || !btnDark) return;
+
+    if (targetTheme === "dark") {
+      indicator.classList.replace("translate-x-0", "translate-x-full");
+      btnDark.classList.replace(
+        "text-secondary",
+        "text-(--color-btn-primary-text)",
+      );
+      btnLight.classList.replace(
+        "text-(--color-btn-primary-text)",
+        "text-secondary",
+      );
+    } else {
+      indicator.classList.replace("translate-x-full", "translate-x-0");
+      btnLight.classList.replace(
+        "text-secondary",
+        "text-(--color-btn-primary-text)",
+      );
+      btnDark.classList.replace(
+        "text-(--color-btn-primary-text)",
+        "text-secondary",
+      );
+    }
+  },
+
   handleThemeSwitch(targetTheme) {
     const currentTheme = localStorage.getItem("theme") || "light";
     if (currentTheme === targetTheme) return;
 
     document.getElementById("theme-toggle")?.click();
+    this.syncThemeControls(targetTheme);
 
     const indicator = document.getElementById("theme-tab-indicator");
     const btnLight = document.getElementById("sett-theme-light");

@@ -1,23 +1,24 @@
 export const HeaderComponent = {
   render() {
     return `
-      <header class="mb-12 flex justify-between items-center">
-        <div class="flex flex-row justify-start items-center gap-4">
+      <header class="mb-8 flex flex-row gap-4 sm:mb-12 justify-between">
+        <div class="flex min-w-0 items-center gap-3">
           <button
             id="menu-toggle"
-            class="w-10 h-10 hidden lg:flex bg-surface text-primary border border-border rounded-xl hover:bg-slate-600/10 transition cursor-pointer flex-row justify-center items-center"
+            class="hidden h-10 w-10 flex-row items-center justify-center rounded-xl border border-border bg-surface text-primary transition cursor-pointer hover:bg-slate-600/10 lg:flex"
           >
             <i class="fa-regular fa-bars"></i>
           </button>
-          <h1 class="text-4xl font-bold tracking-tight text-primary">
+
+          <h1 class="truncate text-xl font-bold tracking-tight text-primary sm:text-2xl lg:text-3xl">
             Habit Tracker
           </h1>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center justify-end gap-2 sm:justify-center">
           <button
             id="help-toggle"
-            class="w-10 h-10 bg-surface text-brand border border-border rounded-xl hover:bg-brand/10 transition cursor-pointer flex flex-row justify-center items-center"
+            class="flex h-9 w-9 flex-row items-center justify-center rounded-xl border border-border bg-surface text-brand/80 transition cursor-pointer hover:bg-brand/10 sm:h-10 sm:w-10"
             title="App Guide & Tips"
           >
             <i class="fa-regular fa-circle-question text-lg"></i>
@@ -25,7 +26,7 @@ export const HeaderComponent = {
 
           <button
             id="theme-toggle"
-            class="w-10 h-10 bg-surface text-primary border border-border rounded-xl hover:bg-yellow-600/10 transition cursor-pointer flex flex-row justify-center items-center"
+            class="flex h-9 w-9 flex-row items-center justify-center rounded-xl border border-border bg-surface text-primary transition cursor-pointer hover:bg-yellow-600/10 sm:h-10 sm:w-10"
           >
             <i class="fa-regular fa-sun text-yellow-500"></i>
           </button>

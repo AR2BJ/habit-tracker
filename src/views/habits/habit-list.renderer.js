@@ -29,7 +29,7 @@ export function renderHabitList(habits, activeTab = "active") {
   habits.forEach((habit) => {
     const item = document.createElement("div");
     item.className =
-      "bg-surface-2 border border-border/60 hover:border-border rounded-3xl p-6 transition duration-300";
+      "bg-surface border border-border/60 hover:border-border rounded-3xl p-6 transition duration-300";
 
     item.innerHTML = HabitCardComponent.render(habit, isArchived);
 

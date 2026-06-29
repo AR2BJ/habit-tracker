@@ -75,11 +75,6 @@
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.6);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.7);
 
-  select {
-    background: url("../../../public/picture/chevron-down-solid-light.svg");
-    background-color: #161f30;
-  }
-
   .apexcharts-legend-text {
     color: #e2e8f0 !important;
   }
@@ -150,11 +145,6 @@
   --shadow-lg: 0 12px 24px -4px rgba(15, 23, 42, 0.12);
   --shadow-xl: 0 24px 36px -6px rgba(15, 23, 42, 0.15);
 
-  select {
-    background: url("../../../public/picture/chevron-down-solid-dark.svg");
-    background-color: #ffffff;
-  }
-
   .apexcharts-legend-text {
     color: #161f30 !important;
   }
@@ -177,18 +167,30 @@ body {
     border-color 0.3s ease;
 }
 
-.light,
-.dark {
-  select {
-    appearance: none;
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 12px;
-  }
+select.form-select {
+  appearance: none;
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 0.8rem;
+  padding-right: 2.5rem;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dark select.form-select {
+  background-image: url("../../../public/picture/chevron-down-solid-light.svg");
+  background-color: var(--color-surface);
+}
+
+.light select.form-select {
+  background-image: url("../../../public/picture/chevron-down-solid-dark.svg");
+  background-color: var(--color-surface);
 }
 
 .btn-primary {
-  background: var(--color-btn-primary-bg);
+  background: color-mix(in oklab, var(--color-btn-primary-bg) 80%, transparent);;
   color: var(--color-btn-primary-text);
   transition: all 0.2s ease;
 }
@@ -232,7 +234,7 @@ body {
 
 /* Desktop Navigation Active State */
 .nav-item.active {
-  background-color: var(--color-brand);
+  background-color: color-mix(in oklab, var(--color-brand) 80%, transparent);
   color: var(--color-btn-primary-text);
   border-radius: 0.75rem;
   transition: all 0.3s ease;
@@ -240,7 +242,7 @@ body {
 
 /* Mobile Navigation Active State */
 .mobile-nav-btn.active {
-  color: var(--color-brand);
+  color: color-mix(in oklab, var(--color-brand) 80%, transparent);
 }
 
 .mobile-nav-btn.active i {
@@ -258,13 +260,13 @@ body {
 }
 
 .mobile-nav-btn.active {
-  color: var(--color-brand);
+  color: color-mix(in oklab, var(--color-brand) 80%, transparent);;
   padding-top: 0;
 }
 
 .mobile-nav-btn.active i {
   transform: scale(1.1);
-  color: var(--color-brand);
+  color: color-mix(in oklab, var(--color-brand) 80%, transparent);;
   text-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
 }
 

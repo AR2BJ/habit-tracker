@@ -7,7 +7,7 @@ export const EditModalsComponent = {
       >
         <div class="bg-surface rounded-2xl p-6 max-w-sm w-full shadow-xl flex flex-col gap-4">
           <div
-            class="w-12 h-12 rounded-full bg-brand/10 text-brand flex items-center justify-center text-xl mx-auto"
+            class="w-12 h-12 rounded-full bg-brand/10 text-brand/80 flex items-center justify-center text-xl mx-auto"
           >
             <i class="fa-regular fa-pen"></i>
           </div>
@@ -36,7 +36,7 @@ export const EditModalsComponent = {
 
             <button
               id="confirm-edit"
-              class="px-4 py-2.5 rounded-xl bg-brand hover:bg-indigo-700! text-white font-medium text-sm transition shadow-sm cursor-pointer"
+              class="px-4 py-2.5 rounded-xl bg-brand/80 hover:bg-indigo-700! text-white font-medium text-sm transition shadow-sm cursor-pointer"
             >
               Save
             </button>

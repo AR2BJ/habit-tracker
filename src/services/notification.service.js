@@ -16,7 +16,9 @@ export const NotificationService = {
 
     const countdownId = `toast-cd-${Math.random().toString(36).substr(2, 9)}`;
 
-    const iconHTML = icon ? `<i class="fa-regular ${icon} ${iconColor} text-lg"></i>` : "";
+    const iconHTML = icon
+      ? `<i class="fa-regular ${icon} ${iconColor} text-lg"></i>`
+      : "";
 
     toast.innerHTML = `
       <div class="flex items-center gap-3 text-secondary">
@@ -32,7 +34,7 @@ export const NotificationService = {
     if (undoAction) {
       const undoBtn = document.createElement("button");
       undoBtn.className =
-        "h-8 px-3 transition flex items-center text-brand hover:text-(--color-brand-hover) justify-center gap-1 cursor-pointer rounded-lg bg-surface-2 hover:bg-(--color-surface-3) text-sm font-medium";
+        "h-8 px-3 transition flex items-center text-brand/80 hover:text-(--color-brand-hover) justify-center gap-1 cursor-pointer rounded-lg bg-surface-2 hover:bg-(--color-surface-3) text-sm font-medium";
       undoBtn.innerHTML = `<i class="fa-regular fa-rotate-left text-xs"></i><span class="text-xs font-semibold">Undo</span>`;
 
       undoBtn.addEventListener("click", () => {

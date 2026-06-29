@@ -37,14 +37,14 @@ export const HabitCalendarComponent = {
     <div class="space-y-4 p-4 overflow-hidden">
       <!-- Timeline -->
 
-      <div class="flex justify-between text-secondary text-sm select-none">
+      <div class="flex justify-between text-secondary text-xs sm:text-sm select-none">
         <span>${formatDate(periodStart)}</span>
         <span>${formatDate(periodEnd)}</span>
       </div>
 
       <!-- Calendar Grid -->
 
-      <div class="grid gap-2 grid-cols-10 md:grid-cols-12 lg:grid-cols-30">
+      <div class="grid gap-2 grid-cols-5 sm:grid-cols-10 md:grid-cols-12 lg:grid-cols-30">
         ${days
           .map((day) => {
             let tooltip = `Status: Pending • ${day.date}`;
@@ -78,9 +78,9 @@ export const HabitCalendarComponent = {
               >
                 ${
                   day.completed
-                    ? `<span class="text-2xl lg:text-xl leading-none text-white">✓</span>`
+                    ? `<span class="text-lg lg:text-xl xl:text-2xl 2xl:text-3xl @min-[100rem]:text-4xl leading-none text-white">✓</span>`
                     : day.skipped
-                      ? `<span class="text-xs lg:text-xs leading-none text-white"><i class="fa-regular fa-shield text-xl lg:text-lg leading-none text-white"></i></span>`
+                      ? `<span class="text-base xl:text-xl 2xl:text-2xl @min-[100rem]:text-3xl leading-none text-white"><i class="fa-regular fa-shield leading-none text-white"></i></span>`
                       : ""
                 }
               </button>

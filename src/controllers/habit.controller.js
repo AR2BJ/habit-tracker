@@ -29,6 +29,15 @@ export const HabitController = {
 
     this.bindStaticEvents();
     this.bindMenuToggle();
+    this.bindActionMenuToggle();
+
+    window.addEventListener("DOMContentLoaded", () => {
+      this.updateTabStyles(state.activeTab);
+    });
+
+    window.addEventListener("resize", () => {
+      this.updateTabStyles(state.activeTab);
+    });
   },
 
   renderComponent() {
@@ -84,20 +93,77 @@ export const HabitController = {
     });
   },
 
+  bindActionMenuToggle() {
+    document.addEventListener("click", (e) => {
+      const toggleBtn = e.target.closest(".dropdown-toggle-btn");
+
+      if (toggleBtn) {
+        e.stopPropagation();
+        const container = toggleBtn.closest(".dropdown-container");
+        const menu = container?.querySelector(".dropdown-menu");
+
+        document.querySelectorAll(".dropdown-menu").forEach((m) => {
+          if (m !== menu) m.classList.add("hidden");
+        });
+
+        menu?.classList.toggle("hidden");
+        return;
+      }
+
+      if (!e.target.closest(".dropdown-container")) {
+        document
+          .querySelectorAll(".dropdown-menu")
+          .forEach((m) => m.classList.add("hidden"));
+      }
+    });
+  },
+
   bindStaticEvents() {
     const filterButtons = document.querySelectorAll(".category-filter-btn");
+
+    const setFilterButtonState = (button, isActive) => {
+      const icon = button.querySelector(".category-icon");
+      const svg =
+        icon?.tagName?.toLowerCase() === "svg"
+          ? icon
+          : icon?.querySelector("svg");
+
+      button.classList.toggle("bg-brand/80", isActive);
+      button.classList.toggle("shadow-brand/10", isActive);
+      button.classList.toggle("text-white", isActive);
+      button.classList.toggle("bg-surface-2", !isActive);
+      button.classList.toggle("text-secondary", !isActive);
+      button.classList.toggle("hover:bg-(--color-surface-3)", !isActive);
+      button.classList.toggle("hover:text-secondary", !isActive);
+
+      if (icon) {
+        icon.style.color = isActive ? "#fff" : "";
+      }
+
+      if (svg) {
+        svg.style.fill = isActive ? "currentColor" : "";
+        svg.style.stroke = isActive ? "currentColor" : "";
+      }
+
+      svg?.querySelectorAll("path, circle, rect, polygon").forEach((shape) => {
+        shape.style.fill = isActive ? "currentColor" : "";
+        shape.style.stroke = isActive ? "currentColor" : "";
+      });
+    };
+
+    const initialCategory =
+      state.selectedCategory ?? StateManager.getCategory?.() ?? "all";
+
     filterButtons.forEach((btn) => {
+      const isActive = btn.dataset.category === initialCategory;
+      setFilterButtonState(btn, isActive);
+
       btn.addEventListener("click", (e) => {
         const selectedCategory = e.currentTarget.dataset.category;
         StateManager.setCategory(selectedCategory);
 
-        filterButtons.forEach((b) => {
-          b.classList.remove("bg-brand", "text-white");
-          b.classList.add("bg-surface-2", "text-secondary");
-        });
-
-        e.currentTarget.classList.remove("bg-surface-2", "text-secondary");
-        e.currentTarget.classList.add("bg-brand", "text-white");
+        filterButtons.forEach((button) => setFilterButtonState(button, false));
+        setFilterButtonState(e.currentTarget, true);
 
         this.refreshUI();
       });
@@ -128,11 +194,11 @@ export const HabitController = {
         navButtons.forEach((nav) => {
           const dEl = document.getElementById(`nav-${nav}`);
           const mEl = document.getElementById(`mobile-${nav}`);
-          dEl?.classList.replace("text-brand", "text-secondary");
-          mEl?.classList.replace("text-brand", "text-secondary");
+          dEl?.classList.replace("text-brand/80", "text-secondary");
+          mEl?.classList.replace("text-brand/80", "text-secondary");
         });
-        desktopBtn?.classList.replace("text-secondary", "text-brand");
-        mobileBtn?.classList.replace("text-secondary", "text-brand");
+        desktopBtn?.classList.replace("text-secondary", "text-brand/80");
+        mobileBtn?.classList.replace("text-secondary", "text-brand/80");
         this.refreshUI();
       };
 
@@ -199,14 +265,14 @@ export const HabitController = {
       const mobileBtn = document.getElementById(`mobile-${v}`);
 
       if (state.currentView === v) {
-        desktopBtn?.classList.replace("text-secondary", "text-brand");
+        desktopBtn?.classList.replace("text-secondary", "text-brand/80");
         desktopBtn?.classList.add("active");
-        mobileBtn?.classList.replace("text-secondary", "text-brand");
+        mobileBtn?.classList.replace("text-secondary", "text-brand/80");
         mobileBtn?.classList.add("active");
       } else {
-        desktopBtn?.classList.replace("text-brand", "text-secondary");
+        desktopBtn?.classList.replace("text-brand/80", "text-secondary");
         desktopBtn?.classList.remove("active");
-        mobileBtn?.classList.replace("text-brand", "text-secondary");
+        mobileBtn?.classList.replace("text-brand/80", "text-secondary");
         mobileBtn?.classList.remove("active");
       }
     });
@@ -217,10 +283,15 @@ export const HabitController = {
     const activeBtn = document.getElementById("tab-active");
     const archivedBtn = document.getElementById("tab-archived");
 
-    if (!indicator) return;
+    if (!indicator || !activeBtn || !archivedBtn) return;
+
+    const buttonWidth = activeBtn.getBoundingClientRect().width;
+    const offset = 4;
+
+    indicator.style.width = `${buttonWidth}px`;
 
     if (tab === "active") {
-      indicator.classList.replace("translate-x-27.5", "translate-x-0");
+      indicator.style.left = `${offset}px`;
       activeBtn.classList.replace(
         "text-secondary",
         "text-(--color-btn-primary-text)",
@@ -230,7 +301,7 @@ export const HabitController = {
         "text-secondary",
       );
     } else {
-      indicator.classList.replace("translate-x-0", "translate-x-27.5");
+      indicator.style.left = `${buttonWidth + offset}px`;
       archivedBtn.classList.replace(
         "text-secondary",
         "text-(--color-btn-primary-text)",

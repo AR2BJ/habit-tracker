@@ -31,7 +31,7 @@ export const SettingsViewComponent = {
             <div class="relative flex w-full bg-surface-2 rounded-2xl p-1 border border-border mt-2">
               <div
                 id="theme-tab-indicator"
-                class="absolute top-1 left-1 h-[calc(100%-8px)] w-[calc(50%-4px)] rounded-xl bg-brand transition-all duration-300 ${isDark ? "translate-x-full" : "translate-x-0"}"
+                class="absolute top-1 left-1 h-[calc(100%-8px)] w-[calc(50%-4px)] rounded-xl bg-brand/80 transition-all duration-300 ${isDark ? "translate-x-full" : "translate-x-0"}"
               ></div>
 
               <button
@@ -74,7 +74,7 @@ export const SettingsViewComponent = {
 
               <button
                 id="sett-seed-btn"
-                class="px-4 py-3 bg-brand/5 hover:bg-brand/10 border border-brand/20 rounded-xl text-brand text-sm font-medium flex items-center justify-center gap-2 transition cursor-pointer"
+                class="px-4 py-3 bg-brand/5 hover:bg-brand/10 border border-brand/20 rounded-xl text-brand/80 text-sm font-medium flex items-center justify-center gap-2 transition cursor-pointer"
               >
                 <i class="fa-regular fa-flask text-xs"></i>
                 <span>Seed Mock Data (Sandbox)</span>
@@ -85,10 +85,10 @@ export const SettingsViewComponent = {
               <label class="text-xs font-semibold text-secondary">Import Database File</label>
               <div
                 id="sett-dropzone"
-                class="border-2 border-dashed border-border hover:border-brand rounded-xl p-5 flex flex-col items-center justify-center gap-2 bg-surface-2/50 transition cursor-pointer group text-center"
+                class="border-2 border-dashed border-border hover:border-brand/80 rounded-xl p-5 flex flex-col items-center justify-center gap-2 bg-surface-2/50 transition cursor-pointer group text-center"
               >
-                <i class="fa-regular fa-cloud-arrow-up text-xl text-secondary group-hover:text-brand transition animate-pulse"></i>
-                <span class="text-xs font-medium text-primary">Drag & drop your backup file here or <span class="text-brand">browse</span></span>
+                <i class="fa-regular fa-cloud-arrow-up text-xl text-secondary group-hover:text-brand/80 transition animate-pulse"></i>
+                <span class="text-xs font-medium text-primary">Drag & drop your backup file here or <span class="text-brand/80">browse</span></span>
                 <span class="text-[10px] text-secondary">Supports only validated .json structural backups</span>
                 <input type="file" id="sett-import-file" accept=".json" class="hidden" />
               </div>

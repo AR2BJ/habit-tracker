@@ -159,12 +159,12 @@ export const SettingsController = {
 
     dropzone?.addEventListener("dragover", (e) => {
       e.preventDefault();
-      dropzone.classList.add("border-brand", "bg-brand/5");
+      dropzone.classList.add("border-brand/80", "bg-brand/5");
     });
 
     ["dragleave", "drop"].forEach((event) => {
       dropzone?.addEventListener(event, () => {
-        dropzone.classList.remove("border-brand", "bg-brand/5");
+        dropzone.classList.remove("border-brand/80", "bg-brand/5");
       });
     });
 
@@ -255,7 +255,7 @@ export const SettingsController = {
       type: "success",
       message: "Sandbox environment seeded with 3 months historical logs.",
       icon: "fa-flask-vial",
-      iconColor: "text-brand",
+      iconColor: "text-brand/80",
       duration: 3500,
     });
   },

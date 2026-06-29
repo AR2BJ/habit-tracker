@@ -54,8 +54,8 @@ export function updateTabStyles(tab) {
 
   indicator.classList.remove(
     "translate-x-0",
-    "translate-x-27.5",
-    "translate-x-54",
+    "translate-x-[calc(100%+0.5rem)]",
+    "translate-x-[calc(100%+4.5rem)]",
   );
 
   [btnWeekly, btnMonthly, btnYearly].forEach((btn) => {
@@ -70,13 +70,13 @@ export function updateTabStyles(tab) {
       "text-(--color-btn-primary-text)",
     );
   } else if (tab === "monthly") {
-    indicator.classList.add("translate-x-27.5");
+    indicator.classList.add("translate-x-[calc(100%+0.5rem)]");
     btnMonthly.classList.replace(
       "text-secondary",
       "text-(--color-btn-primary-text)",
     );
   } else if (tab === "yearly") {
-    indicator.classList.add("translate-x-54");
+    indicator.classList.add("translate-x-[calc(100%+4.5rem)]");
     btnYearly.classList.replace(
       "text-secondary",
       "text-(--color-btn-primary-text)",

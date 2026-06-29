@@ -147,21 +147,57 @@ export const HabitFormController = {
 
   executeEdit() {
     const editInput = document.getElementById("edit-habit-input");
-    if (!pendingEditId || !editInput) return;
+    if (!pendingEditId || !editInput) {
+      NotificationService.show({
+        type: "error",
+        message: "Unable to edit habit. Please try again.",
+        icon: "fa-triangle-exclamation",
+        iconColor: "text-rose-500",
+        duration: 4000,
+      });
+      return;
+    }
 
     const newName = editInput.value.trim();
-    if (!newName) return;
+    if (!newName) {
+      NotificationService.show({
+        type: "error",
+        message: "Habit name cannot be empty.",
+        icon: "fa-triangle-exclamation",
+        iconColor: "text-rose-500",
+        duration: 4000,
+      });
+      return;
+    }
 
-    const currentHabits = StateManager.getHabits();
-    const updated = HabitService.editHabit(
-      currentHabits,
-      pendingEditId,
-      newName,
-    );
+    try {
+      const currentHabits = StateManager.getHabits();
+      const updated = HabitService.editHabit(
+        currentHabits,
+        pendingEditId,
+        newName,
+      );
 
-    StateManager.save(updated);
-    this.mainController.toggleModal("edit-modal", false);
-    pendingEditId = null;
-    this.mainController.refreshUI();
+      StateManager.save(updated);
+      this.mainController.toggleModal("edit-modal", false);
+      pendingEditId = null;
+      this.mainController.refreshUI();
+
+      NotificationService.show({
+        type: "success",
+        message: `Habit renamed to "${newName}"`,
+        icon: "fa-check",
+        iconColor: "text-emerald-500",
+        duration: 3000,
+      });
+    } catch (error) {
+      NotificationService.show({
+        type: "error",
+        message: error.message,
+        icon: "fa-triangle-exclamation",
+        iconColor: "text-rose-500",
+        duration: 4000,
+      });
+    }
   },
 };

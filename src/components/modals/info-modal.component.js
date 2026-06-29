@@ -66,7 +66,7 @@ export const InfoModalComponent = {
           <div class="flex justify-end mt-5">
             <button
               id="btn-close-help"
-              class="px-5 py-2 text-sm rounded-xl bg-brand text-white font-semibold hover:bg-(--color-brand-hover) transition cursor-pointer"
+              class="px-5 py-2 text-sm rounded-xl bg-brand/80 text-white font-semibold hover:bg-(--color-brand-hover) transition cursor-pointer"
             >
               Got it, Thanks!
             </button>

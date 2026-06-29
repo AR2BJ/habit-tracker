@@ -3,7 +3,7 @@ export const AnalyticsView = {
     return `
       <section
         id="analytics-view"
-        class="hidden"
+        class="hidden w-full min-w-0 flex-col"
       >
         <div
           id="dashboard"

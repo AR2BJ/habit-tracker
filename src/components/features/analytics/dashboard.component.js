@@ -35,7 +35,7 @@ export const DashboardComponent = {
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 w-full col-span-full"
       >
         <div
-          class="col-span-2 sm:col-span-1 bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition shadow-sm flex flex-col justify-between min-h-36"
+          class="col-span-2 sm:col-span-1 bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-2xl p-6 transition shadow-sm flex flex-col justify-between min-h-36"
         >
           <div class="flex items-center justify-between gap-2 text-secondary">
             <span class="text-sm font-bold tracking-wide truncate"
@@ -51,7 +51,7 @@ export const DashboardComponent = {
         </div>
 
         <div
-          class="col-span-2 sm:col-span-1 bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition shadow-sm flex flex-col justify-between min-h-36"
+          class="col-span-2 sm:col-span-1 bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-2xl p-6 transition shadow-sm flex flex-col justify-between min-h-36"
         >
           <div class="flex items-center justify-between gap-2 text-secondary">
             <span class="text-sm font-bold tracking-wide truncate"
@@ -67,7 +67,7 @@ export const DashboardComponent = {
         </div>
 
         <div
-          class="col-span-2 sm:col-span-1 bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition shadow-sm flex flex-col justify-between min-h-36"
+          class="col-span-2 sm:col-span-1 bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-2xl p-6 transition shadow-sm flex flex-col justify-between min-h-36"
         >
           <div class="flex items-center justify-between gap-2 text-secondary">
             <span class="text-sm font-bold tracking-wide truncate"
@@ -85,7 +85,7 @@ export const DashboardComponent = {
         </div>
 
         <div
-          class="col-span-2 sm:col-span-1 bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition shadow-sm flex flex-col justify-between min-h-36"
+          class="col-span-2 sm:col-span-1 bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-2xl p-6 transition shadow-sm flex flex-col justify-between min-h-36"
         >
           <div class="flex items-center justify-between gap-2 text-secondary">
             <span class="text-sm font-bold tracking-wide truncate"
@@ -101,7 +101,7 @@ export const DashboardComponent = {
         </div>
 
         <div
-          class="col-span-2 md:col-span-4 lg:col-span-1 bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-3xl p-6 transition shadow-sm flex flex-col justify-between min-h-36"
+          class="col-span-2 md:col-span-4 lg:col-span-1 bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-2xl p-6 transition shadow-sm flex flex-col justify-between min-h-36"
         >
           <div class="flex items-center justify-between gap-2 text-secondary">
             <span class="text-sm font-bold tracking-wide truncate"
@@ -119,7 +119,7 @@ export const DashboardComponent = {
         class="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full col-span-full mt-6"
       >
         <div
-          class="lg:col-span-2 bg-surface-2 border border-border rounded-3xl p-6 flex flex-col justify-between shadow-sm"
+          class="lg:col-span-2 bg-surface-2 border border-border rounded-2xl p-6 flex flex-col justify-between shadow-sm"
         >
           <div
             class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between"
@@ -148,7 +148,7 @@ export const DashboardComponent = {
 
               <div
                 id="heatmap-mobile-menu"
-                class="hidden absolute right-0 top-full mt-2 w-44 rounded-3xl border border-border bg-surface-2 shadow-lg z-20 overflow-hidden"
+                class="hidden absolute right-0 top-full mt-2 w-44 rounded-2xl border border-border bg-surface-2 shadow-lg z-20 overflow-hidden"
               >
                 <button
                   data-view="weekly"
@@ -213,7 +213,7 @@ export const DashboardComponent = {
         </div>
 
         <div
-          class="bg-surface-2 border border-border rounded-3xl p-6 flex flex-col justify-between shadow-sm"
+          class="bg-surface-2 border border-border rounded-2xl p-6 flex flex-col justify-between shadow-sm"
         >
           <div>
             <h4 class="text-lg font-bold text-primary flex items-center gap-2">
@@ -241,7 +241,7 @@ export const DashboardComponent = {
         <div class="grid grid-cols-1 gap-4">
           ${
             activeHabits.length === 0
-              ? `<div class="text-center py-12 text-secondary text-base bg-surface-2 rounded-3xl border border-dashed border-border flex flex-col items-center justify-center gap-2">
+              ? `<div class="text-center py-12 text-secondary text-base bg-surface-2 rounded-2xl border border-dashed border-border flex flex-col items-center justify-center gap-2">
                 <i class="fa-regular fa-box-open text-2xl opacity-40"></i>
                 <span>No active habits to review.</span>
                </div>`
@@ -269,7 +269,7 @@ export const DashboardComponent = {
                     }
 
                     return `
-                    <div class="bg-surface-2 border border-border rounded-3xl p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:shadow-md transition duration-200">
+                    <div class="bg-surface-2 border border-border rounded-2xl p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:shadow-md transition duration-200">
                       <div>
                         <h4 class="text-lg font-bold text-primary">${habit.name}</h4>
                         <p class="text-sm text-secondary mt-1"><i class="fa-regular fa-clock text-xs"></i> Since: ${habit.createdAt}</p>

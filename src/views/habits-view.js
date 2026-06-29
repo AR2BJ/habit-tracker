@@ -33,7 +33,7 @@ export const HabitsView = {
           class="w-full min-w-0"
         >
           <div
-            class="mb-10 flex flex-col gap-4 rounded-3xl border border-border bg-surface-2 p-4 sm:p-6"
+            class="mb-10 flex flex-col gap-4 rounded-2xl border border-border bg-surface-2 p-4 sm:p-6"
           >
             <h3
               class="mb-2 text-sm font-bold uppercase tracking-widest text-secondary sm:mb-4"
@@ -119,70 +119,87 @@ export const HabitsView = {
           </div>
 
           <div
-            class="mb-6 flex flex-row flex-nowrap gap-2 overflow-x-auto border-b border-border pb-4 sm:flex-wrap sm:overflow-visible"
+            class="mb-6 flex flex-row items-center justify-between gap-4 border-b border-border pb-4 w-full"
           >
-            <p
-              class="mr-2 text-xs font-bold uppercase tracking-wider text-secondary flex flex-row justify-center items-center"
+            <div
+              id="habit-filter-scroll"
+              class="flex flex-1 min-w-0 cursor-grab flex-row items-center gap-2 overflow-x-auto pr-2 select-none scrollbar-none"
+              style="scrollbar-width:none; -ms-overflow-style:none; touch-action:none;"
             >
-              <span class="w-20 flex flex-row justify-center items-center">
+              <p
+                class="text-xs font-bold uppercase tracking-wider text-secondary shrink-0 hidden sm:block mr-5"
+              >
                 Filter by:
-              </span>
-            </p>
+              </p>
 
-            <button
-              data-category="all"
-              class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-brand/80 shadow-brand/10 px-4 text-xs font-semibold text-white transition cursor-pointer"
-            >
-              All
-            </button>
+              <button
+                data-category="all"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-brand/80 shadow-brand/10 px-4 text-xs font-semibold text-white transition cursor-pointer"
+              >
+                All
+              </button>
 
-            <button
-              data-category="General"
-              class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
-            >
-              <i class="category-icon fa-regular fa-folders text-amber-500"></i>
-              <span>General</span>
-            </button>
+              <button
+                data-category="General"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+              >
+                <i
+                  class="category-icon fa-regular fa-folders text-amber-500"
+                ></i>
+                <span>General</span>
+              </button>
 
-            <button
-              data-category="Health"
-              class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
-            >
-              <i class="category-icon fa-regular fa-apple-whole text-emerald-500"></i>
-              <span>Health</span>
-            </button>
+              <button
+                data-category="Health"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+              >
+                <i
+                  class="category-icon fa-regular fa-apple-whole text-emerald-500"
+                ></i>
+                <span>Health</span>
+              </button>
 
-            <button
-              data-category="Work"
-              class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
-            >
-              <i class="category-icon fa-regular fa-laptop text-sky-500"></i>
-              <span>Work</span>
-            </button>
+              <button
+                data-category="Work"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+              >
+                <i class="category-icon fa-regular fa-laptop text-sky-500"></i>
+                <span>Work</span>
+              </button>
 
-            <button
-              data-category="Finance"
-              class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
-            >
-              <i class="category-icon fa-regular fa-dollar-sign text-violet-500"></i>
-              <span>Finance</span>
-            </button>
+              <button
+                data-category="Finance"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+              >
+                <i
+                  class="category-icon fa-regular fa-dollar-sign text-violet-500"
+                ></i>
+                <span>Finance</span>
+              </button>
 
-            <button
-              data-category="Mind"
-              class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
-            >
-              <i class="category-icon fa-regular fa-spa text-rose-500"></i>
-              <span>Mind</span>
-            </button>
+              <button
+                data-category="Mind"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+              >
+                <i class="category-icon fa-regular fa-spa text-rose-500"></i>
+                <span>Mind</span>
+              </button>
 
-            <button
-              data-category="Harmful"
-              class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
-            >
-              <i class="category-icon fa-regular fa-ban-smoking text-mauve-500"></i>
-              <span>Harmful</span>
-            </button>
+              <button
+                data-category="Harmful"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+              >
+                <i
+                  class="category-icon fa-regular fa-ban-smoking text-mauve-500"
+                ></i>
+                <span>Harmful</span>
+              </button>
+            </div>
+
+            <div
+              id="habit-count-badge"
+              class="shrink-0 flex items-center gap-1.5 px-3 py-1 bg-surface-3 rounded-xl text-xs font-bold text-primary select-none animate-fade-in"
+            ></div>
           </div>
 
           <div
@@ -194,3 +211,64 @@ export const HabitsView = {
     `;
   },
 };
+
+function setupHabitFiltersDragScroll() {
+  const container = document.getElementById("habit-filter-scroll");
+
+  if (!container || container.dataset.dragScrollInitialized === "true") {
+    return;
+  }
+
+  container.dataset.dragScrollInitialized = "true";
+
+  let isDragging = false;
+  let startX = 0;
+  let startScrollLeft = 0;
+
+  container.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0 || event.target.closest("button")) return;
+
+    isDragging = true;
+    startX = event.clientX;
+    startScrollLeft = container.scrollLeft;
+
+    container.classList.remove("cursor-grab");
+    container.classList.add("cursor-grabbing");
+    container.setPointerCapture(event.pointerId);
+    event.preventDefault();
+  });
+
+  container.addEventListener("pointermove", (event) => {
+    if (!isDragging) return;
+
+    const deltaX = event.clientX - startX;
+    container.scrollLeft = startScrollLeft - deltaX;
+    event.preventDefault();
+  });
+
+  const stopDragging = (event) => {
+    if (!isDragging) return;
+
+    isDragging = false;
+    container.classList.remove("cursor-grabbing");
+    container.classList.add("cursor-grab");
+
+    if (container.hasPointerCapture(event.pointerId)) {
+      container.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  container.addEventListener("pointerup", stopDragging);
+  container.addEventListener("pointerleave", stopDragging);
+  container.addEventListener("pointercancel", stopDragging);
+}
+
+if (typeof window !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      requestAnimationFrame(setupHabitFiltersDragScroll);
+    });
+  } else {
+    requestAnimationFrame(setupHabitFiltersDragScroll);
+  }
+}

@@ -16,6 +16,23 @@ export function todayISO() {
   return formatDate(new Date());
 }
 
+export function getWeeklyCompletionCount(completedDates = []) {
+  if (!completedDates || !Array.length) return 0;
+
+  const today = new Date();
+  today.setHours(23, 59, 59, 999);
+
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(today.getDate() - 7);
+  sevenDaysAgo.setHours(0, 0, 0, 0);
+
+  return completedDates.filter((dateStr) => {
+    const checkDate = new Date(dateStr);
+
+    return checkDate >= sevenDaysAgo && checkDate <= today;
+  }).length;
+}
+
 export function calculateStreak(completedDates = [], skippedDates = []) {
   if (!completedDates.length) return { current: 0, best: 0 };
 

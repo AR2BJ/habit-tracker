@@ -3,7 +3,7 @@ export const DesktopNavComponent = {
     return `
       <div
         id="desktop-nav"
-        class="hidden lg:flex fixed left-5 top-5 bottom-5 w-20 flex-col justify-between items-center bg-surface-2 backdrop-blur-xl border border-border rounded-3xl py-4 z-50 transition-all duration-300 -translate-x-[calc(100%+2rem)]"
+        class="hidden lg:flex fixed left-5 top-5 bottom-5 w-20 flex-col justify-between items-center bg-surface-2 backdrop-blur-xl border border-border rounded-2xl py-4 z-50 transition-all duration-300 -translate-x-[calc(100%+2rem)]"
       >
         <div class="flex flex-col gap-6 w-full px-3">
           <button

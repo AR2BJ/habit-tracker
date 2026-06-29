@@ -2,7 +2,19 @@ import { HabitCardComponent } from "@/components/features/habits/habit-card.comp
 
 export function renderHabitList(habits, activeTab = "active") {
   const container = document.getElementById("habit-list");
+  const countBadge = document.getElementById("habit-count-badge");
+
   if (!container) return;
+
+  if (countBadge) {
+    const totalCount = habits.length;
+
+    countBadge.innerHTML = `
+      <p class="text-secondary font-semibold text-sm">
+        <span class="text-brand font-extrabold">${totalCount}</span>&nbsp; habits
+      </p>
+    `;
+  }
 
   container.innerHTML = "";
 
@@ -17,7 +29,7 @@ export function renderHabitList(habits, activeTab = "active") {
 
   if (habits.length === 0) {
     container.innerHTML = `
-      <div class="border border-dashed border-border rounded-3xl p-16 text-center bg-surface-2">
+      <div class="border border-dashed border-border rounded-2xl p-16 text-center bg-surface-2">
         <div class="text-6xl mb-6">${icon}</div>
         <h2 class="text-2xl font-bold text-primary">${title}</h2>
         <p class="mt-3 text-secondary max-w-sm mx-auto">${description}</p>
@@ -29,7 +41,7 @@ export function renderHabitList(habits, activeTab = "active") {
   habits.forEach((habit) => {
     const item = document.createElement("div");
     item.className =
-      "bg-surface border border-border/60 hover:border-border rounded-3xl p-6 transition duration-300";
+      "bg-surface border border-border/60 hover:border-border rounded-2xl p-6 transition duration-300";
 
     item.innerHTML = HabitCardComponent.render(habit, isArchived);
 

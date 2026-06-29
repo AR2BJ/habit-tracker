@@ -5,8 +5,67 @@ import { DashboardComponent } from "@/components/features/analytics/dashboard.co
 
 let heatmapChartInstance = null;
 let barChartInstance = null;
+let resizeListenerAttached = false;
+let activeHeatmapTab = "weekly";
 
 const weekdayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+function handleAnalyticsResize() {
+  updateTabStyles(activeHeatmapTab);
+}
+
+function syncMobileMenuSelection(view) {
+  const buttons = document.querySelectorAll("#heatmap-mobile-menu [data-view]");
+
+  buttons.forEach((btn) => {
+    const isActive = btn.getAttribute("data-view") === view;
+
+    btn.classList.toggle("bg-brand/10", isActive);
+    btn.classList.toggle("text-brand/80", isActive);
+    btn.classList.toggle("font-semibold", isActive);
+    btn.classList.toggle("text-secondary", !isActive);
+  });
+}
+
+function bindAnalyticsMobileMenu(habits) {
+  const mobileToggle = document.getElementById("heatmap-mobile-menu-toggle");
+  const mobileMenu = document.getElementById("heatmap-mobile-menu");
+
+  if (!mobileToggle || !mobileMenu) return;
+
+  syncMobileMenuSelection(activeHeatmapTab);
+
+  mobileToggle.onclick = (event) => {
+    event.stopPropagation();
+    mobileMenu.classList.toggle("hidden");
+  };
+
+  mobileToggle.addEventListener("focusout", (event) => {
+    const nextTarget = event.relatedTarget;
+
+    const shouldKeepOpen =
+      nextTarget &&
+      (mobileToggle.contains(nextTarget) || mobileMenu.contains(nextTarget));
+
+    if (!shouldKeepOpen) {
+      mobileMenu.classList.add("hidden");
+    }
+  });
+
+  mobileMenu.querySelectorAll("[data-view]").forEach((btn) => {
+    btn.onclick = (event) => {
+      event.stopPropagation();
+      const view = event.currentTarget.dataset.view;
+
+      if (view) {
+        updateTabStyles(view);
+        updateHeatmapChart(habits, view);
+      }
+
+      mobileMenu.classList.add("hidden");
+    };
+  });
+}
 
 export function updateHeatmapChart(habits, tab) {
   if (!heatmapChartInstance) return;
@@ -45,43 +104,45 @@ export function updateHeatmapChart(habits, tab) {
 }
 
 export function updateTabStyles(tab) {
+  activeHeatmapTab = tab;
+
   const indicator = document.getElementById("heatmap-tab-indicator");
   const btnWeekly = document.getElementById("view-btn-weekly");
   const btnMonthly = document.getElementById("view-btn-monthly");
   const btnYearly = document.getElementById("view-btn-yearly");
+  const switcher = document.getElementById("chart-view-switcher");
 
-  if (!indicator || !btnWeekly || !btnMonthly || !btnYearly) return;
+  if (!indicator || !btnWeekly || !btnMonthly || !btnYearly || !switcher)
+    return;
 
-  indicator.classList.remove(
-    "translate-x-0",
-    "translate-x-[calc(100%+0.5rem)]",
-    "translate-x-[calc(100%+4.5rem)]",
-  );
+  syncMobileMenuSelection(tab);
 
-  [btnWeekly, btnMonthly, btnYearly].forEach((btn) => {
+  const buttons = [btnWeekly, btnMonthly, btnYearly];
+  const activeButton =
+    tab === "monthly" ? btnMonthly : tab === "yearly" ? btnYearly : btnWeekly;
+
+  buttons.forEach((btn) => {
     btn.classList.remove("text-(--color-btn-primary-text)", "text-secondary");
     btn.classList.add("text-secondary");
   });
 
-  if (tab === "weekly") {
-    indicator.classList.add("translate-x-0");
-    btnWeekly.classList.replace(
-      "text-secondary",
-      "text-(--color-btn-primary-text)",
-    );
-  } else if (tab === "monthly") {
-    indicator.classList.add("translate-x-[calc(100%+0.5rem)]");
-    btnMonthly.classList.replace(
-      "text-secondary",
-      "text-(--color-btn-primary-text)",
-    );
-  } else if (tab === "yearly") {
-    indicator.classList.add("translate-x-[calc(100%+4.5rem)]");
-    btnYearly.classList.replace(
-      "text-secondary",
-      "text-(--color-btn-primary-text)",
-    );
-  }
+  activeButton.classList.remove("text-secondary");
+  activeButton.classList.add("text-(--color-btn-primary-text)");
+
+  const switcherStyle = window.getComputedStyle(switcher);
+  const paddingLeft = parseFloat(switcherStyle.paddingLeft) || 0;
+
+  const activeRect = activeButton.getBoundingClientRect();
+  const switcherRect = switcher.getBoundingClientRect();
+
+  const left = Math.max(
+    paddingLeft,
+    activeRect.left - switcherRect.left - paddingLeft,
+  );
+  const width = Math.max(activeRect.width, 0);
+
+  indicator.style.left = `${left}px`;
+  indicator.style.width = `${width}px`;
 }
 
 export function renderAnalyticsCharts(habits, currentHeatmapView) {
@@ -100,8 +161,16 @@ export function renderAnalyticsCharts(habits, currentHeatmapView) {
   dashboard.innerHTML = DashboardComponent.render(habits);
 
   AnalyticsController.init();
+  bindAnalyticsMobileMenu(habits);
 
-  updateTabStyles(currentHeatmapView);
+  if (!resizeListenerAttached) {
+    window.addEventListener("resize", handleAnalyticsResize);
+    resizeListenerAttached = true;
+  }
+
+  requestAnimationFrame(() => {
+    updateTabStyles(currentHeatmapView);
+  });
 
   const heatmapSeries = AnalyticsAdapter.generateHeatmapSeries(
     habits,
@@ -131,7 +200,12 @@ export function renderAnalyticsCharts(habits, currentHeatmapView) {
     chart: {
       id: "lifetime-heatmap",
       type: "heatmap",
-      height: currentHeatmapView === "monthly" ? 380 : 300,
+      height:
+        currentHeatmapView === "monthly"
+          ? 380
+          : currentHeatmapView === "yearly"
+            ? 400
+            : 300,
       toolbar: { show: false },
       fontFamily: "inherit",
       animations: {
@@ -143,28 +217,47 @@ export function renderAnalyticsCharts(habits, currentHeatmapView) {
     dataLabels: { enabled: false },
     plotOptions: {
       heatmap: {
-        radius: 4,
-        cellMargin: currentHeatmapView === "weekly" ? 12 : 6,
+        radius: currentHeatmapView === "weekly" ? 3 : 2,
+        cellMargin:
+          currentHeatmapView === "weekly"
+            ? 8
+            : currentHeatmapView === "monthly"
+              ? 4
+              : 2,
         colorScale: { ranges },
       },
     },
     stroke: {
       show: true,
-      width: currentHeatmapView === "weekly" ? 4 : 2,
+      width:
+        currentHeatmapView === "weekly"
+          ? 3
+          : currentHeatmapView === "monthly"
+            ? 2
+            : 1,
       colors: [isDark ? "#222f47" : "#e2e8f0"],
     },
     xaxis: {
       type: "category",
       labels: {
         show: true,
-        style: { colors: axisTextColor, fontSize: "11px", fontWeight: 600 },
+        style: {
+          colors: axisTextColor,
+          fontSize: currentHeatmapView === "weekly" ? "10px" : "9px",
+          fontWeight: 600,
+        },
+        maxHeight: 60,
       },
       axisBorder: { show: false },
       axisTicks: { show: false },
     },
     yaxis: {
       labels: {
-        style: { colors: axisTextColor, fontSize: "12px", fontWeight: 700 },
+        style: {
+          colors: axisTextColor,
+          fontSize: currentHeatmapView === "weekly" ? "11px" : "10px",
+          fontWeight: 700,
+        },
         offsetX: -5,
       },
     },

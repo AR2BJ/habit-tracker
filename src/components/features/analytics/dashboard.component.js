@@ -122,7 +122,7 @@ export const DashboardComponent = {
           class="lg:col-span-2 bg-surface-2 border border-border rounded-3xl p-6 flex flex-col justify-between shadow-sm"
         >
           <div
-            class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
+            class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between"
           >
             <div>
               <h4
@@ -137,41 +137,79 @@ export const DashboardComponent = {
               </p>
             </div>
 
-            <div id="chart-view-switcher"
-       class="relative flex w-full max-w-full overflow-hidden rounded-2xl border border-border bg-surface-2 p-1 isolation-auto sm:w-fit sm:min-w-70">
-              <div
-                id="heatmap-tab-indicator"
-                class="absolute top-1 left-1 h-[calc(100%-8px)] w-[calc(100%-9rem)] rounded-xl bg-brand/80 transition-all duration-300 ease-out z-0 shadow-sm"
-                style="background-color: color-mix(in oklab, var(--color-brand) 80%, transparent);"
-              ></div>
+            <div class="relative flex items-center justify-end">
+              <button
+                id="heatmap-mobile-menu-toggle"
+                class="sm:hidden inline-flex items-center justify-center h-8 w-8 rounded-lg border border-border bg-surface text-secondary hover:text-primary hover:bg-surface-2 transition shadow-sm cursor-pointer"
+                aria-label="Open view menu"
+              >
+                <i class="fa-regular fa-ellipsis-vertical text-lg"></i>
+              </button>
 
-              <button
-                data-view="weekly"
-                id="view-btn-weekly"
-                class="relative z-10 flex-1 min-w-0 whitespace-nowrap py-2 px-2 text-sm font-bold text-secondary transition cursor-pointer"
+              <div
+                id="heatmap-mobile-menu"
+                class="hidden absolute right-0 top-full mt-2 w-44 rounded-3xl border border-border bg-surface-2 shadow-lg z-20 overflow-hidden"
               >
-                Weekly
-              </button>
-              <button
-                data-view="monthly"
-                id="view-btn-monthly"
-                class="relative z-10 flex-1 min-w-0 whitespace-nowrap py-2 px-2 text-sm font-bold text-secondary transition cursor-pointer"
+                <button
+                  data-view="weekly"
+                  class="w-full px-4 py-3 text-left text-sm font-medium text-secondary hover:bg-surface-3"
+                >
+                  Weekly
+                </button>
+                <button
+                  data-view="monthly"
+                  class="w-full px-4 py-3 text-left text-sm font-medium text-secondary hover:bg-surface-3"
+                >
+                  Monthly
+                </button>
+                <button
+                  data-view="yearly"
+                  class="w-full px-4 py-3 text-left text-sm font-medium text-secondary hover:bg-surface-3"
+                >
+                  Yearly
+                </button>
+              </div>
+
+              <div
+                id="chart-view-switcher"
+                class="hidden sm:flex relative  overflow-hidden rounded-2xl border border-border bg-surface-2 p-1 isolation-auto"
               >
-                Monthly
-              </button>
-              <button
-                data-view="yearly"
-                id="view-btn-yearly"
-                class="relative z-10 flex-1 min-w-0 whitespace-nowrap py-2 px-2 text-sm font-bold text-secondary transition cursor-pointer"
-              >
-                Yearly
-              </button>
+                <div
+                  id="heatmap-tab-indicator"
+                  class="absolute top-1 left-1 h-[calc(100%-8px)] w-27.5 rounded-xl bg-brand/80 transition-all duration-300 ease-out z-0 shadow-sm"
+                  style="background-color: color-mix(in oklab, var(--color-brand) 80%, transparent);"
+                ></div>
+
+                <button
+                  data-view="weekly"
+                  id="view-btn-weekly"
+                  class="relative z-10 w-full px-3 py-2 text-sm font-bold text-secondary transition cursor-pointer sm:w-27.5"
+                >
+                  Weekly
+                </button>
+                <button
+                  data-view="monthly"
+                  id="view-btn-monthly"
+                  class="relative z-10 w-full px-3 py-2 text-sm font-bold text-secondary transition cursor-pointer sm:w-27.5"
+                >
+                  Monthly
+                </button>
+                <button
+                  data-view="yearly"
+                  id="view-btn-yearly"
+                  class="relative z-10 w-full px-3 py-2 text-sm font-bold text-secondary transition cursor-pointer sm:w-27.5"
+                >
+                  Yearly
+                </button>
+              </div>
             </div>
           </div>
-          <div
-            id="apex-heatmap-chart"
-            class="w-full mt-6"
-          ></div>
+          <div class="w-full mt-6 overflow-x-auto px-6">
+            <div
+              id="apex-heatmap-chart"
+              class="min-w-150 md:min-w-full"
+            ></div>
+          </div>
         </div>
 
         <div

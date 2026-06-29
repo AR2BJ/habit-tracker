@@ -104,7 +104,7 @@ export const HabitCardComponent = {
                 <span
                   class="text-xs md:text-sm font-bold text-primary flex items-center gap-1 mt-0.5"
                 >
-                  <i class="fa-solid fa-fire text-amber-500 text-[10px] md:text-sm"></i>
+                  <i class="fa-regular fa-fire text-amber-500 text-[10px] md:text-sm"></i>
                   <span>${current}d</span>
                 </span>
               </div>
@@ -118,7 +118,7 @@ export const HabitCardComponent = {
                 <span
                   class="text-xs md:text-sm font-bold text-primary flex items-center gap-1 mt-0.5"
                 >
-                  <i class="fa-solid fa-crown text-yellow-500 text-[10px] md:text-sm"></i>
+                  <i class="fa-regular fa-crown text-yellow-500 text-[10px] md:text-sm"></i>
                   <span>${best}d</span>
                 </span>
               </div>
@@ -130,7 +130,7 @@ export const HabitCardComponent = {
                 <span
                   class="text-xs md:text-sm font-bold text-primary flex items-center gap-1 mt-0.5"
                 >
-                  <i class="fa-solid fa-chart-simple text-brand/80 text-[10px] md:text-sm"></i>
+                  <i class="fa-regular fa-chart-simple text-brand/80 text-[10px] md:text-sm"></i>
                   <span>${totalChecks}</span>
                 </span>
               </div>
@@ -192,7 +192,7 @@ export const HabitCardComponent = {
                   data-id="${habit.id}"
                   class="dropdown-toggle-btn h-8 w-8 rounded-lg border border-border bg-surface text-secondary hover:text-primary hover:bg-surface-2 flex items-center justify-center transition shadow-sm cursor-pointer"
                 >
-                  <i class="fa-regular fa-ellipsis-vertical text-sm"></i>
+                  <i class="fa-regular fa-ellipsis-vertical text-lg"></i>
                 </button>
 
                 <div

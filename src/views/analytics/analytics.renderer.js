@@ -311,7 +311,7 @@ export function renderAnalyticsCharts(habits, currentHeatmapView) {
     },
     grid: {
       show: true,
-      borderColor: isDark ? "#e5e7eb" : "#111827",
+      borderColor: isDark ? "#e5e7eb" : "#bfcbd9",
       strokeDashArray: 4,
     },
     tooltip: { theme: isDark ? "dark" : "light" },

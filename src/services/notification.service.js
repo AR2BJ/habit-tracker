@@ -24,7 +24,7 @@ export const NotificationService = {
       <div class="flex items-center gap-3 text-secondary">
         ${
           undoAction
-            ? `<span id="${countdownId}" class="text-xs font-mono bg-surface-3 px-1.5 py-0.5 rounded text-primary">${duration / 1000}s</span>`
+            ? `<span id="${countdownId}" class="text-xs font-mono bg-(--color-surface-3) px-1.5 py-0.5 rounded text-primary">${duration / 1000}s</span>`
             : iconHTML
         }
         <span class="text-primary text-sm font-medium">${message}</span>
@@ -34,7 +34,7 @@ export const NotificationService = {
     if (undoAction) {
       const undoBtn = document.createElement("button");
       undoBtn.className =
-        "h-8 px-3 transition flex items-center text-brand/80 hover:text-(--color-brand-hover) justify-center gap-1 cursor-pointer rounded-lg bg-surface-2 hover:bg-(--color-surface-3) text-sm font-medium";
+        "h-8 px-3 transition flex items-center text-brand/80 hover:text-(--color-brand-hover) justify-center gap-1 cursor-pointer rounded-lg bg-surface-2 hover:bg-(--color-(--color-surface-3)) text-sm font-medium";
       undoBtn.innerHTML = `<i class="fa-regular fa-rotate-left text-xs"></i><span class="text-xs font-semibold">Undo</span>`;
 
       undoBtn.addEventListener("click", () => {

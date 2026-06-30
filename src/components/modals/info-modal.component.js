@@ -17,7 +17,7 @@ export const InfoModalComponent = {
             class="flex justify-between items-center mb-4 border-b border-border pb-3"
           >
             <div class="flex items-center gap-2">
-              <i class="fa-regular fa-shield-halved text-amber-500 text-lg"></i>
+              <i class="fa-regular fa-shield-halved text-amber-500/80 text-lg"></i>
               <h2 class="text-lg font-bold text-primary">
                 Streak Safeguard Guide
               </h2>
@@ -35,14 +35,14 @@ export const InfoModalComponent = {
               class="p-3 bg-amber-500/5 border border-amber-500/10 rounded-xl"
             >
               <h4
-                class="text-sm font-bold text-amber-500 uppercase tracking-wide"
+                class="text-sm font-bold text-amber-500/80 uppercase tracking-wide"
               >
                 <i class="fa-regular fa-lightbulb"></i> Core Feature: Skip Day
               </h4>
               <p class="text-base text-secondary mt-1 leading-relaxed">
                 <strong>Double-click</strong> on today or yesterday inside any
                 calendar cell to toggle a
-                <span class="text-amber-500 font-semibold"
+                <span class="text-amber-500/80 font-semibold"
                   >Skip Day (Leave)</span
                 >. This colorizes the cell in amber and locks your streak state.
               </p>
@@ -52,7 +52,7 @@ export const InfoModalComponent = {
               class="p-3 bg-emerald-500/5 border border-emerald-500/10 rounded-xl"
             >
               <h4
-                class="text-sm font-bold text-emerald-500 uppercase tracking-wide"
+                class="text-sm font-bold text-emerald-500/80 uppercase tracking-wide"
               >
                 <i class="fa-regular fa-bullseye-arrow"></i> Normal Check-In
               </h4>

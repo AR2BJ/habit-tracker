@@ -46,7 +46,7 @@ export const HabitActionController = {
                 ? `Completed "${habit.name}" for today! ✨`
                 : `Removed completion for "${habit.name}".`,
               icon: isNowCompleted ? "fa-circle-check" : "fa-circle",
-              iconColor: isNowCompleted ? "text-emerald-500" : "text-slate-400",
+              iconColor: isNowCompleted ? "text-emerald-500/80" : "text-slate-400/80",
               duration: 3000,
             });
           }
@@ -55,7 +55,7 @@ export const HabitActionController = {
             type: "error",
             message: error.message,
             icon: "fa-circle-exclamation",
-            iconColor: "text-rose-500",
+            iconColor: "text-rose-500/80",
             duration: 4000,
           });
         }
@@ -96,7 +96,7 @@ export const HabitActionController = {
                 ? `Safeguard activated: Skipped day for "${habit.name}".`
                 : `Removed safeguard for "${habit.name}".`,
               icon: isNowSkipped ? "fa-shield-halved" : "fa-calendar",
-              iconColor: isNowSkipped ? "text-amber-500" : "text-slate-400",
+              iconColor: isNowSkipped ? "text-amber-500/80" : "text-slate-400/80",
               duration: 3000,
             });
           } catch (error) {
@@ -126,8 +126,8 @@ export const HabitActionController = {
                   : `Unchecked "${habit.name}" for ${dateLabel}.`,
                 icon: isNowCompleted ? "fa-square-check" : "fa-square-xmark",
                 iconColor: isNowCompleted
-                  ? "text-emerald-500"
-                  : "text-gary-400",
+                  ? "text-emerald-500/80"
+                  : "text-gary-400/80",
                 duration: 3000,
               });
             } catch (error) {

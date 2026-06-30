@@ -56,9 +56,9 @@ export const HabitCalendarComponent = {
 
             let bgClass = "bg-(--color-surface-4)";
             if (day.completed) {
-              bgClass = "bg-emerald-500 shadow-lg shadow-emerald-500/20";
+              bgClass = "bg-emerald-500/80 shadow-lg shadow-emerald-500/20";
             } else if (day.skipped) {
-              bgClass = "bg-amber-500 shadow-lg shadow-amber-500/20";
+              bgClass = "bg-amber-500/80 shadow-lg shadow-amber-500/20";
             }
 
             return `

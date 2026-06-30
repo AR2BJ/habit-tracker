@@ -144,7 +144,7 @@ export const SettingsController = {
         type: "info",
         message: "There is no data to export.",
         icon: "fa-circle-info",
-        iconColor: "text-sky-500",
+        iconColor: "text-sky-500/80",
         duration: 3000,
       });
     } else {
@@ -165,7 +165,7 @@ export const SettingsController = {
         type: "success",
         message: "Database structural JSON ledger exported successfully.",
         icon: "fa-file-arrow-down",
-        iconColor: "text-emerald-500",
+        iconColor: "text-emerald-500/80",
         duration: 3000,
       });
     }
@@ -205,7 +205,7 @@ export const SettingsController = {
         type: "error",
         message: "Invalid format! Only structural JSON files are permitted.",
         icon: "fa-circle-xmark",
-        iconColor: "text-red-500",
+        iconColor: "text-red-500/80",
         duration: 3500,
       });
       return;
@@ -241,7 +241,7 @@ export const SettingsController = {
           type: "success",
           message: "Data ledger synchronized and parsed successfully.",
           icon: "fa-circle-check",
-          iconColor: "text-emerald-500",
+          iconColor: "text-emerald-500/80",
           duration: 3500,
         });
       } catch (err) {
@@ -249,7 +249,7 @@ export const SettingsController = {
           type: "error",
           message: "Failed to parse structural integrity of JSON file.",
           icon: "fa-triangle-exclamation",
-          iconColor: "text-red-500",
+          iconColor: "text-red-500/80",
           duration: 3500,
         });
       }
@@ -289,11 +289,11 @@ export const SettingsController = {
     const toggleDot = document.getElementById("sett-auto-archive-dot");
 
     if (nextState) {
-      toggleBtn?.classList.replace("bg-neutral-300", "bg-brand");
+      toggleBtn?.classList.replace("bg-neutral-300/80", "bg-brand");
       toggleBtn?.classList.replace("dark:bg-neutral-700", "bg-brand");
       toggleDot?.classList.replace("translate-x-0", "translate-x-5");
     } else {
-      toggleBtn?.classList.replace("bg-brand", "bg-neutral-300");
+      toggleBtn?.classList.replace("bg-brand/80", "bg-neutral-300/80");
       toggleBtn?.classList.add("dark:bg-neutral-700");
       toggleDot?.classList.replace("translate-x-5", "translate-x-0");
     }
@@ -302,7 +302,7 @@ export const SettingsController = {
       type: "info",
       message: `Autonomous archiving pipeline has been ${nextState ? "activated" : "deactivated"}.`,
       icon: "fa-robot",
-      iconColor: "text-indigo-500",
+      iconColor: "text-indigo-500/80",
       duration: 3000,
     });
 
@@ -363,7 +363,7 @@ export const SettingsController = {
         message:
           "Stale habits exceeding 30 days structural limits auto-archived.",
         icon: "fa-box-archive",
-        iconColor: "text-indigo-400",
+        iconColor: "text-indigo-400/80",
         duration: 4000,
       });
     }
@@ -415,7 +415,7 @@ export const SettingsController = {
       message:
         "Application synchronization storage has been completely cleared.",
       icon: "fa-triangle-exclamation",
-      iconColor: "text-rose-500",
+      iconColor: "text-rose-500/80",
       duration: 3500,
     });
   },

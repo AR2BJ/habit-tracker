@@ -1,14 +1,12 @@
 import { getTheme, setTheme, toggleTheme } from "@/services/theme.service.js";
 
-import { SettingsController } from "./settings.controller";
-
 export const ThemeController = {
   updateIcon(theme) {
     const btn = document.getElementById("theme-toggle");
     if (!btn) return;
     btn.innerHTML =
       theme === "dark"
-        ? `<i class="fa-regular fa-sun text-yellow-500"></i>`
+        ? `<i class="fa-regular fa-sun text-yellow-500/80"></i>`
         : `<i class="fa-regular fa-moon"></i>`;
     theme === "dark"
       ? btn.classList.replace("hover:bg-slate-600/10", "hover:bg-yellow-600/10")

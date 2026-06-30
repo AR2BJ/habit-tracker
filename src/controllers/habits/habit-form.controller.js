@@ -48,7 +48,7 @@ export const HabitFormController = {
           type: "success",
           message: `Habit "${name}" [${category}] created successfully!`,
           icon: "fa-check",
-          iconColor: "text-emerald-500",
+          iconColor: "text-emerald-500/80",
           duration: 3000,
         });
       } catch (error) {
@@ -56,7 +56,7 @@ export const HabitFormController = {
           type: "error",
           message: error.message,
           icon: "fa-triangle-exclamation",
-          iconColor: "text-rose-500",
+          iconColor: "text-rose-500/80",
           duration: 4000,
         });
       }
@@ -152,7 +152,7 @@ export const HabitFormController = {
         type: "error",
         message: "Unable to edit habit. Please try again.",
         icon: "fa-triangle-exclamation",
-        iconColor: "text-rose-500",
+        iconColor: "text-rose-500/80",
         duration: 4000,
       });
       return;
@@ -164,7 +164,7 @@ export const HabitFormController = {
         type: "error",
         message: "Habit name cannot be empty.",
         icon: "fa-triangle-exclamation",
-        iconColor: "text-rose-500",
+        iconColor: "text-rose-500/80",
         duration: 4000,
       });
       return;
@@ -187,7 +187,7 @@ export const HabitFormController = {
         type: "success",
         message: `Habit renamed to "${newName}"`,
         icon: "fa-check",
-        iconColor: "text-emerald-500",
+        iconColor: "text-emerald-500/80",
         duration: 3000,
       });
     } catch (error) {
@@ -195,7 +195,7 @@ export const HabitFormController = {
         type: "error",
         message: error.message,
         icon: "fa-triangle-exclamation",
-        iconColor: "text-rose-500",
+        iconColor: "text-rose-500/80",
         duration: 4000,
       });
     }

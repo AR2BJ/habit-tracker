@@ -11,7 +11,7 @@ export function renderHabitList(habits, activeTab = "active") {
 
     countBadge.innerHTML = `
       <p class="text-secondary font-semibold text-sm">
-        <span class="text-brand font-extrabold">${totalCount}</span>&nbsp; habits
+        <span class="text-brand/80 font-extrabold">${totalCount}</span>&nbsp; habits
       </p>
     `;
   }

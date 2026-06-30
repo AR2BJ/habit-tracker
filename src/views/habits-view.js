@@ -141,56 +141,56 @@ export const HabitsView = {
 
               <button
                 data-category="General"
-                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i
-                  class="category-icon fa-regular fa-folders text-amber-500"
+                  class="category-icon fa-regular fa-folders text-amber-500/80"
                 ></i>
                 <span>General</span>
               </button>
 
               <button
                 data-category="Health"
-                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i
-                  class="category-icon fa-regular fa-apple-whole text-emerald-500"
+                  class="category-icon fa-regular fa-apple-whole text-emerald-500/80"
                 ></i>
                 <span>Health</span>
               </button>
 
               <button
                 data-category="Work"
-                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
-                <i class="category-icon fa-regular fa-laptop text-sky-500"></i>
+                <i class="category-icon fa-regular fa-laptop text-sky-500/80"></i>
                 <span>Work</span>
               </button>
 
               <button
                 data-category="Finance"
-                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i
-                  class="category-icon fa-regular fa-dollar-sign text-violet-500"
+                  class="category-icon fa-regular fa-dollar-sign text-violet-500/80"
                 ></i>
                 <span>Finance</span>
               </button>
 
               <button
                 data-category="Mind"
-                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
-                <i class="category-icon fa-regular fa-spa text-rose-500"></i>
+                <i class="category-icon fa-regular fa-spa text-rose-500/80"></i>
                 <span>Mind</span>
               </button>
 
               <button
                 data-category="Harmful"
-                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-3) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i
-                  class="category-icon fa-regular fa-ban-smoking text-mauve-500"
+                  class="category-icon fa-regular fa-ban-smoking text-mauve-500/80"
                 ></i>
                 <span>Harmful</span>
               </button>
@@ -198,7 +198,7 @@ export const HabitsView = {
 
             <div
               id="habit-count-badge"
-              class="shrink-0 flex items-center gap-1.5 px-3 py-1 bg-surface-3 rounded-xl text-xs font-bold text-primary select-none animate-fade-in"
+              class="shrink-0 flex items-center gap-1.5 px-3 py-1 bg-(--color-surface-3) rounded-xl text-xs font-bold text-primary select-none animate-fade-in"
             ></div>
           </div>
 

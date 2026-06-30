@@ -2,6 +2,7 @@ import {
   calculateStreak,
   calculateSuccessRate,
   formatDate,
+  getWeeklyCompletionCount,
 } from "@/utils/helpers";
 
 export const DashboardComponent = {
@@ -12,6 +13,13 @@ export const DashboardComponent = {
     const completedToday = habits.filter((habit) =>
       habit.completedDates.includes(todayStr),
     ).length;
+
+    const current = habits.length
+      ? Math.max(
+          0,
+          ...habits.map((h) => calculateStreak(h.completedDates).current),
+        )
+      : 0;
 
     const bestStreak = habits.length
       ? Math.max(
@@ -28,283 +36,446 @@ export const DashboardComponent = {
       : 0;
 
     const archivedCount = habits.filter((habit) => habit.archived).length;
-    const activeHabits = habits.filter((h) => !h.archived);
+
+    let goalsMetThisWeek = 0;
+    let goalsOverflowThisWeek = 0;
+
+    habits.forEach((habit) => {
+      const weeklyChecks = getWeeklyCompletionCount(habit.completedDates);
+      const targetFrequency = Number(habit.frequency ?? 7);
+
+      if (weeklyChecks > targetFrequency) {
+        goalsOverflowThisWeek++;
+      }
+      if (weeklyChecks >= targetFrequency) {
+        goalsMetThisWeek++;
+      }
+    });
 
     return `
       <div
-        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 w-full col-span-full"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full col-span-full"
       >
         <div
-          class="col-span-2 sm:col-span-1 bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-2xl p-6 transition shadow-sm flex flex-col justify-between min-h-36"
+          class="col-span-2 sm:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-sky-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
         >
-          <div class="flex items-center justify-between gap-2 text-secondary">
-            <span class="text-sm font-bold tracking-wide truncate"
+          <i
+            class="fa-solid fa-layer-group absolute -right-4 -bottom-6 text-[10rem] text-sky-500 opacity-[0.04] dark:opacity-[0.06] rotate-20 pointer-events-none group-hover:scale-110 group-hover:rotate-10 transition-transform duration-500"
+          ></i>
+
+          <div class="flex flex-col gap-1 z-10">
+            <span
+              class="text-xs font-bold text-secondary uppercase tracking-wider"
               >Total Habits</span
             >
-            <i
-              class="fa-regular fa-layer-group text-6xl opacity-70 text-sky-500"
-            ></i>
-          </div>
-          <div class="text-4xl font-extrabold tracking-tight text-primary mt-3">
-            ${totalHabits}
+            <div class="text-4xl font-black text-primary tracking-tight mt-2">
+              ${totalHabits}
+            </div>
+            <p class="text-[10px] text-muted font-medium mt-1">
+              <span class="text-sky-500/80 font-bold"
+                >${habits.length} active</span
+              >
+              right now
+            </p>
           </div>
         </div>
 
         <div
-          class="col-span-2 sm:col-span-1 bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-2xl p-6 transition shadow-sm flex flex-col justify-between min-h-36"
+          class="col-span-2 sm:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-emerald-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
         >
-          <div class="flex items-center justify-between gap-2 text-secondary">
-            <span class="text-sm font-bold tracking-wide truncate"
+          <i
+            class="fa-solid fa-circle-check absolute -right-4 -bottom-6 text-[10rem] text-emerald-500 opacity-[0.04] dark:opacity-[0.06] rotate-15 pointer-events-none group-hover:scale-110 group-hover:rotate-5 transition-transform duration-500"
+          ></i>
+
+          <div class="flex flex-col gap-1 z-10">
+            <span
+              class="text-xs font-bold text-secondary uppercase tracking-wider"
               >Completed Today</span
             >
-            <i
-              class="fa-regular fa-circle-check text-6xl opacity-70 text-emerald-500"
-            ></i>
-          </div>
-          <div class="text-4xl font-extrabold tracking-tight text-primary mt-3">
-            ${completedToday}
+            <div class="text-4xl font-black text-primary tracking-tight mt-2">
+              ${completedToday}
+            </div>
+            <p class="text-[10px] text-muted font-medium mt-1">
+              ${
+                completedToday === habits.length
+                  ? `<span class="text-emerald-500/80 font-bold flex items-center gap-1"><i class="fa-solid fa-sparkles"></i> All caught up!</span>`
+                  : `waiting for ${habits.length - completedToday} more checks`
+              }
+            </p>
           </div>
         </div>
 
         <div
-          class="col-span-2 sm:col-span-1 bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-2xl p-6 transition shadow-sm flex flex-col justify-between min-h-36"
+          class="col-span-2 sm:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 ${
+            goalsOverflowThisWeek > 0
+              ? "hover:border-amber-500/30"
+              : "hover:border-emerald-500/30"
+          } rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
         >
-          <div class="flex items-center justify-between gap-2 text-secondary">
-            <span class="text-sm font-bold tracking-wide truncate"
+          <i
+            class="fa-solid ${
+              goalsOverflowThisWeek > 0
+                ? "fa-bolt-lightning text-amber-500"
+                : "fa-circle-check text-emerald-500"
+            } absolute -right-2 -bottom-6 text-[10rem] opacity-[0.04] dark:opacity-[0.06] rotate-25 pointer-events-none group-hover:scale-110 group-hover:rotate-15 transition-transform duration-500"
+          ></i>
+
+          <div class="flex flex-col gap-1 z-10">
+            <span
+              class="text-xs font-bold text-secondary uppercase tracking-wider"
+              >Weekly Targets</span
+            >
+            <div class="text-4xl font-black text-primary tracking-tight mt-2">
+              ${goalsMetThisWeek}<span class="text-sm font-bold text-muted"
+                >/${habits.length}</span
+              >
+            </div>
+            <p class="text-[10px] text-muted font-medium mt-1">
+              ${
+                goalsOverflowThisWeek > 0
+                  ? `<span class="text-amber-500/80 font-bold flex items-center gap-1 animate-pulse"><i class="fa-solid fa-fire text-[9px]"></i> ${goalsOverflowThisWeek} Smashed!</span>`
+                  : "goals met this week"
+              }
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="col-span-2 sm:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-orange-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+        >
+          <i
+            class="fa-solid fa-fire absolute -right-2 -bottom-4 text-[10rem] text-orange-500 opacity-[0.04] dark:opacity-[0.06] rotate-12 pointer-events-none group-hover:scale-110 group-hover:rotate-0 transition-transform duration-500"
+          ></i>
+
+          <div class="flex flex-col gap-1 z-10">
+            <span
+              class="text-xs font-bold text-secondary uppercase tracking-wider"
               >Best Streak</span
             >
-            <i
-              class="fa-regular fa-fire text-6xl text-orange-500 opacity-70"
-            ></i>
-          </div>
-          <div class="text-4xl font-extrabold tracking-tight text-primary mt-3">
-            ${bestStreak}<span class="text-sm font-bold text-secondary ml-1"
-              >days</span
-            >
+            <div class="text-4xl font-black text-primary tracking-tight mt-2">
+              ${bestStreak}<span class="text-sm font-bold text-secondary ml-0.5"
+                >days</span
+              >
+            </div>
+            <p class="text-[10px] text-muted font-medium mt-1">
+              current streak is
+              <span class="text-orange-500/80 font-bold">${current}d</span>
+            </p>
           </div>
         </div>
 
         <div
-          class="col-span-2 sm:col-span-1 bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-2xl p-6 transition shadow-sm flex flex-col justify-between min-h-36"
+          class="col-span-2 sm:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-indigo-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
         >
-          <div class="flex items-center justify-between gap-2 text-secondary">
-            <span class="text-sm font-bold tracking-wide truncate"
+          <i
+            class="fa-solid fa-chart-line absolute -right-4 -bottom-6 text-[10rem] text-indigo-500 opacity-[0.04] dark:opacity-[0.06] rotate-18 pointer-events-none group-hover:scale-110 group-hover:rotate-[8deg] transition-transform duration-500"
+          ></i>
+
+          <div class="flex flex-col gap-1 z-10">
+            <span
+              class="text-xs font-bold text-secondary uppercase tracking-wider"
               >Avg Success</span
             >
-            <i
-              class="fa-regular fa-chart-line text-6xl text-brand/80 opacity-70"
-            ></i>
-          </div>
-          <div class="text-4xl font-extrabold tracking-tight text-primary mt-3">
-            ${averageSuccessRate}%
+            <div class="text-4xl font-black text-primary tracking-tight mt-2">
+              ${averageSuccessRate}%
+            </div>
+            <p class="text-[10px] text-muted font-medium mt-1">
+              ${
+                averageSuccessRate >= 70
+                  ? `<span class="text-indigo-500/80 font-bold">Excellent consistency</span>`
+                  : `keep pushing to break 70%`
+              }
+            </p>
           </div>
         </div>
 
         <div
-          class="col-span-2 md:col-span-4 lg:col-span-1 bg-surface-2 border border-border hover:-translate-y-1 hover:border-brand/30 rounded-2xl p-6 transition shadow-sm flex flex-col justify-between min-h-36"
+          class="col-span-2 sm:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-slate-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
         >
-          <div class="flex items-center justify-between gap-2 text-secondary">
-            <span class="text-sm font-bold tracking-wide truncate"
+          <i
+            class="fa-regular fa-box-archive absolute -right-4 -bottom-6 text-[10rem] text-slate-500 opacity-[0.04] dark:opacity-[0.06] rotate-18 pointer-events-none group-hover:scale-110 group-hover:rotate-[8deg] transition-transform duration-500"
+          ></i>
+
+          <div class="flex flex-col gap-1 z-10">
+            <span
+              class="text-xs font-bold text-secondary uppercase tracking-wider"
               >Archived</span
             >
-            <i class="fa-regular fa-box-archive text-6xl opacity-70"></i>
-          </div>
-          <div class="text-4xl font-extrabold tracking-tight text-primary mt-3">
-            ${archivedCount}
+            <div class="text-4xl font-black text-primary tracking-tight mt-2">
+              ${archivedCount}
+            </div>
+            <p class="text-[10px] text-muted font-medium mt-1">
+              ${
+                archivedCount > 0
+                  ? `<span class="text-slate-500/80 font-bold">${archivedCount} habits</span> safely stored`
+                  : `workspace is fully active`
+              }
+            </p>
           </div>
         </div>
-      </div>
 
-      <div
-        class="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full col-span-full mt-6"
-      >
         <div
-          class="lg:col-span-2 bg-surface-2 border border-border rounded-2xl p-6 flex flex-col justify-between shadow-sm"
+          class="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full col-span-full mt-6"
         >
           <div
-            class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between"
+            class="lg:col-span-2 bg-surface-2 border border-border/70 rounded-2xl p-6 flex flex-col justify-between"
+          >
+            <div
+              class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between"
+            >
+              <div>
+                <h4
+                  class="text-lg font-bold text-primary flex items-center gap-2"
+                >
+                  <i class="fa-regular fa-calendar text-brand/80 text-xl"></i>
+                  Lifetime Activity Grid
+                </h4>
+                <p class="text-sm text-secondary mt-1">
+                  Advanced multi-tier habit density repository mapped by sprint
+                  lifecycle.
+                </p>
+              </div>
+
+              <div class="relative flex items-center justify-end">
+                <button
+                  id="heatmap-mobile-menu-toggle"
+                  class="sm:hidden inline-flex items-center justify-center h-8 w-8 rounded-lg border border-border bg-surface text-secondary hover:text-primary hover:bg-surface-2 transition shadow-sm cursor-pointer"
+                  aria-label="Open view menu"
+                >
+                  <i class="fa-regular fa-ellipsis-vertical text-lg"></i>
+                </button>
+
+                <div
+                  id="heatmap-mobile-menu"
+                  class="hidden absolute right-0 top-full mt-2 w-44 rounded-2xl border border-border bg-surface-2 shadow-lg z-20 overflow-hidden"
+                >
+                  <button
+                    data-view="weekly"
+                    class="w-full px-4 py-3 text-left text-sm font-medium text-secondary hover:bg-(--color-surface-3)"
+                  >
+                    Weekly
+                  </button>
+                  <button
+                    data-view="monthly"
+                    class="w-full px-4 py-3 text-left text-sm font-medium text-secondary hover:bg-(--color-surface-3)"
+                  >
+                    Monthly
+                  </button>
+                  <button
+                    data-view="yearly"
+                    class="w-full px-4 py-3 text-left text-sm font-medium text-secondary hover:bg-(--color-surface-3)"
+                  >
+                    Yearly
+                  </button>
+                </div>
+
+                <div
+                  id="chart-view-switcher"
+                  class="hidden sm:flex relative  overflow-hidden rounded-2xl border border-border bg-surface-2 p-1 isolation-auto"
+                >
+                  <div
+                    id="heatmap-tab-indicator"
+                    class="absolute top-1 left-1 h-[calc(100%-8px)] w-27.5 rounded-xl bg-brand/80 transition-all duration-300 ease-out z-0 shadow-sm"
+                    style="background-color: color-mix(in oklab, var(--color-brand) 80%, transparent);"
+                  ></div>
+
+                  <button
+                    data-view="weekly"
+                    id="view-btn-weekly"
+                    class="relative z-10 w-full px-3 py-2 text-sm font-bold text-secondary transition cursor-pointer sm:w-27.5"
+                  >
+                    Weekly
+                  </button>
+                  <button
+                    data-view="monthly"
+                    id="view-btn-monthly"
+                    class="relative z-10 w-full px-3 py-2 text-sm font-bold text-secondary transition cursor-pointer sm:w-27.5"
+                  >
+                    Monthly
+                  </button>
+                  <button
+                    data-view="yearly"
+                    id="view-btn-yearly"
+                    class="relative z-10 w-full px-3 py-2 text-sm font-bold text-secondary transition cursor-pointer sm:w-27.5"
+                  >
+                    Yearly
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="w-full mt-6 overflow-x-auto px-6">
+              <div
+                id="apex-heatmap-chart"
+                class="min-w-150 md:min-w-full"
+              ></div>
+            </div>
+          </div>
+
+          <div
+            class="bg-surface-2 border border-border/70 rounded-2xl p-6 flex flex-col justify-between"
           >
             <div>
               <h4
                 class="text-lg font-bold text-primary flex items-center gap-2"
               >
-                <i class="fa-regular fa-calendar text-brand/80 text-2xl"></i>
-                Lifetime Activity Grid
+                <i
+                  class="fa-regular fa-chart-simple text-amber-500/80 text-xl"
+                ></i>
+                Weekday Distribution
               </h4>
               <p class="text-sm text-secondary mt-1">
-                Advanced multi-tier habit density repository mapped by sprint
-                lifecycle.
+                Analysis of your execution behavior mapped by day of the week.
               </p>
             </div>
-
-            <div class="relative flex items-center justify-end">
-              <button
-                id="heatmap-mobile-menu-toggle"
-                class="sm:hidden inline-flex items-center justify-center h-8 w-8 rounded-lg border border-border bg-surface text-secondary hover:text-primary hover:bg-surface-2 transition shadow-sm cursor-pointer"
-                aria-label="Open view menu"
-              >
-                <i class="fa-regular fa-ellipsis-vertical text-lg"></i>
-              </button>
-
-              <div
-                id="heatmap-mobile-menu"
-                class="hidden absolute right-0 top-full mt-2 w-44 rounded-2xl border border-border bg-surface-2 shadow-lg z-20 overflow-hidden"
-              >
-                <button
-                  data-view="weekly"
-                  class="w-full px-4 py-3 text-left text-sm font-medium text-secondary hover:bg-surface-3"
-                >
-                  Weekly
-                </button>
-                <button
-                  data-view="monthly"
-                  class="w-full px-4 py-3 text-left text-sm font-medium text-secondary hover:bg-surface-3"
-                >
-                  Monthly
-                </button>
-                <button
-                  data-view="yearly"
-                  class="w-full px-4 py-3 text-left text-sm font-medium text-secondary hover:bg-surface-3"
-                >
-                  Yearly
-                </button>
-              </div>
-
-              <div
-                id="chart-view-switcher"
-                class="hidden sm:flex relative  overflow-hidden rounded-2xl border border-border bg-surface-2 p-1 isolation-auto"
-              >
-                <div
-                  id="heatmap-tab-indicator"
-                  class="absolute top-1 left-1 h-[calc(100%-8px)] w-27.5 rounded-xl bg-brand/80 transition-all duration-300 ease-out z-0 shadow-sm"
-                  style="background-color: color-mix(in oklab, var(--color-brand) 80%, transparent);"
-                ></div>
-
-                <button
-                  data-view="weekly"
-                  id="view-btn-weekly"
-                  class="relative z-10 w-full px-3 py-2 text-sm font-bold text-secondary transition cursor-pointer sm:w-27.5"
-                >
-                  Weekly
-                </button>
-                <button
-                  data-view="monthly"
-                  id="view-btn-monthly"
-                  class="relative z-10 w-full px-3 py-2 text-sm font-bold text-secondary transition cursor-pointer sm:w-27.5"
-                >
-                  Monthly
-                </button>
-                <button
-                  data-view="yearly"
-                  id="view-btn-yearly"
-                  class="relative z-10 w-full px-3 py-2 text-sm font-bold text-secondary transition cursor-pointer sm:w-27.5"
-                >
-                  Yearly
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="w-full mt-6 overflow-x-auto px-6">
             <div
-              id="apex-heatmap-chart"
-              class="min-w-150 md:min-w-full"
+              id="apex-weekday-chart"
+              class="w-full"
             ></div>
           </div>
         </div>
 
         <div
-          class="bg-surface-2 border border-border rounded-2xl p-6 flex flex-col justify-between shadow-sm"
+          class="w-full col-span-full mt-8 border border-border/70 rounded-2xl p-6 bg-surface-1"
         >
-          <div>
-            <h4 class="text-lg font-bold text-primary flex items-center gap-2">
-              <i class="fa-regular fa-chart-simple text-amber-500 text-2xl"></i>
-              Weekday Distribution
-            </h4>
-            <p class="text-sm text-secondary mt-1">
-              Analysis of your execution behavior mapped by day of the week.
-            </p>
-          </div>
-          <div
-            id="apex-weekday-chart"
-            class="w-full"
-          ></div>
-        </div>
-      </div>
+          <h4 class="text-lg font-bold text-primary flex items-center gap-2">
+            <i class="fa-regular fa-layer-group text-brand/80 text-xl"></i>
+            Individual All-Time Analytics
+          </h4>
+          <p class="text-xs text-secondary/80 mt-1 font-medium">
+            A deep dive into your behavioural consistency and peak performance
+            trends mapped across weekdays.
+          </p>
 
-      <div class="w-full col-span-full mt-8 space-y-4">
-        <h3
-          class="text-xl font-bold text-primary tracking-tight flex items-center gap-2"
-        >
-          <i class="fa-regular fa-layer-group text-brand/80 text-3xl"></i>
-          Individual All-Time Analytics
-        </h3>
-        <div class="grid grid-cols-1 gap-4">
-          ${
-            activeHabits.length === 0
-              ? `<div class="text-center py-12 text-secondary text-base bg-surface-2 rounded-2xl border border-dashed border-border flex flex-col items-center justify-center gap-2">
-                <i class="fa-regular fa-box-open text-2xl opacity-40"></i>
-                <span>No active habits to review.</span>
-               </div>`
-              : activeHabits
+          <div class="grid grid-cols-1 gap-0">
+            ${
+              habits.length === 0
+                ? `<div class="text-center py-12 text-secondary text-base bg-surface-2 rounded-2xl border         border-dashed border-border flex flex-col items-center justify-center gap-2 mt-5">
+                      <i class="fa-regular fa-box-open text-2xl opacity-20"></i>
+                      <span>No active habits to review.</span>
+                  </div>`
+                : `<div class="mt-2 divide-y divide-border/40">
+                ${habits
                   .map((habit) => {
                     const stats = calculateStreak(habit.completedDates);
-                    const totalChecks = habit.completedDates.length;
-                    const lifetimeRate = calculateSuccessRate(habit);
+                    const lifetimeRate = Math.round(
+                      calculateSuccessRate(habit),
+                    );
 
-                    let batteryColor = "bg-red-500";
-                    let batteryText = "At Risk";
+                    const weeklyChecks = getWeeklyCompletionCount(
+                      habit.completedDates,
+                    );
+                    const targetFrequency = Number(habit.frequency ?? 7);
+                    const isGoalMet = weeklyChecks >= targetFrequency;
+                    const isGoalOverflow = weeklyChecks > targetFrequency;
+
+                    let rowBadgeStyle =
+                      "bg-(--color-surface-3) text-secondary border-border/50";
+                    let rowBadgeText = "On Track";
+                    let rowBadgeTextIcon = "";
+                    let rowIcon = "fa-bullseye-arrow text-sky-500/80";
+
+                    if (isGoalMet) {
+                      rowBadgeStyle =
+                        "bg-emerald-500/10 text-emerald-500/80 border-emerald-500/20 font-semibold";
+                      rowBadgeText = "Target Met";
+                      rowIcon = "fa-circle-check text-emerald-500/80";
+                    }
+                    if (isGoalOverflow) {
+                      rowBadgeStyle =
+                        "bg-amber-500/10 text-amber-500/80 border-amber-500/30 font-bold animate-pulse shadow-sm";
+                      rowBadgeText = "Overachieved";
+                      rowBadgeTextIcon = "fa-bolt-lightning text-amber-500/80";
+                      rowIcon = "fa-bolt-lightning text-amber-500/80";
+                    }
+
+                    let batteryColor = "bg-brand/80";
+                    let batteryText = "Stable";
                     let badgeStyle =
-                      "border-red-500/20 bg-red-500/5 text-red-500";
+                      "bg-brand/10 text-brand/80 border-brand/20";
 
-                    if (lifetimeRate >= 75) {
-                      batteryColor = "bg-emerald-500";
-                      batteryText = "Solidified";
+                    if (lifetimeRate < 35) {
+                      batteryColor = "bg-red-500/80";
+                      batteryText = "Critical";
                       badgeStyle =
-                        "border-emerald-500/20 bg-emerald-500/5 text-emerald-500";
-                    } else if (lifetimeRate >= 45) {
-                      batteryColor = "bg-amber-500";
-                      batteryText = "Stabilizing";
+                        "bg-red-500/10 text-red-500/80 border-red-500/20";
+                    } else if (lifetimeRate < 65) {
+                      batteryColor = "bg-amber-500/80";
+                      batteryText = "Warning";
                       badgeStyle =
-                        "border-amber-500/20 bg-amber-500/5 text-amber-500";
+                        "bg-amber-500/10 text-amber-500/80 border-amber-500/20";
                     }
 
                     return `
-                    <div class="bg-surface-2 border border-border rounded-2xl p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:shadow-md transition duration-200">
-                      <div>
-                        <h4 class="text-lg font-bold text-primary">${habit.name}</h4>
-                        <p class="text-sm text-secondary mt-1"><i class="fa-regular fa-clock text-xs"></i> Since: ${habit.createdAt}</p>
-                      </div>
-                      <div class="grid grid-cols-3 gap-6 text-center bg-surface-2/40 border border-border/50 px-6 py-3 rounded-2xl w-full lg:w-auto">
-                        <div>
-                          <div class="text-[11px] uppercase font-bold text-secondary tracking-wider">Ticks</div>
-                          <div class="text-lg font-extrabold text-primary mt-1">${totalChecks}</div>
-                        </div>
-                        <div>
-                          <div class="text-[11px] uppercase font-bold text-secondary tracking-wider">Streak</div>
-                          <div class="text-lg font-extrabold text-amber-500 mt-1">${stats.best}d</div>
-                        </div>
-                        <div>
-                          <div class="text-[11px] uppercase font-bold text-secondary tracking-wider">Success</div>
-                          <div class="text-lg font-extrabold text-brand/80 mt-1">${lifetimeRate}%</div>
-                        </div>
-                      </div>
-                      <div class="w-full lg:w-48 flex items-center justify-between gap-4 border-t lg:border-t-0 pt-4 lg:pt-0 border-border/50">
-                        <div class="w-full space-y-1.5">
-                          <div class="flex justify-between items-center text-xs">
-                            <span class="text-secondary font-medium">Stability</span>
-                            <span class="font-bold text-primary">${lifetimeRate}%</span>
+                      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 py-5 first:pt-4 last:pb-1 group/row">
+                        
+                        <div class="flex items-center gap-3 min-w-0 flex-1">
+                          <div class="w-full">
+                            <div class="text-sm font-bold text-primary truncate flex items-center gap-2">
+                              <span>${habit.name}</span>
+                              <span class="inline-flex lg:hidden items-center rounded-md border ${rowBadgeStyle} px-1.5 py-0.5 text-[9px] uppercase tracking-wider">
+                                ${rowBadgeText}
+                                ${rowBadgeTextIcon ? `<i class="fa-solid ${rowBadgeTextIcon} text-[10px] ps-1"></i>` : ""}
+                              </span>
+                              ${habit.archived ? `<span class="inline-flex lg:hidden items-center rounded-md border bg-(--color-surface-3) text-secondary border-border/50 px-1.5 py-0.5 text-[9px] uppercase tracking-wider">Archived</span>` : ""}
+                            </div>
+                            
+                            <div class="text-[11px] text-secondary/70 mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 font-medium">
+                              <div class="hidden lg:flex flex-row items-center gap-2">
+                                <span class="inline-flex items-center rounded-md border ${rowBadgeStyle} px-1.5 py-0.5 text-[9px] uppercase tracking-wider">
+                                  ${rowBadgeText}
+                                  ${rowBadgeTextIcon ? `<i class="fa-solid ${rowBadgeTextIcon} text-[10px] ps-1"></i>` : ""}
+                                </span>
+                                ${habit.archived ? `<span class="inline-flex items-center rounded-md border bg-(--color-surface-3) text-secondary border-border/50 px-1.5 py-0.5 text-[9px] uppercase tracking-wider">Archived</span>` : ""}
+                              </div>
+                              <span class="flex flex-row items-center gap-1">
+                                <i class="fa-regular fa-clock text-muted"></i> Since: <strong class="text-secondary font-semibold">${habit.createdAt}</strong>
+                              </span>
+                              <span class="flex flex-row items-center gap-1">
+                                <i class="fa-regular fa-shapes text-muted"></i> Category: <strong class="text-secondary font-semibold">${habit.category}</strong>
+                              </span>
+                              <span class="inline-flex items-center gap-1">
+                                <i class="fa-regular ${rowIcon}"></i> This Week: <strong class="text-primary font-bold">${weeklyChecks}/${targetFrequency}</strong>
+                              </span>
+                            </div>
                           </div>
-                          <div class="w-full h-2 bg-surface-3 rounded-full overflow-hidden">
-                            <div class="${batteryColor} h-full rounded-full transition-all duration-500" style="width: ${lifetimeRate}%"></div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row items-center gap-6 lg:gap-8 bg-surface-2/20 lg:bg-transparent p-4 lg:p-0 rounded-xl border border-border/30 lg:border-0">
+                          <div class="grid grid-cols-3 gap-6 lg:gap-8 text-center lg:text-left min-w-60">
+                            <div>
+                              <div class="text-[10px] uppercase font-bold text-muted/80 tracking-wider">Current Streak</div>
+                              <div class="text-base font-black text-primary mt-0.5">${stats.current}d</div>
+                            </div>
+                            <div>
+                              <div class="text-[10px] uppercase font-bold text-muted/80 tracking-wider">Best Streak</div>
+                              <div class="text-base font-black text-primary mt-0.5">${stats.best}d</div>
+                            </div>
+                            <div>
+                              <div class="text-[10px] uppercase font-bold text-muted/80 tracking-wider">Lifetime Rate</div>
+                              <div class="text-base font-black text-brand/90 mt-0.5">${lifetimeRate}%</div>
+                            </div>
+                          </div>
+                          
+                          <div class="w-full lg:w-44 flex items-center justify-between gap-4 border-t sm:border-t-0 border-border/40 pt-3 sm:pt-0">
+                            <div class="w-full space-y-1">
+                              <div class="flex justify-between items-center text-[11px]">
+                                <span class="text-secondary font-medium">Stability</span>
+                                <span class="font-bold text-primary">${lifetimeRate}%</span>
+                              </div>
+                              <div class="w-full h-1.5 bg-(--color-surface-3) rounded-full overflow-hidden">
+                                <div class="${batteryColor} h-full rounded-full transition-all duration-500" style="width: ${lifetimeRate}%"></div>
+                              </div>
+                            </div>
+                            <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-lg border ${badgeStyle} whitespace-nowrap lg:self-center">${batteryText}</span>
                           </div>
                         </div>
-                        <span class="text-xs font-bold px-3 py-1 rounded-xl border ${badgeStyle} whitespace-nowrap self-end lg:self-center">${batteryText}</span>
                       </div>
-                    </div>
-                  `;
+                    `;
                   })
-                  .join("")
-          }
+                  .join("")}          
+              </div>`
+            }
+          </div>
         </div>
       </div>
     `;

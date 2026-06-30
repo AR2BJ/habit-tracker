@@ -32,7 +32,7 @@ export const SettingsViewComponent = {
           >
             <div class="flex items-center gap-3 border-b border-border pb-3">
               <div
-                class="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center text-amber-400 shrink-0"
+                class="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center text-amber-400/80 shrink-0"
               >
                 <i class="fa-regular fa-palette text-sm"></i>
               </div>
@@ -89,7 +89,7 @@ export const SettingsViewComponent = {
           >
             <div class="flex items-center gap-3 border-b border-border pb-3">
               <div
-                class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0"
+                class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500/80 flex items-center justify-center shrink-0"
               >
                 <i class="fa-regular fa-share text-sm"></i>
               </div>
@@ -109,9 +109,9 @@ export const SettingsViewComponent = {
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
               <button
                 id="sett-export-btn"
-                class="w-full px-4 py-3 bg-surface-2 hover:bg-surface-3 border border-border rounded-xl text-primary text-xs sm:text-sm font-medium flex items-center justify-center gap-2 transition cursor-pointer"
+                class="w-full px-4 py-3 bg-surface-2 hover:bg-(--color-surface-3) border border-border rounded-xl text-primary text-xs sm:text-sm font-medium flex items-center justify-center gap-2 transition cursor-pointer"
               >
-                <i class="fa-regular fa-download text-emerald-500 text-sm"></i>
+                <i class="fa-regular fa-download text-emerald-500/80 text-sm"></i>
                 <span>Export Backup (JSON)</span>
               </button>
 
@@ -158,7 +158,7 @@ export const SettingsViewComponent = {
           >
             <div class="flex items-center gap-3 border-b border-border pb-3">
               <div
-                class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center shrink-0"
+                class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500/80 flex items-center justify-center shrink-0"
               >
                 <i class="fa-regular fa-brain-circuit text-sm"></i>
               </div>
@@ -192,7 +192,7 @@ export const SettingsViewComponent = {
                 class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none mt-0.5 ${
                   autoArchive
                     ? "bg-brand/80"
-                    : "bg-neutral-300 dark:bg-neutral-700"
+                    : "bg-neutral-300/80 dark:bg-neutral-700/80"
                 }"
               >
                 <span
@@ -210,7 +210,7 @@ export const SettingsViewComponent = {
           >
             <div class="flex items-center gap-3 border-b border-border pb-3">
               <div
-                class="w-8 h-8 rounded-lg bg-red-500/10 text-red-500 flex items-center justify-center shrink-0"
+                class="w-8 h-8 rounded-lg bg-red-500/10 text-red-500/80 flex items-center justify-center shrink-0"
               >
                 <i class="fa-regular fa-database text-sm"></i>
               </div>
@@ -231,7 +231,7 @@ export const SettingsViewComponent = {
             >
               <div class="flex flex-col gap-0.5 min-w-0">
                 <span
-                  class="text-xs sm:text-sm font-semibold text-red-600 dark:text-red-400"
+                  class="text-xs sm:text-sm font-semibold text-red-600/80 dark:text-red-400/80"
                   >Reset All Database Records</span
                 >
                 <span
@@ -244,7 +244,7 @@ export const SettingsViewComponent = {
 
               <button
                 id="trigger-reset-btn"
-                class="w-full lg:w-36 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-800 text-white font-medium text-xs sm:text-sm transition shadow-sm cursor-pointer flex items-center justify-center gap-2 shrink-0"
+                class="w-full lg:w-36 px-4 py-2.5 rounded-xl bg-red-600/80 hover:bg-red-800/80 text-white font-medium text-xs sm:text-sm transition shadow-sm cursor-pointer flex items-center justify-center gap-2 shrink-0"
               >
                 <i class="fa-regular fa-trash-can text-xs"></i>
                 <span>Reset Data</span>

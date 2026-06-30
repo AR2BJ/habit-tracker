@@ -45,6 +45,26 @@ export const SettingsController = {
       .getElementById("sett-auto-archive-toggle")
       ?.addEventListener("click", () => this.handleAutoArchiveToggle());
 
+    document.addEventListener("keydown", (e) => {
+      const resetModal = document.getElementById("settings-reset-modal");
+      const resetOpen = resetModal && !resetModal.classList.contains("hidden");
+
+      if (!resetOpen) return;
+
+      if (e.key === "Escape" || e.key === "Enter") {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      if (e.key === "Escape") {
+        this.closeResetModal();
+      }
+
+      if (e.key === "Enter") {
+        document.getElementById("confirm-settings-reset")?.click();
+      }
+    });
+
     this.initResetModalEvents();
   },
 
@@ -349,6 +369,14 @@ export const SettingsController = {
     }
   },
 
+  closeResetModal() {
+    const resetModal = document.getElementById("settings-reset-modal");
+    if (!resetModal) return;
+
+    resetModal.classList.add("hidden");
+    resetModal.classList.remove("flex");
+  },
+
   initResetModalEvents() {
     const triggerResetBtn = document.getElementById("trigger-reset-btn");
     const resetModal = document.getElementById("settings-reset-modal");
@@ -358,17 +386,17 @@ export const SettingsController = {
     triggerResetBtn?.addEventListener("click", () =>
       resetModal?.classList.replace("hidden", "flex"),
     );
-    cancelResetBtn?.addEventListener("click", () =>
-      resetModal?.classList.replace("flex", "hidden"),
-    );
+    cancelResetBtn?.addEventListener("click", () => this.closeResetModal());
 
     confirmResetBtn?.addEventListener("click", () => {
-      resetModal?.classList.replace("flex", "hidden");
+      this.closeResetModal();
       this.executeApplicationReset();
     });
   },
 
   async executeApplicationReset() {
+    this.closeResetModal();
+
     localStorage.removeItem(STORAGE_KEY);
 
     state.habits = [];

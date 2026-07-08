@@ -2,6 +2,7 @@ import { AnalyticsAdapter } from "@/utils/analytics.adapter.js";
 import { AnalyticsController } from "@/controllers/analytics.controller.js";
 import ApexCharts from "apexcharts";
 import { DashboardComponent } from "@/components/features/analytics/dashboard.component.js";
+import { TooltipController } from "@/controllers/tooltip.controller";
 
 let heatmapChartInstance = null;
 let barChartInstance = null;
@@ -162,6 +163,9 @@ export function renderAnalyticsCharts(habits, currentHeatmapView) {
 
   AnalyticsController.init();
   bindAnalyticsMobileMenu(habits);
+
+  TooltipController.unbind(dashboard);
+  TooltipController.bind(dashboard);
 
   if (!resizeListenerAttached) {
     window.addEventListener("resize", handleAnalyticsResize);

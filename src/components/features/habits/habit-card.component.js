@@ -22,12 +22,12 @@ export const HabitCardComponent = {
     const isGoalMet = weeklyChecks >= targetFrequency;
     const isGoalOverflow = weeklyChecks > targetFrequency;
 
-    let goalIcon = "fa-bullseye-arrow text-sky-500/80";
+    let goalIcon = "fa-bullseye-arrow text-pink-500/80";
     let goalLabelColor = "text-secondary";
 
     if (isGoalMet) {
-      goalIcon = "fa-circle-check text-emerald-500/80";
-      goalLabelColor = "text-emerald-600/80 dark:text-emerald-400/80";
+      goalIcon = "fa-circle-check text-brand/80";
+      goalLabelColor = "text-brand/80 dark:text-brand/80";
     }
 
     if (isGoalOverflow) {
@@ -170,7 +170,7 @@ export const HabitCardComponent = {
                       isGoalOverflow
                         ? "text-lime-500/80"
                         : isGoalMet
-                          ? "text-emerald-500/80"
+                          ? "text-brand/80"
                           : "text-primary"
                     }"
                     >${weeklyChecks}/${targetFrequency}</span
@@ -186,7 +186,7 @@ export const HabitCardComponent = {
                   class="text-xs md:text-sm font-bold text-primary flex items-center gap-1 mt-0.5"
                 >
                   <i
-                    class="fa-regular fa-chart-simple text-brand/80 text-[10px] md:text-sm pe-0.5"
+                    class="fa-regular fa-chart-simple text-teal-500/80 text-[10px] md:text-sm pe-0.5"
                   ></i>
                   <span>${totalChecks}</span>
                 </span>

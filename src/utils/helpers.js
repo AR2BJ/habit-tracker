@@ -17,7 +17,7 @@ export function todayISO() {
 }
 
 export function getWeeklyCompletionCount(completedDates = []) {
-  if (!completedDates || !Array.length) return 0;
+  if (!completedDates || !Array.isArray(completedDates)) return 0;
 
   const today = new Date();
   today.setHours(23, 59, 59, 999);
@@ -97,13 +97,26 @@ export function calculateStreak(completedDates = [], skippedDates = []) {
 }
 
 export function calculateSuccessRate(habit) {
-  const createdAt = new Date(habit.createdAt);
+  const completedDates = Array.isArray(habit && habit.completedDates)
+    ? habit.completedDates
+    : [];
+  const createdAt = new Date(habit && habit.createdAt);
+
+  if (Number.isNaN(createdAt.getTime())) return 0;
 
   const today = new Date();
+  today.setHours(23, 59, 59, 999);
 
   const diffDays = Math.floor((today - createdAt) / (1000 * 60 * 60 * 24)) + 1;
 
   if (diffDays <= 0) return 0;
 
-  return Math.round((habit.completedDates.length / diffDays) * 100);
+  const validCompletedDates = completedDates.filter((dateStr) => {
+    const date = new Date(dateStr);
+    return !Number.isNaN(date.getTime()) && date >= createdAt && date <= today;
+  });
+
+  const successRate = Math.round((validCompletedDates.length / diffDays) * 100);
+
+  return Math.min(100, Math.max(0, successRate));
 }

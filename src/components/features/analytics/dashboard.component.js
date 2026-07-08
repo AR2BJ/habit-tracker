@@ -57,7 +57,7 @@ export const DashboardComponent = {
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full col-span-full"
       >
         <div
-          class="col-span-2 sm:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-sky-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+          class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-sky-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
         >
           <i
             class="fa-solid fa-layer-group absolute -right-4 -bottom-6 text-[10rem] text-sky-500 opacity-[0.04] dark:opacity-[0.06] rotate-20 pointer-events-none group-hover:scale-110 group-hover:rotate-10 transition-transform duration-500"
@@ -81,10 +81,10 @@ export const DashboardComponent = {
         </div>
 
         <div
-          class="col-span-2 sm:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-emerald-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+          class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-emerald-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
         >
           <i
-            class="fa-solid fa-circle-check absolute -right-4 -bottom-6 text-[10rem] text-emerald-500 opacity-[0.04] dark:opacity-[0.06] rotate-15 pointer-events-none group-hover:scale-110 group-hover:rotate-5 transition-transform duration-500"
+            class="fa-solid fa-calendar-check absolute -right-4 -bottom-6 text-[10rem] text-emerald-500 opacity-[0.04] dark:opacity-[0.06] rotate-15 pointer-events-none group-hover:scale-110 group-hover:rotate-5 transition-transform duration-500"
           ></i>
 
           <div class="flex flex-col gap-1 z-10">
@@ -97,26 +97,32 @@ export const DashboardComponent = {
             </div>
             <p class="text-[10px] text-muted font-medium mt-1">
               ${
-                completedToday === habits.length
+                completedToday === habits.length && habits.length !== 0
                   ? `<span class="text-emerald-500/80 font-bold flex items-center gap-1"><i class="fa-solid fa-sparkles"></i> All caught up!</span>`
-                  : `waiting for ${habits.length - completedToday} more checks`
+                  : habits.length > completedToday
+                    ? `waiting for ${habits.length - completedToday} more checks`
+                    : "habits added yet"
               }
             </p>
           </div>
         </div>
 
         <div
-          class="col-span-2 sm:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 ${
+          class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 ${
             goalsOverflowThisWeek > 0
-              ? "hover:border-amber-500/30"
-              : "hover:border-emerald-500/30"
+              ? "hover:border-lime-500/30"
+              : goalsOverflowThisWeek === 0 && goalsMetThisWeek > 0
+                ? "hover:border-brand/30"
+                : "hover:border-pink-500/30"
           } rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
         >
           <i
             class="fa-solid ${
               goalsOverflowThisWeek > 0
-                ? "fa-bolt-lightning text-amber-500"
-                : "fa-circle-check text-emerald-500"
+                ? "fa-bolt-lightning text-lime-500"
+                : goalsOverflowThisWeek === 0 && goalsMetThisWeek > 0
+                  ? "fa-circle-check text-brand"
+                  : "fa-bullseye-arrow text-pink-500"
             } absolute -right-2 -bottom-6 text-[10rem] opacity-[0.04] dark:opacity-[0.06] rotate-25 pointer-events-none group-hover:scale-110 group-hover:rotate-15 transition-transform duration-500"
           ></i>
 
@@ -133,7 +139,7 @@ export const DashboardComponent = {
             <p class="text-[10px] text-muted font-medium mt-1">
               ${
                 goalsOverflowThisWeek > 0
-                  ? `<span class="text-amber-500/80 font-bold flex items-center gap-1 animate-pulse"><i class="fa-solid fa-fire text-[9px]"></i> ${goalsOverflowThisWeek} Smashed!</span>`
+                  ? `<span class="text-lime-500/80 font-bold flex items-center gap-1 animate-pulse"><i class="fa-solid fa-fire text-[9px]"></i> ${goalsOverflowThisWeek} Smashed!</span>`
                   : "goals met this week"
               }
             </p>
@@ -141,7 +147,7 @@ export const DashboardComponent = {
         </div>
 
         <div
-          class="col-span-2 sm:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-orange-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+          class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-orange-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
         >
           <i
             class="fa-solid fa-fire absolute -right-2 -bottom-4 text-[10rem] text-orange-500 opacity-[0.04] dark:opacity-[0.06] rotate-12 pointer-events-none group-hover:scale-110 group-hover:rotate-0 transition-transform duration-500"
@@ -165,10 +171,10 @@ export const DashboardComponent = {
         </div>
 
         <div
-          class="col-span-2 sm:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-indigo-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+          class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-yellow-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
         >
           <i
-            class="fa-solid fa-chart-line absolute -right-4 -bottom-6 text-[10rem] text-indigo-500 opacity-[0.04] dark:opacity-[0.06] rotate-18 pointer-events-none group-hover:scale-110 group-hover:rotate-[8deg] transition-transform duration-500"
+            class="fa-solid fa-chart-line absolute -right-4 -bottom-6 text-[10rem] text-yellow-500 opacity-[0.04] dark:opacity-[0.06] rotate-18 pointer-events-none group-hover:scale-110 group-hover:rotate-[8deg] transition-transform duration-500"
           ></i>
 
           <div class="flex flex-col gap-1 z-10">
@@ -182,7 +188,7 @@ export const DashboardComponent = {
             <p class="text-[10px] text-muted font-medium mt-1">
               ${
                 averageSuccessRate >= 70
-                  ? `<span class="text-indigo-500/80 font-bold">Excellent consistency</span>`
+                  ? `<span class="text-yellow-500/80 font-bold">Excellent consistency</span>`
                   : `keep pushing to break 70%`
               }
             </p>
@@ -190,7 +196,7 @@ export const DashboardComponent = {
         </div>
 
         <div
-          class="col-span-2 sm:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-slate-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+          class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-slate-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
         >
           <i
             class="fa-regular fa-box-archive absolute -right-4 -bottom-6 text-[10rem] text-slate-500 opacity-[0.04] dark:opacity-[0.06] rotate-18 pointer-events-none group-hover:scale-110 group-hover:rotate-[8deg] transition-transform duration-500"
@@ -215,7 +221,7 @@ export const DashboardComponent = {
         </div>
 
         <div
-          class="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full col-span-full mt-6"
+          class="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full col-span-2 lg:col-span-full mt-6"
         >
           <div
             class="lg:col-span-2 bg-surface-2 border border-border/70 rounded-2xl p-6 flex flex-col justify-between"
@@ -335,7 +341,7 @@ export const DashboardComponent = {
         </div>
 
         <div
-          class="w-full col-span-full mt-8 border border-border/70 rounded-2xl p-6 bg-surface-1"
+          class="w-full col-span-2 lg:col-span-full mt-8 border border-border/70 rounded-2xl p-6 bg-surface-1"
         >
           <h4 class="text-lg font-bold text-primary flex items-center gap-2">
             <i class="fa-regular fa-layer-group text-brand/80 text-xl"></i>
@@ -372,20 +378,20 @@ export const DashboardComponent = {
                       "bg-(--color-surface-3) text-secondary border-border/50";
                     let rowBadgeText = "On Track";
                     let rowBadgeTextIcon = "";
-                    let rowIcon = "fa-bullseye-arrow text-sky-500/80";
+                    let rowIcon = "fa-bullseye-arrow text-pink-500/80";
 
                     if (isGoalMet) {
                       rowBadgeStyle =
-                        "bg-emerald-500/10 text-emerald-500/80 border-emerald-500/20 font-semibold";
+                        "bg-brand/10 text-brand/80 border-brand/20 font-semibold";
                       rowBadgeText = "Target Met";
-                      rowIcon = "fa-circle-check text-emerald-500/80";
+                      rowIcon = "fa-circle-check text-brand/80";
                     }
                     if (isGoalOverflow) {
                       rowBadgeStyle =
-                        "bg-amber-500/10 text-amber-500/80 border-amber-500/30 font-bold animate-pulse shadow-sm";
+                        "bg-lime-500/10 text-lime-500/80 border-lime-500/30 font-bold animate-pulse shadow-sm";
                       rowBadgeText = "Overachieved";
-                      rowBadgeTextIcon = "fa-bolt-lightning text-amber-500/80";
-                      rowIcon = "fa-bolt-lightning text-amber-500/80";
+                      rowBadgeTextIcon = "fa-bolt-lightning text-lime-500/80";
+                      rowIcon = "fa-bolt-lightning text-lime-500/80";
                     }
 
                     let batteryColor = "bg-brand/80";
@@ -393,7 +399,12 @@ export const DashboardComponent = {
                     let badgeStyle =
                       "bg-brand/10 text-brand/80 border-brand/20";
 
-                    if (lifetimeRate < 35) {
+                    if (lifetimeRate === 100) {
+                      batteryColor = "bg-emerald-500/80";
+                      batteryText = "Perfect";
+                      badgeStyle =
+                        "bg-emerald-500/10 text-emerald-500/80 border-emerald-500/20";
+                    } else if (lifetimeRate < 35) {
                       batteryColor = "bg-red-500/80";
                       batteryText = "Critical";
                       badgeStyle =
@@ -406,67 +417,172 @@ export const DashboardComponent = {
                     }
 
                     return `
-                      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 py-5 first:pt-4 last:pb-1 group/row">
-                        
+                      <div
+                        class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 py-5 first:pt-4 last:pb-1 group/row"
+                      >
                         <div class="flex items-center gap-3 min-w-0 flex-1">
                           <div class="w-full">
-                            <div class="text-sm font-bold text-primary truncate flex items-center gap-2">
-                              <span>${habit.name}</span>
-                              <span class="inline-flex lg:hidden items-center rounded-md border ${rowBadgeStyle} px-1.5 py-0.5 text-[9px] uppercase tracking-wider">
-                                ${rowBadgeText}
-                                ${rowBadgeTextIcon ? `<i class="fa-solid ${rowBadgeTextIcon} text-[10px] ps-1"></i>` : ""}
+                            <div
+                              class="text-sm font-bold text-primary truncate flex items-center gap-2"
+                            >
+                              <span
+                                class="md:hidden truncate cursor-pointer js-tooltip-target"
+                                data-tooltip-title="${habit.name}"
+                                tabindex="0"
+                                role="button"
+                                aria-label="Show habit title"
+                              >
+                                ${habit.name}
                               </span>
-                              ${habit.archived ? `<span class="inline-flex lg:hidden items-center rounded-md border bg-(--color-surface-3) text-secondary border-border/50 px-1.5 py-0.5 text-[9px] uppercase tracking-wider">Archived</span>` : ""}
+                              <span class="hidden md:flex">
+                                ${habit.name}
+                              </span>
+                              <span
+                                class="inline-flex lg:hidden items-center rounded-md border ${rowBadgeStyle} px-1.5 py-0.5 text-[9px] uppercase tracking-wider"
+                              >
+                                ${rowBadgeText}
+                                ${
+                                  rowBadgeTextIcon
+                                    ? `<i class="fa-solid ${rowBadgeTextIcon} text-[10px] ps-1"></i>`
+                                    : ""
+                                }
+                              </span>
+                              ${
+                                habit.archived
+                                  ? `<span class="inline-flex lg:hidden items-center rounded-md border bg-(--color-surface-3) text-secondary border-border/50 px-1.5 py-0.5 text-[9px] uppercase tracking-wider">Archived</span>`
+                                  : ""
+                              }
                             </div>
-                            
-                            <div class="text-[11px] text-secondary/70 mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 font-medium">
-                              <div class="hidden lg:flex flex-row items-center gap-2">
-                                <span class="inline-flex items-center rounded-md border ${rowBadgeStyle} px-1.5 py-0.5 text-[9px] uppercase tracking-wider">
+
+                            <div
+                              class="text-[11px] text-secondary/70 mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 font-medium"
+                            >
+                              <div
+                                class="hidden lg:flex flex-row items-center gap-2"
+                              >
+                                <span
+                                  class="inline-flex items-center rounded-md border ${rowBadgeStyle} px-1.5 py-0.5 text-[9px] uppercase tracking-wider"
+                                >
                                   ${rowBadgeText}
-                                  ${rowBadgeTextIcon ? `<i class="fa-solid ${rowBadgeTextIcon} text-[10px] ps-1"></i>` : ""}
+                                  ${
+                                    rowBadgeTextIcon
+                                      ? `<i class="fa-solid ${rowBadgeTextIcon} text-[10px] ps-1"></i>`
+                                      : ""
+                                  }
                                 </span>
-                                ${habit.archived ? `<span class="inline-flex items-center rounded-md border bg-(--color-surface-3) text-secondary border-border/50 px-1.5 py-0.5 text-[9px] uppercase tracking-wider">Archived</span>` : ""}
+                                ${
+                                  habit.archived
+                                    ? `<span class="inline-flex items-center rounded-md border bg-(--color-surface-3) text-secondary border-border/50 px-1.5 py-0.5 text-[9px] uppercase tracking-wider">Archived</span>`
+                                    : ""
+                                }
                               </div>
                               <span class="flex flex-row items-center gap-1">
-                                <i class="fa-regular fa-clock text-muted"></i> Since: <strong class="text-secondary font-semibold">${habit.createdAt}</strong>
+                                <i
+                                  class="fa-regular fa-clock text-sky-500/80"
+                                ></i>
+                                Since:
+                                <strong class="text-secondary font-semibold"
+                                  >${habit.createdAt}</strong
+                                >
                               </span>
                               <span class="flex flex-row items-center gap-1">
-                                <i class="fa-regular fa-shapes text-muted"></i> Category: <strong class="text-secondary font-semibold">${habit.category}</strong>
+                                <i
+                                  class="fa-regular fa-shapes text-amber-500/80"
+                                ></i>
+                                Category:
+                                <strong class="text-secondary font-semibold"
+                                  >${habit.category}</strong
+                                >
                               </span>
                               <span class="inline-flex items-center gap-1">
-                                <i class="fa-regular ${rowIcon}"></i> This Week: <strong class="text-primary font-bold">${weeklyChecks}/${targetFrequency}</strong>
+                                <i class="fa-regular ${rowIcon}"></i> This Week:
+                                <strong class="text-primary font-bold"
+                                  >${weeklyChecks}/${targetFrequency}</strong
+                                >
                               </span>
                             </div>
                           </div>
                         </div>
 
-                        <div class="flex flex-col sm:flex-row items-center gap-6 lg:gap-8 bg-surface-2/20 lg:bg-transparent p-4 lg:p-0 rounded-xl border border-border/30 lg:border-0">
-                          <div class="grid grid-cols-3 gap-6 lg:gap-8 text-center lg:text-left min-w-60">
+                        <div
+                          class="flex flex-col sm:flex-row items-center gap-6 lg:gap-8 bg-surface-2/20 lg:bg-transparent p-4 lg:p-0 rounded-xl border border-border/30 lg:border-0"
+                        >
+                          <div
+                            class="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-8 text-center sm:text-left min-w-0"
+                          >
                             <div>
-                              <div class="text-[10px] uppercase font-bold text-muted/80 tracking-wider">Current Streak</div>
-                              <div class="text-base font-black text-primary mt-0.5">${stats.current}d</div>
+                              <div
+                                class="text-[10px] uppercase font-bold text-muted/80 tracking-wider"
+                              >
+                                Current Streak
+                              </div>
+                              <div
+                                class="text-lg sm:text-base font-black text-primary mt-0.5 truncate"
+                              >
+                                ${stats.current}d
+                              </div>
                             </div>
                             <div>
-                              <div class="text-[10px] uppercase font-bold text-muted/80 tracking-wider">Best Streak</div>
-                              <div class="text-base font-black text-primary mt-0.5">${stats.best}d</div>
+                              <div
+                                class="text-[10px] uppercase font-bold text-muted/80 tracking-wider"
+                              >
+                                Best Streak
+                              </div>
+                              <div
+                                class="text-lg sm:text-base font-black text-primary mt-0.5 truncate"
+                              >
+                                ${stats.best}d
+                              </div>
                             </div>
                             <div>
-                              <div class="text-[10px] uppercase font-bold text-muted/80 tracking-wider">Lifetime Rate</div>
-                              <div class="text-base font-black text-brand/90 mt-0.5">${lifetimeRate}%</div>
+                              <div
+                                class="text-[10px] uppercase font-bold text-muted/80 tracking-wider"
+                              >
+                                Lifetime Rate
+                              </div>
+                              <div
+                                class="text-lg sm:text-base font-black ${
+                                  lifetimeRate === 100
+                                    ? "text-emerald-500/80"
+                                    : lifetimeRate < 35
+                                      ? "text-red-500/80"
+                                      : lifetimeRate < 65
+                                        ? "text-amber-500/80"
+                                        : "text-brand/80"
+                                } mt-0.5 truncate"
+                              >
+                                ${lifetimeRate}%
+                              </div>
                             </div>
                           </div>
-                          
-                          <div class="w-full lg:w-44 flex items-center justify-between gap-4 border-t sm:border-t-0 border-border/40 pt-3 sm:pt-0">
-                            <div class="w-full space-y-1">
-                              <div class="flex justify-between items-center text-[11px]">
-                                <span class="text-secondary font-medium">Stability</span>
-                                <span class="font-bold text-primary">${lifetimeRate}%</span>
+
+                          <div
+                            class="w-full sm:w-44 flex items-center justify-between gap-4 border-t sm:border-t-0 border-border/40 pt-3 sm:pt-0"
+                          >
+                            <div class="w-full space-y-1 min-w-0">
+                              <div
+                                class="flex justify-between items-center text-[11px]"
+                              >
+                                <span class="text-secondary font-medium"
+                                  >Stability</span
+                                >
+                                <span class="font-bold text-primary"
+                                  >${lifetimeRate}%</span
+                                >
                               </div>
-                              <div class="w-full h-1.5 bg-(--color-surface-3) rounded-full overflow-hidden">
-                                <div class="${batteryColor} h-full rounded-full transition-all duration-500" style="width: ${lifetimeRate}%"></div>
+                              <div
+                                class="w-full h-1.5 bg-(--color-surface-3) rounded-full overflow-hidden"
+                              >
+                                <div
+                                  class="${batteryColor} h-full rounded-full transition-all duration-500"
+                                  style="width: ${lifetimeRate}%"
+                                ></div>
                               </div>
                             </div>
-                            <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-lg border ${badgeStyle} whitespace-nowrap lg:self-center">${batteryText}</span>
+                            <span
+                              class="text-[10px] font-bold px-2.5 py-0.5 rounded-lg border ${badgeStyle} whitespace-nowrap lg:self-center"
+                              >${batteryText}</span
+                            >
                           </div>
                         </div>
                       </div>

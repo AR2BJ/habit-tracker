@@ -3,7 +3,25 @@ export function generateId() {
     return window.crypto.randomUUID();
   }
 
-  return `${Date.now()}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
+  function getRandomHex(length) {
+    let result = "";
+    const chars = "0123456789abcdef";
+    for (let i = 0; i < length; i++) {
+      result += chars[Math.floor(Math.random() * 16)];
+    }
+    return result;
+  }
+
+  const timestamp = getRandomHex(32).toString(16).padStart(12, "0");
+  const randomPart = getRandomHex(8);
+
+  const timeLow = timestamp.slice(0, 8);
+  const timeMid = timestamp.slice(8, 12);
+  const timeHiAndVersion = "4" + getRandomHex(3);
+  const clockSeqHiAndReserved = getRandomHex(3);
+  const node = getRandomHex(6) + randomPart.slice(0, 6);
+
+  return `${timeLow}-${timeMid}-${timeHiAndVersion}-${clockSeqHiAndReserved}-${node}`;
 }
 
 export function formatDate(date) {

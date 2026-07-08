@@ -123,7 +123,7 @@ export const HabitsView = {
           >
             <div
               id="habit-filter-scroll"
-              class="flex flex-1 min-w-0 cursor-grab flex-row items-center gap-2 overflow-x-auto pr-2 select-none scrollbar-none"
+              class="flex flex-1 min-w-0 cursor-grab lg:cursor-default flex-row items-center gap-2 overflow-x-auto pr-2 select-none scrollbar-none"
               style="scrollbar-width:none; -ms-overflow-style:none; touch-action:none;"
             >
               <p
@@ -221,46 +221,108 @@ function setupHabitFiltersDragScroll() {
 
   container.dataset.dragScrollInitialized = "true";
 
+  let isPointerDown = false;
   let isDragging = false;
   let startX = 0;
+  let startY = 0;
   let startScrollLeft = 0;
+  let hasMoved = false;
 
-  container.addEventListener("pointerdown", (event) => {
-    if (event.button !== 0 || event.target.closest("button")) return;
-
-    isDragging = true;
-    startX = event.clientX;
+  const startDrag = (clientX, clientY) => {
+    isPointerDown = true;
+    startX = clientX;
+    startY = clientY;
     startScrollLeft = container.scrollLeft;
+    hasMoved = false;
+  };
 
-    container.classList.remove("cursor-grab");
-    container.classList.add("cursor-grabbing");
-    container.setPointerCapture(event.pointerId);
-    event.preventDefault();
-  });
+  const updateDrag = (clientX, clientY, originalEvent) => {
+    if (!isPointerDown) return;
 
-  container.addEventListener("pointermove", (event) => {
-    if (!isDragging) return;
+    const deltaX = clientX - startX;
+    const deltaY = clientY - startY;
 
-    const deltaX = event.clientX - startX;
-    container.scrollLeft = startScrollLeft - deltaX;
-    event.preventDefault();
-  });
+    if (
+      !hasMoved &&
+      Math.abs(deltaX) > 5 &&
+      Math.abs(deltaX) > Math.abs(deltaY)
+    ) {
+      isDragging = true;
+      hasMoved = true;
+      container.classList.remove("cursor-grab");
+      container.classList.add("cursor-grabbing");
+    }
 
-  const stopDragging = (event) => {
-    if (!isDragging) return;
-
-    isDragging = false;
-    container.classList.remove("cursor-grabbing");
-    container.classList.add("cursor-grab");
-
-    if (container.hasPointerCapture(event.pointerId)) {
-      container.releasePointerCapture(event.pointerId);
+    if (isDragging) {
+      container.scrollLeft = startScrollLeft - deltaX;
+      originalEvent?.preventDefault();
     }
   };
+
+  const stopDragging = (event) => {
+    if (!isPointerDown) return;
+
+    isPointerDown = false;
+
+    if (isDragging) {
+      isDragging = false;
+      container.classList.remove("cursor-grabbing");
+      container.classList.add("cursor-grab");
+
+      if (event?.pointerId && container.hasPointerCapture(event.pointerId)) {
+        container.releasePointerCapture(event.pointerId);
+      }
+    }
+  };
+
+  container.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) return;
+    startDrag(event.clientX, event.clientY);
+    container.setPointerCapture(event.pointerId);
+  });
+
+  container.addEventListener("pointermove", (event) =>
+    updateDrag(event.clientX, event.clientY, event),
+  );
 
   container.addEventListener("pointerup", stopDragging);
   container.addEventListener("pointerleave", stopDragging);
   container.addEventListener("pointercancel", stopDragging);
+
+  container.addEventListener(
+    "touchstart",
+    (event) => {
+      if (event.touches.length !== 1) return;
+      const touch = event.touches[0];
+      startDrag(touch.clientX, touch.clientY);
+    },
+    { passive: true },
+  );
+
+  container.addEventListener(
+    "touchmove",
+    (event) => {
+      if (event.touches.length !== 1) return;
+      const touch = event.touches[0];
+      updateDrag(touch.clientX, touch.clientY, event);
+    },
+    { passive: false },
+  );
+
+  container.addEventListener("touchend", stopDragging);
+  container.addEventListener("touchcancel", stopDragging);
+
+  container.addEventListener(
+    "click",
+    (event) => {
+      if (hasMoved) {
+        event.preventDefault();
+        event.stopPropagation();
+        hasMoved = false;
+      }
+    },
+    true,
+  );
 }
 
 if (typeof window !== "undefined") {

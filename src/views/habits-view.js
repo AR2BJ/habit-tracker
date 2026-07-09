@@ -6,26 +6,52 @@ export const HabitsView = {
         class="flex w-full min-w-0 flex-col"
       >
         <div
-          class="relative mb-6 flex w-full justify-center rounded-2xl border border-border bg-surface-2 p-1 sm:w-fit sm:justify-start"
+          class="mb-6 flex flex-col sm:flex-row gap-4 justify-between items-center w-full"
         >
           <div
-            id="tab-indicator"
-            class="absolute top-1 left-1 h-[calc(100%-8px)] w-27 rounded-xl bg-brand/80 transition-all duration-300 translate-x-0 sm:w-27.5"
-          ></div>
-
-          <button
-            id="tab-active"
-            class="relative z-10 flex-1 w-27 rounded-l-xl py-2 text-sm font-medium text-(--color-btn-primary-text) transition cursor-pointer sm:w-27.5 sm:flex-none"
+            class="relative mb-6 flex w-full justify-center rounded-2xl border border-border bg-surface-2 p-1 sm:w-fit sm:justify-start"
           >
-            Active
-          </button>
+            <div
+              id="tab-indicator"
+              class="absolute top-1 left-1 h-[calc(100%-8px)] w-27 rounded-xl bg-brand/80 transition-all duration-300 translate-x-0 sm:w-27.5"
+            ></div>
 
-          <button
-            id="tab-archived"
-            class="relative z-10 flex-1 w-27 rounded-r-xl py-2 text-sm font-medium text-secondary transition cursor-pointer sm:w-27.5 sm:flex-none"
-          >
-            Archived
-          </button>
+            <button
+              id="tab-active"
+              class="relative z-10 flex-1 w-27 rounded-l-xl py-2 text-sm font-medium text-(--color-btn-primary-text) transition cursor-pointer sm:w-27.5 sm:flex-none"
+            >
+              Active
+            </button>
+
+            <button
+              id="tab-archived"
+              class="relative z-10 flex-1 w-27 rounded-r-xl py-2 text-sm font-medium text-secondary transition cursor-pointer sm:w-27.5 sm:flex-none"
+            >
+              Archived
+            </button>
+          </div>
+
+          <div class="relative w-full sm:w-72">
+            <span
+              class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-muted"
+            >
+              <i class="fa-regular fa-magnifying-glass text-sm"></i>
+            </span>
+            <input
+              type="text"
+              id="search-habits"
+              placeholder="Filter habits...."
+              class="w-full pl-10 pr-10 py-2 text-sm rounded-xl border border-border bg-surface text-primary placeholder:text-muted/70 focus:outline-none focus:border-brand/50 transition-all shadow-sm"
+            />
+            <kbd
+              class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
+            >
+              <span
+                class="px-1.5 py-0.5 text-[10px] font-mono bg-surface-2 border border-border text-muted rounded-md shadow-2xs"
+                >/</span
+              >
+            </kbd>
+          </div>
         </div>
 
         <div
@@ -33,105 +59,124 @@ export const HabitsView = {
           class="w-full min-w-0"
         >
           <div
-            class="mb-10 flex flex-col gap-4 rounded-2xl border border-border bg-surface-2 p-4 sm:p-6"
+            class="mb-6 flex flex-col rounded-2xl border border-border bg-surface transition-all overflow-hidden"
           >
-            <h3
-              class="mb-2 text-sm font-bold uppercase tracking-widest text-secondary sm:mb-4"
+            <button 
+              id="btn-toggle-habit-form"
+              class="w-full px-5 py-4 flex flex-row items-center justify-between text-left font-bold text-primary hover:bg-surface-2/40 transition cursor-pointer"
             >
-              Create New Habit Flow
-            </h3>
+              <div class="flex items-center gap-2">
+                <i class="fa-regular fa-square-plus text-brand/80"></i>
+                <span>Create New Habit</span>
+              </div>
+              <div id="form-chevron" class="flex items-center">
+                <i class="fa-regular fa-chevron-down text-secondary text-sm transition-transform duration-300"></i>
+              </div>
+            </button>
 
-            <div
-              class="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4"
+            <div 
+              id="habit-form-container" 
+              class="hidden p-5 bg-surface-2/20 animate-slide-down flex-col gap-4 rounded-b-2xl border-t border-border"
             >
-              <div class="w-full min-w-0 sm:col-span-2 xl:col-span-2">
-                <label
-                  for="habit-input"
-                  class="mb-2 block ps-2 text-sm font-semibold text-secondary sm:text-xs"
-                >
-                  Habit name
-                </label>
-                <input
-                  id="habit-input"
-                  type="text"
-                  placeholder="What habit do you want to build?..."
-                  class="h-12 w-full rounded-xl border border-border bg-surface px-4 text-sm text-primary placeholder:text-secondary/70 transition focus:border-brand/80 focus:outline-none"
-                />
-              </div>
-
-              <div class="w-full min-w-0">
-                <label
-                  for="habit-category-select"
-                  class="mb-2 block ps-2 text-sm font-semibold text-secondary sm:text-xs"
-                >
-                  Category
-                </label>
-                <div class="relative w-full min-w-0">
-                  <select
-                    id="habit-category-select"
-                    class="form-select h-12 w-full cursor-pointer rounded-xl border border-border bg-surface px-3 pr-10 text-sm text-primary focus:border-brand/80 focus:outline-none"
-                  >
-                    <option value="General">General</option>
-                    <option value="Health">Health & Fitness</option>
-                    <option value="Work">Work & Dev</option>
-                    <option value="Finance">Finance</option>
-                    <option value="Mind">Mind & Soul</option>
-                    <option value="Harmful">Harmful</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="w-full min-w-0">
-                <label
-                  for="habit-frequency-select"
-                  class="mb-2 block ps-2 text-sm font-semibold text-secondary sm:text-xs"
-                >
-                  Days per week
-                </label>
-                <div class="relative w-full min-w-0">
-                  <select
-                    id="habit-frequency-select"
-                    class="form-select h-12 w-full cursor-pointer rounded-xl border border-border bg-surface px-3 pr-10 text-sm text-primary focus:border-brand/80 focus:outline-none"
-                  >
-                    <option value="7">Everyday (7 days/wk)</option>
-                    <option value="5">Standard (5 days/wk)</option>
-                    <option value="3">Flexible (3 days/wk)</option>
-                    <option value="1">Minimal (1 day/wk)</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div
-              class="flex flex-col gap-4 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between"
-            >
-              <p class="flex items-center gap-1.5 text-xs text-secondary">
-                <i class="fa-regular fa-circle-info text-brand/80"></i>
-                Categorization isolates metrics inside your dashboard.
-              </p>
-              <button
-                id="add-habit-btn"
-                class="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand/80 px-4 text-sm font-semibold text-white shadow-lg shadow-brand/10 transition hover:bg-(--color-brand-hover) cursor-pointer sm:w-auto"
+              <div
+                class="w-full grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4"
               >
-                <i class="fa-regular fa-plus"></i> Add Habit
-              </button>
+                <div class="w-full min-w-0 sm:col-span-2 xl:col-span-2">
+                  <label
+                    for="habit-input"
+                    class="mb-2 block ps-2 text-sm font-semibold text-secondary sm:text-xs"
+                  >
+                    Habit name
+                  </label>
+                  <input
+                    id="habit-input"
+                    type="text"
+                    placeholder="What habit do you want to build?..."
+                    class="h-12 w-full rounded-xl border border-border bg-surface px-4 text-sm text-primary placeholder:text-secondary/70 transition focus:border-brand/80 focus:outline-none"
+                  />
+                </div>
+
+                <div class="w-full min-w-0">
+                  <label
+                    for="habit-category-select"
+                    class="mb-2 block ps-2 text-sm font-semibold text-secondary sm:text-xs"
+                  >
+                    Category
+                  </label>
+                  <div class="relative w-full min-w-0">
+                    <select
+                      id="habit-category-select"
+                      class="form-select h-12 w-full cursor-pointer rounded-xl border border-border bg-surface px-3 pr-10 text-sm text-primary focus:border-brand/80 focus:outline-none"
+                    >
+                      <option value="General">General</option>
+                      <option value="Health">Health & Fitness</option>
+                      <option value="Work">Work & Dev</option>
+                      <option value="Finance">Finance</option>
+                      <option value="Mind">Mind & Soul</option>
+                      <option value="Harmful">Harmful</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="w-full min-w-0">
+                  <label
+                    for="habit-frequency-select"
+                    class="mb-2 block ps-2 text-sm font-semibold text-secondary sm:text-xs"
+                  >
+                    Days per week
+                  </label>
+                  <div class="relative w-full min-w-0">
+                    <select
+                      id="habit-frequency-select"
+                      class="form-select h-12 w-full cursor-pointer rounded-xl border border-border bg-surface px-3 pr-10 text-sm text-primary focus:border-brand/80 focus:outline-none"
+                    >
+                      <option value="7">Everyday (7 days/wk)</option>
+                      <option value="5">Standard (5 days/wk)</option>
+                      <option value="3">Flexible (3 days/wk)</option>
+                      <option value="1">Minimal (1 day/wk)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="flex flex-col gap-4 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <p class="flex items-center gap-1.5 text-xs text-secondary">
+                  <i class="fa-regular fa-circle-info text-brand/80"></i>
+                  Categorization isolates metrics inside your dashboard.
+                </p>
+                <button
+                  id="add-habit-btn"
+                  class="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand/80 px-4 text-sm font-semibold text-white shadow-lg shadow-brand/10 transition hover:bg-(--color-brand-hover) cursor-pointer sm:w-auto"
+                >
+                  <i class="fa-regular fa-plus"></i> Add Habit
+                </button>
+              </div>
             </div>
           </div>
 
           <div
-            class="mb-6 flex flex-row items-center justify-between gap-4 border-b border-border pb-4 w-full"
-          >
+            id="category-filters"
+            class="relative mb-6 flex flex-row items-center justify-between gap-4 border-b border-border pb-4 w-full group"
+            >
+            <p
+              class="text-xs font-bold uppercase tracking-wider text-secondary shrink-0 mr-1 hidden sm:block"
+            >
+              Filter by:
+            </p>
+            
+            <button 
+              id="btn-scroll-left" 
+              class="absolute left-1.5 sm:left-23 z-20 lg:hidden hidden h-7 w-7 items-center justify-center rounded-lg border border-border bg-surface text-secondary hover:text-primary shadow-xs opacity-0 group-hover:opacity-80 hover:opacity-100 transition-opacity cursor-pointer"
+            >
+              <i class="fa-regular fa-chevron-left text-xs"></i>
+            </button>
+
             <div
               id="habit-filter-scroll"
-              class="flex flex-1 min-w-0 cursor-grab lg:cursor-default flex-row items-center gap-2 overflow-x-auto pr-2 select-none scrollbar-none"
-              style="scrollbar-width:none; -ms-overflow-style:none; touch-action:none;"
+              class="flex flex-1 min-w-0 flex-row items-center gap-2 overflow-x-auto pr-2 scrollbar-none scroll-smooth"
             >
-              <p
-                class="text-xs font-bold uppercase tracking-wider text-secondary shrink-0 hidden sm:block mr-5"
-              >
-                Filter by:
-              </p>
-
               <button
                 data-category="all"
                 class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-brand/80 shadow-brand/10 px-4 text-xs font-semibold text-white transition cursor-pointer"
@@ -143,9 +188,7 @@ export const HabitsView = {
                 data-category="General"
                 class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
-                <i
-                  class="category-icon fa-regular fa-folders text-amber-500/80"
-                ></i>
+                <i class="category-icon fa-regular fa-folders text-amber-500/80"></i>
                 <span>General</span>
               </button>
 
@@ -153,9 +196,7 @@ export const HabitsView = {
                 data-category="Health"
                 class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
-                <i
-                  class="category-icon fa-regular fa-apple-whole text-emerald-500/80"
-                ></i>
+                <i class="category-icon fa-regular fa-apple-whole text-emerald-500/80"></i>
                 <span>Health</span>
               </button>
 
@@ -171,9 +212,7 @@ export const HabitsView = {
                 data-category="Finance"
                 class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
-                <i
-                  class="category-icon fa-regular fa-dollar-sign text-violet-500/80"
-                ></i>
+                <i class="category-icon fa-regular fa-dollar-sign text-violet-500/80"></i>
                 <span>Finance</span>
               </button>
 
@@ -189,12 +228,17 @@ export const HabitsView = {
                 data-category="Harmful"
                 class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
-                <i
-                  class="category-icon fa-regular fa-ban-smoking text-mauve-500/80"
-                ></i>
+                <i class="category-icon fa-regular fa-ban-smoking text-mauve-500/80"></i>
                 <span>Harmful</span>
               </button>
             </div>
+
+            <button 
+              id="btn-scroll-right" 
+              class="absolute right-26 z-20 lg:hidden flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-surface text-secondary hover:text-primary shadow-xs opacity-0 group-hover:opacity-80 hover:opacity-100 transition-opacity cursor-pointer"
+            >
+              <i class="fa-regular fa-chevron-right text-xs"></i>
+            </button>
 
             <div
               id="habit-count-badge"
@@ -212,117 +256,42 @@ export const HabitsView = {
   },
 };
 
-function setupHabitFiltersDragScroll() {
-  const container = document.getElementById("habit-filter-scroll");
+export function setupHabitFiltersDragScroll() {
+  const scrollContainer = document.getElementById("habit-filter-scroll");
+  const btnLeft = document.getElementById("btn-scroll-left");
+  const btnRight = document.getElementById("btn-scroll-right");
 
-  if (!container || container.dataset.dragScrollInitialized === "true") {
-    return;
+  if (!scrollContainer || !btnLeft || !btnRight) return;
+
+  const scrollStep = 180;
+
+  function updateScrollButtons() {
+    const atStart = scrollContainer.scrollLeft <= 0;
+    const atEnd =
+      scrollContainer.scrollLeft + scrollContainer.clientWidth >=
+      scrollContainer.scrollWidth - 1;
+
+    btnLeft.classList.toggle("hidden", atStart);
+    btnLeft.classList.toggle("flex", !atStart);
+    btnRight.classList.toggle("hidden", atEnd);
+    btnRight.classList.toggle("flex", !atEnd);
   }
 
-  container.dataset.dragScrollInitialized = "true";
+  ["scroll", "mouseenter"].forEach((event) =>
+    scrollContainer.addEventListener(event, updateScrollButtons),
+  );
 
-  let isPointerDown = false;
-  let isDragging = false;
-  let startX = 0;
-  let startY = 0;
-  let startScrollLeft = 0;
-  let hasMoved = false;
-
-  const startDrag = (clientX, clientY) => {
-    isPointerDown = true;
-    startX = clientX;
-    startY = clientY;
-    startScrollLeft = container.scrollLeft;
-    hasMoved = false;
-  };
-
-  const updateDrag = (clientX, clientY, originalEvent) => {
-    if (!isPointerDown) return;
-
-    const deltaX = clientX - startX;
-    const deltaY = clientY - startY;
-
-    if (
-      !hasMoved &&
-      Math.abs(deltaX) > 5 &&
-      Math.abs(deltaX) > Math.abs(deltaY)
-    ) {
-      isDragging = true;
-      hasMoved = true;
-      container.classList.remove("cursor-grab");
-      container.classList.add("cursor-grabbing");
-    }
-
-    if (isDragging) {
-      container.scrollLeft = startScrollLeft - deltaX;
-      originalEvent?.preventDefault();
-    }
-  };
-
-  const stopDragging = (event) => {
-    if (!isPointerDown) return;
-
-    isPointerDown = false;
-
-    if (isDragging) {
-      isDragging = false;
-      container.classList.remove("cursor-grabbing");
-      container.classList.add("cursor-grab");
-
-      if (event?.pointerId && container.hasPointerCapture(event.pointerId)) {
-        container.releasePointerCapture(event.pointerId);
-      }
-    }
-  };
-
-  container.addEventListener("pointerdown", (event) => {
-    if (event.button !== 0) return;
-    startDrag(event.clientX, event.clientY);
-    container.setPointerCapture(event.pointerId);
+  btnLeft.addEventListener("click", (e) => {
+    e.stopPropagation();
+    scrollContainer.scrollLeft -= scrollStep;
   });
 
-  container.addEventListener("pointermove", (event) =>
-    updateDrag(event.clientX, event.clientY, event),
-  );
+  btnRight.addEventListener("click", (e) => {
+    e.stopPropagation();
+    scrollContainer.scrollLeft += scrollStep;
+  });
 
-  container.addEventListener("pointerup", stopDragging);
-  container.addEventListener("pointerleave", stopDragging);
-  container.addEventListener("pointercancel", stopDragging);
-
-  container.addEventListener(
-    "touchstart",
-    (event) => {
-      if (event.touches.length !== 1) return;
-      const touch = event.touches[0];
-      startDrag(touch.clientX, touch.clientY);
-    },
-    { passive: true },
-  );
-
-  container.addEventListener(
-    "touchmove",
-    (event) => {
-      if (event.touches.length !== 1) return;
-      const touch = event.touches[0];
-      updateDrag(touch.clientX, touch.clientY, event);
-    },
-    { passive: false },
-  );
-
-  container.addEventListener("touchend", stopDragging);
-  container.addEventListener("touchcancel", stopDragging);
-
-  container.addEventListener(
-    "click",
-    (event) => {
-      if (hasMoved) {
-        event.preventDefault();
-        event.stopPropagation();
-        hasMoved = false;
-      }
-    },
-    true,
-  );
+  updateScrollButtons();
 }
 
 if (typeof window !== "undefined") {

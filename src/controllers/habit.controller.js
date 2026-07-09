@@ -154,8 +154,7 @@ export const HabitController = {
       });
     };
 
-    const initialCategory =
-      state.selectedCategory ?? StateManager.getCategory?.() ?? "all";
+    const initialCategory = "all";
 
     filterButtons.forEach((btn) => {
       const isActive = btn.dataset.category === initialCategory;
@@ -171,6 +170,33 @@ export const HabitController = {
         this.refreshUI();
       });
     });
+
+    const toggleFormBtn = document.getElementById("btn-toggle-habit-form");
+    const formContainer = document.getElementById("habit-form-container");
+    const formChevron = document.getElementById("form-chevron");
+
+    if (toggleFormBtn && formContainer && formChevron) {
+      toggleFormBtn.addEventListener("click", () => {
+        const isHidden = formContainer.classList.contains("hidden");
+        if (isHidden) {
+          formContainer.classList.replace("hidden", "flex");
+          formChevron.classList.add("rotate-180");
+        } else {
+          formContainer.classList.replace("flex", "hidden");
+          formChevron.classList.remove("rotate-180");
+        }
+      });
+    }
+
+    const searchInput = document.getElementById("search-habits");
+    if (searchInput) {
+      searchInput.value = state.searchQuery || "";
+
+      searchInput.addEventListener("input", (e) => {
+        state.searchQuery = e.target.value;
+        this.refreshUI();
+      });
+    }
 
     const activeBtn = document.getElementById("tab-active");
     const archivedBtn = document.getElementById("tab-archived");
@@ -217,9 +243,74 @@ export const HabitController = {
 
     const openHelp = () => {
       if (helpModal) helpModal.classList.replace("hidden", "flex");
+
+      document.body.classList.add("overflow-hidden");
+
+      const tabSafeguard = document.getElementById("tab-help-safeguard");
+      const tabShortcuts = document.getElementById("tab-help-shortcuts");
+      const contentSafeguard = document.getElementById(
+        "content-help-safeguard",
+      );
+      const contentShortcuts = document.getElementById(
+        "content-help-shortcuts",
+      );
+
+      if (
+        tabSafeguard &&
+        tabShortcuts &&
+        contentSafeguard &&
+        contentShortcuts
+      ) {
+        const resetTabs = () => {
+          tabSafeguard.classList.remove(
+            "bg-surface",
+            "text-primary",
+            "border",
+            "border-border/40",
+            "shadow-sm",
+          );
+          tabSafeguard.classList.add("text-secondary");
+          tabShortcuts.classList.remove(
+            "bg-surface",
+            "text-primary",
+            "border",
+            "border-border/40",
+            "shadow-sm",
+          );
+          tabShortcuts.classList.add("text-secondary");
+          contentSafeguard.classList.add("hidden");
+          contentShortcuts.classList.add("hidden");
+        };
+
+        tabSafeguard.onclick = () => {
+          resetTabs();
+          tabSafeguard.classList.add(
+            "bg-surface",
+            "text-primary",
+            "border",
+            "border-border/40",
+            "shadow-sm",
+          );
+          contentSafeguard.classList.remove("hidden");
+        };
+
+        tabShortcuts.onclick = () => {
+          resetTabs();
+          tabShortcuts.classList.add(
+            "bg-surface",
+            "text-primary",
+            "border",
+            "border-border/40",
+            "shadow-sm",
+          );
+          contentShortcuts.classList.remove("hidden");
+        };
+      }
     };
     const closeHelp = () => {
       if (helpModal) helpModal.classList.replace("flex", "hidden");
+
+      document.body.classList.remove("overflow-hidden");
     };
 
     helpToggle?.addEventListener("click", openHelp);
@@ -251,8 +342,13 @@ export const HabitController = {
   toggleModal(modalId, show) {
     const modal = document.getElementById(modalId);
     if (!modal) return;
-    if (show) modal.classList.replace("hidden", "flex");
-    else modal.classList.replace("flex", "hidden");
+    if (show) {
+      modal.classList.replace("hidden", "flex");
+      document.body.classList.add("overflow-hidden");
+    } else {
+      modal.classList.replace("flex", "hidden");
+      document.body.classList.remove("overflow-hidden");
+    }
   },
 
   updateNavigationDOM() {

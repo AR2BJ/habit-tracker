@@ -155,7 +155,7 @@ export const SettingsController = {
       downloadAnchor.setAttribute("href", dataStr);
       downloadAnchor.setAttribute(
         "download",
-        `Habits_Backup_${formatDate(new Date())}.json`,
+        `Habits_Backup_${formatDate(new Date())}_v${STORAGE_VERSION}.json`,
       );
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
@@ -375,6 +375,8 @@ export const SettingsController = {
 
     resetModal.classList.add("hidden");
     resetModal.classList.remove("flex");
+
+    document.body.classList.remove("overflow-hidden");
   },
 
   initResetModalEvents() {
@@ -383,9 +385,10 @@ export const SettingsController = {
     const cancelResetBtn = document.getElementById("cancel-settings-reset");
     const confirmResetBtn = document.getElementById("confirm-settings-reset");
 
-    triggerResetBtn?.addEventListener("click", () =>
-      resetModal?.classList.replace("hidden", "flex"),
-    );
+    triggerResetBtn?.addEventListener("click", () => {
+      resetModal?.classList.replace("hidden", "flex");
+      document.body.classList.add("overflow-hidden");
+    });
     cancelResetBtn?.addEventListener("click", () => this.closeResetModal());
 
     confirmResetBtn?.addEventListener("click", () => {

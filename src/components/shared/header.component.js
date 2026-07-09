@@ -10,7 +10,9 @@ export const HeaderComponent = {
             <i class="fa-regular fa-bars"></i>
           </button>
 
-          <h1 class="truncate text-xl font-bold tracking-tight text-primary sm:text-2xl lg:text-3xl">
+          <h1
+            class="truncate text-xl font-bold tracking-tight text-primary sm:text-2xl lg:text-3xl"
+          >
             Habit Tracker
           </h1>
         </div>
@@ -19,7 +21,7 @@ export const HeaderComponent = {
           <button
             id="help-toggle"
             class="flex h-9 w-9 flex-row items-center justify-center rounded-xl border border-border bg-surface text-brand/80 transition cursor-pointer hover:bg-brand/10 sm:h-10 sm:w-10"
-            title="App Guide & Tips"
+            title="App Guide & Shortcuts (?)"
           >
             <i class="fa-regular fa-circle-question text-lg"></i>
           </button>

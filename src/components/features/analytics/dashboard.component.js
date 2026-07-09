@@ -309,7 +309,7 @@ export const DashboardComponent = {
                 </div>
               </div>
             </div>
-            <div class="w-full mt-6 overflow-x-auto px-6">
+            <div class="w-full mt-6 overflow-x-auto scroll-smooth scrollbar-thin scrollbar-thumb-surface px-6">
               <div
                 id="apex-heatmap-chart"
                 class="min-w-150 md:min-w-full"
@@ -341,7 +341,7 @@ export const DashboardComponent = {
         </div>
 
         <div
-          class="w-full col-span-2 lg:col-span-full mt-8 border border-border/70 rounded-2xl p-6 bg-surface-1"
+          class="w-full col-span-2 lg:col-span-full mt-8 bg-surface-2 border border-border/70 rounded-2xl p-6 bg-surface-1"
         >
           <h4 class="text-lg font-bold text-primary flex items-center gap-2">
             <i class="fa-regular fa-layer-group text-brand/80 text-xl"></i>
@@ -359,7 +359,7 @@ export const DashboardComponent = {
                       <i class="fa-regular fa-box-open text-2xl opacity-20"></i>
                       <span>No active habits to review.</span>
                   </div>`
-                : `<div class="mt-2 divide-y divide-border/40">
+                : `<div class="mt-5 flex flex-col justify-center gap-2">
                 ${habits
                   .map((habit) => {
                     const stats = calculateStreak(habit.completedDates);
@@ -418,7 +418,7 @@ export const DashboardComponent = {
 
                     return `
                       <div
-                        class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 py-5 first:pt-4 last:pb-1 group/row"
+                        class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 group/row bg-surface p-5 rounded-xl"
                       >
                         <div class="flex items-center gap-3 min-w-0 flex-1">
                           <div class="w-full">
@@ -505,14 +505,14 @@ export const DashboardComponent = {
                         </div>
 
                         <div
-                          class="flex flex-col sm:flex-row items-center gap-6 lg:gap-8 bg-surface-2/20 lg:bg-transparent p-4 lg:p-0 rounded-xl border border-border/30 lg:border-0"
+                          class="flex flex-col sm:flex-row sm:justify-between items-center gap-6 lg:gap-8 bg-surface-2 lg:bg-transparent p-4 lg:p-0 rounded-xl border border-border/30 lg:border-0"
                         >
                           <div
-                            class="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-8 text-center sm:text-left min-w-0"
+                            class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-4 lg:gap-8 text-center sm:text-left min-w-0"
                           >
-                            <div>
+                            <div class="flex flex-col justify-center items-center">
                               <div
-                                class="text-[10px] uppercase font-bold text-muted/80 tracking-wider"
+                                class="text-[10px] uppercase font-bold text-muted/80 tracking-wider text-nowrap"
                               >
                                 Current Streak
                               </div>
@@ -522,7 +522,7 @@ export const DashboardComponent = {
                                 ${stats.current}d
                               </div>
                             </div>
-                            <div>
+                            <div class="flex flex-col justify-center items-center">
                               <div
                                 class="text-[10px] uppercase font-bold text-muted/80 tracking-wider"
                               >
@@ -534,7 +534,7 @@ export const DashboardComponent = {
                                 ${stats.best}d
                               </div>
                             </div>
-                            <div>
+                            <div class="flex flex-col xs:col-span-2 sm:col-span-1 justify-center items-center">
                               <div
                                 class="text-[10px] uppercase font-bold text-muted/80 tracking-wider"
                               >
@@ -557,7 +557,7 @@ export const DashboardComponent = {
                           </div>
 
                           <div
-                            class="w-full sm:w-44 flex items-center justify-between gap-4 border-t sm:border-t-0 border-border/40 pt-3 sm:pt-0"
+                            class="w-full sm:w-44 flex flex-col xs:flex-row items-center justify-between gap-4 border-t sm:border-t-0 border-border/40 pt-3 sm:pt-0"
                           >
                             <div class="w-full space-y-1 min-w-0">
                               <div

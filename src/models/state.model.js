@@ -6,6 +6,7 @@ export const state = {
   activeTab: "active",
   currentView: "habits",
   currentCategory: "all",
+  searchQuery: "",
 };
 
 export const StateManager = {
@@ -34,6 +35,20 @@ export const StateManager = {
       list = list.filter((h) => h.category === state.currentCategory);
     }
 
+    if (state.searchQuery) {
+      const query = state.searchQuery.toLowerCase().trim();
+      list = list.filter((h) => {
+        const name = (h.name || "").toLowerCase();
+        const createdAt = h.createdAt || "";
+        const category = (h.category || "").toLowerCase();
+        return (
+          name.includes(query) ||
+          createdAt.includes(query) ||
+          category.includes(query)
+        );
+      });
+    }
+
     return list;
   },
 
@@ -47,6 +62,10 @@ export const StateManager = {
 
   setView(view) {
     state.currentView = view;
+  },
+
+  setSearchQuery(query) {
+    state.searchQuery = query;
   },
 
   save(habits) {

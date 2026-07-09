@@ -118,7 +118,7 @@ export const HabitCardComponent = {
             class="flex flex-row justify-end items-center gap-4 w-full md:w-auto"
           >
             <div
-              class="grid grid-cols-4 gap-1 w-full md:w-auto md:flex md:items-center md:gap-5 bg-surface-2/40 md:bg-transparent p-2 md:p-0 rounded-lg border border-border/40 md:border-0"
+              class="grid grid-cols-2 md:grid-cols-4 gap-1 w-full md:w-auto md:flex md:items-center md:gap-5 bg-surface-2/40 md:bg-transparent p-2 md:p-0 rounded-lg border border-border/40 md:border-0"
             >
               <div
                 class="flex flex-col items-center px-1 border-r border-border/40 md:border-0"

@@ -277,11 +277,11 @@ export const DashboardComponent = {
 
                 <div
                   id="chart-view-switcher"
-                  class="hidden sm:flex relative  overflow-hidden rounded-2xl border border-border bg-surface-2 p-1 isolation-auto"
+                  class="hidden sm:flex relative  overflow-hidden rounded-xl border border-border bg-surface-2 p-1 isolation-auto"
                 >
                   <div
                     id="heatmap-tab-indicator"
-                    class="absolute top-1 left-1 h-[calc(100%-8px)] w-27.5 rounded-xl bg-brand/80 transition-all duration-300 ease-out z-0 shadow-sm"
+                    class="absolute top-1 left-1 h-[calc(100%-8px)] w-27.5 rounded-lg bg-brand/80 transition-all duration-300 ease-out z-0 shadow-sm"
                     style="background-color: color-mix(in oklab, var(--color-brand) 80%, transparent);"
                   ></div>
 
@@ -418,7 +418,7 @@ export const DashboardComponent = {
 
                     return `
                       <div
-                        class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 group/row bg-surface p-5 rounded-xl"
+                        class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 group/row bg-surface p-5 rounded-xl shadow-sm"
                       >
                         <div class="flex items-center gap-3 min-w-0 flex-1">
                           <div class="w-full">
@@ -505,7 +505,7 @@ export const DashboardComponent = {
                         </div>
 
                         <div
-                          class="flex flex-col sm:flex-row sm:justify-between items-center gap-6 lg:gap-8 bg-surface-2 lg:bg-transparent p-4 lg:p-0 rounded-xl border border-border/30 lg:border-0"
+                          class="flex flex-col sm:flex-row sm:justify-between items-center gap-6 lg:gap-8 bg-surface-2 lg:bg-transparent p-4 lg:p-0 rounded-xl border border-border/30 lg:border-0 shadow-sm lg:shadow-none"
                         >
                           <div
                             class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-4 lg:gap-8 text-center sm:text-left min-w-0"
@@ -571,7 +571,7 @@ export const DashboardComponent = {
                                 >
                               </div>
                               <div
-                                class="w-full h-1.5 bg-(--color-surface-3) rounded-full overflow-hidden"
+                                class="w-full h-1.5 bg-(--color-surface-3) lg:bg-(--color-surface-4) rounded-full overflow-hidden"
                               >
                                 <div
                                   class="${batteryColor} h-full rounded-full transition-all duration-500"

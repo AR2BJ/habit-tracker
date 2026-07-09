@@ -365,11 +365,13 @@ export const HabitController = {
 
       if (state.currentView === v) {
         desktopBtn?.classList.replace("text-secondary", "text-brand/80");
+        desktopBtn?.classList.add("shadow-brand/10");
         desktopBtn?.classList.add("active");
         mobileBtn?.classList.replace("text-secondary", "text-brand/80");
         mobileBtn?.classList.add("active");
       } else {
         desktopBtn?.classList.replace("text-brand/80", "text-secondary");
+        desktopBtn?.classList.remove("shadow-brand/10");
         desktopBtn?.classList.remove("active");
         mobileBtn?.classList.replace("text-brand/80", "text-secondary");
         mobileBtn?.classList.remove("active");

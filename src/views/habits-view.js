@@ -9,11 +9,11 @@ export const HabitsView = {
           class="mb-6 flex flex-col sm:flex-row gap-4 justify-between items-center w-full"
         >
           <div
-            class="relative mb-6 flex w-full justify-center rounded-2xl border border-border bg-surface-2 p-1 sm:w-fit sm:justify-start"
+            class="relative flex w-full justify-center rounded-xl border border-border bg-surface-2 p-1 sm:w-fit sm:justify-start"
           >
             <div
               id="tab-indicator"
-              class="absolute top-1 left-1 h-[calc(100%-8px)] w-27 rounded-xl bg-brand/80 transition-all duration-300 translate-x-0 sm:w-27.5"
+              class="absolute top-1 left-1 h-[calc(100%-8px)] w-27 rounded-lg bg-brand/80 transition-all duration-300 translate-x-0 sm:w-27.5"
             ></div>
 
             <button
@@ -40,8 +40,8 @@ export const HabitsView = {
             <input
               type="text"
               id="search-habits"
-              placeholder="Filter habits...."
-              class="w-full pl-10 pr-10 py-2 text-sm rounded-xl border border-border bg-surface text-primary placeholder:text-muted/70 focus:outline-none focus:border-brand/50 transition-all shadow-sm"
+              placeholder="Search habits...."
+              class="w-full pl-10 pr-10 py-3 text-sm rounded-xl border border-border bg-surface text-primary placeholder:text-muted/70 focus:outline-none focus:border-brand/50 transition-all shadow-sm"
             />
             <kbd
               class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
@@ -59,15 +59,15 @@ export const HabitsView = {
           class="w-full min-w-0"
         >
           <div
-            class="mb-6 flex flex-col rounded-2xl border border-border bg-surface transition-all overflow-hidden"
+            class="mb-6 flex flex-col rounded-xl border border-border bg-surface transition-all overflow-hidden shadow-sm"
           >
             <button 
               id="btn-toggle-habit-form"
-              class="w-full px-5 py-4 flex flex-row items-center justify-between text-left font-bold text-primary hover:bg-surface-2/40 transition cursor-pointer"
+              class="w-full px-5 py-4 flex flex-row items-center justify-between text-left font-bold text-slate-500/80 hover:bg-surface-2/40 transition cursor-pointer"
             >
               <div class="flex items-center gap-2">
                 <i class="fa-regular fa-square-plus text-brand/80"></i>
-                <span>Create New Habit</span>
+                <span class="text-sm">Create New Habit</span>
               </div>
               <div id="form-chevron" class="flex items-center">
                 <i class="fa-regular fa-chevron-down text-secondary text-sm transition-transform duration-300"></i>

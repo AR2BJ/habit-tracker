@@ -1,6 +1,7 @@
+import { StateManager, state } from "@/models/state.model.js";
+
 import { AnalyticsController } from "./analytics.controller.js";
 import { HabitController } from "./habit.controller.js";
-import { StateManager } from "@/models/state.model.js";
 
 export class NavigationController {
   static init() {
@@ -12,6 +13,7 @@ export class NavigationController {
   static setupNavigationListeners() {
     document.getElementById("nav-habits")?.addEventListener("click", () => {
       this.setActiveTab("habits");
+      HabitController.updateTabStyles(state.activeTab);
     });
     document.getElementById("nav-analytics")?.addEventListener("click", () => {
       this.setActiveTab("analytics");
@@ -22,6 +24,7 @@ export class NavigationController {
 
     document.getElementById("mobile-habits")?.addEventListener("click", () => {
       this.setActiveTab("habits");
+      HabitController.updateTabStyles(state.activeTab);
     });
     document
       .getElementById("mobile-analytics")

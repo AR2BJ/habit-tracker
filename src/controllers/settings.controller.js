@@ -1,9 +1,9 @@
 import { STORAGE_KEY, STORAGE_VERSION } from "@/models/storage.model";
 import { StateManager, state } from "@/models/state.model.js";
+import { formatDate, generateId } from "@/utils/helpers";
 
 import { HabitController } from "./habit.controller";
 import { NotificationService } from "@/services/notification.service.js";
-import { formatDate } from "@/utils/helpers";
 import mockData from "@/models/mocks/habits-seed.json";
 
 export const SettingsController = {
@@ -33,7 +33,15 @@ export const SettingsController = {
 
     document
       .getElementById("sett-export-btn")
-      ?.addEventListener("click", () => this.handleDataExport());
+      ?.addEventListener("click", () => this.handleDataExport("json"));
+
+    document
+      .getElementById("sett-export-md-btn")
+      ?.addEventListener("click", () => this.handleDataExport("markdown"));
+
+    document
+      .getElementById("sett-export-notion-btn")
+      ?.addEventListener("click", () => this.handleDataExport("notion"));
 
     this.initImportDropzone();
 
@@ -56,13 +64,10 @@ export const SettingsController = {
         e.stopPropagation();
       }
 
-      if (e.key === "Escape") {
-        this.closeResetModal();
-      }
+      if (e.key === "Escape") this.closeResetModal();
 
-      if (e.key === "Enter") {
+      if (e.key === "Enter")
         document.getElementById("confirm-settings-reset")?.click();
-      }
     });
 
     this.initResetModalEvents();
@@ -134,12 +139,11 @@ export const SettingsController = {
     }
   },
 
-  handleDataExport() {
-    const rawData = JSON.stringify(
-      JSON.parse(localStorage.getItem(STORAGE_KEY))?.habits || [],
-    );
+  handleDataExport(format = "json") {
+    const localData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    const habits = localData?.habits || [];
 
-    if (rawData === "[]") {
+    if (habits.length === 0) {
       NotificationService.show({
         type: "info",
         message: "There is no data to export.",
@@ -147,28 +151,107 @@ export const SettingsController = {
         iconColor: "text-sky-500/80",
         duration: 3000,
       });
-    } else {
-      const dataStr =
-        "data:text/json;charset=utf-8," + encodeURIComponent(rawData);
-      const downloadAnchor = document.createElement("a");
-
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute(
-        "download",
-        `Habits_Backup_${formatDate(new Date())}_v${STORAGE_VERSION}.json`,
-      );
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-
-      NotificationService.show({
-        type: "success",
-        message: "Database structural JSON ledger exported successfully.",
-        icon: "fa-file-arrow-down",
-        iconColor: "text-emerald-500/80",
-        duration: 3000,
-      });
+      return;
     }
+
+    let fileContent = "";
+    let fileName = "";
+    let contentType = "";
+
+    const dateStr = formatDate(new Date());
+
+    if (format === "json") {
+      fileContent = JSON.stringify(habits, null, 2);
+      fileName = `Habits_Backup_${dateStr}_v${STORAGE_VERSION}.json`;
+      contentType = "application/json";
+    } else if (format === "markdown") {
+      fileContent = `# 📊 Habit Tracker Workspace Progress Report\n\nGenerated: ${new Date().toLocaleDateString()}\n\n---\n\n`;
+      habits.forEach((habit) => {
+        fileContent += `## #️⃣ ${habit.id}\n`;
+        fileContent += `## 🎯 ${habit.name}\n`;
+        fileContent += `- **Category:** 📁 ${habit.category}\n`;
+        fileContent += `- **Frequency:** 📅 ${habit.frequency} days/wk\n`;
+        fileContent += `- **Created At:** ⏰ ${habit.createdAt}\n`;
+        fileContent += `- **Status:** ${habit.archived ? "📦 Archived" : "⚡ Active"}\n\n`;
+        fileContent += `### 📅 Completion History\n`;
+        if (!habit.completedDates || habit.completedDates.length === 0)
+          fileContent += `_No check-ins recorded yet._\n\n`;
+        else {
+          habit.completedDates.forEach((d) => {
+            fileContent += `- [x] ${d}\n`;
+          });
+          fileContent += `\n`;
+        }
+        fileContent += `### 🕒 Skipped Dates\n`;
+        if (!habit.skippedDates || habit.skippedDates.length === 0) {
+          fileContent += `_No skipped dates recorded yet._\n\n`;
+        } else {
+          habit.skippedDates.forEach((d) => {
+            fileContent += `- [x] ${d}\n`;
+          });
+          fileContent += `\n`;
+        }
+        fileContent += `- **Best Streak:** 🔥 ${habit.stats?.bestStreak || 0} days\n`;
+        fileContent += `- **Allowed Skips/Month:** 🛑 ${habit.stats?.allowedSkipsPerMonth || 3}\n`;
+        fileContent += `---\n\n`;
+      });
+      fileName = `Habits_Backup_${dateStr}_v${STORAGE_VERSION}.md`;
+      contentType = "text/markdown";
+    } else if (format === "notion") {
+      const escapeCsvValue = (value) => {
+        const text = value == null ? "" : String(value);
+        return `"${text.replace(/"/g, '""')}"`;
+      };
+
+      const headers = [
+        "Id",
+        "Name",
+        "Category",
+        "Frequency",
+        "Created At",
+        "Archived",
+        "Completed Dates",
+        "Skipped Dates",
+        "Best Streak",
+        "Allowed Skips/Month",
+      ];
+
+      const rows = habits.map((h) => [
+        escapeCsvValue(h.id),
+        escapeCsvValue(h.name),
+        escapeCsvValue(h.category),
+        escapeCsvValue(h.frequency),
+        escapeCsvValue(h.createdAt),
+        escapeCsvValue(h.archived ? "Archived" : "Active"),
+        escapeCsvValue((h.completedDates || []).join(";")),
+        escapeCsvValue((h.skippedDates || []).join(";")),
+        escapeCsvValue(h.stats?.bestStreak || 0),
+        escapeCsvValue(h.stats?.allowedSkipsPerMonth || 3),
+      ]);
+
+      fileContent = [headers.join(","), ...rows.map((e) => e.join(","))].join(
+        "\n",
+      );
+      fileName = `Habits_Backup_${dateStr}_v${STORAGE_VERSION}.csv`;
+      contentType = "text/csv;charset=utf-8;";
+    }
+
+    const blob = new Blob([fileContent], { type: contentType });
+    const downloadAnchor = document.createElement("a");
+    downloadAnchor.href = URL.createObjectURL(blob);
+    downloadAnchor.download = fileName;
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+    URL.revokeObjectURL(downloadAnchor.href);
+
+    NotificationService.show({
+      type: "success",
+      message: `Database layer exported successfully as ${format.toUpperCase()}.`,
+      icon: "fa-file-arrow-down",
+      iconColor: "text-emerald-500/80",
+      duration: 3000,
+    });
   },
 
   initImportDropzone() {
@@ -199,11 +282,149 @@ export const SettingsController = {
     });
   },
 
+  _parseMarkdownToHabits(text) {
+    const habits = [];
+    const blockRegex =
+      /## #️⃣ ([^\n]+)\n## 🎯 ([^\n]+)\n([\s\S]*?)(?=\n## #️⃣ |\n*$)/g;
+
+    let match;
+    while ((match = blockRegex.exec(text)) !== null) {
+      const [, id, name, block] = match;
+      const lines = block
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean);
+
+      let category = "General";
+      let frequency = 7;
+      let createdAt = formatDate(new Date());
+      let archived = false;
+      const completedDates = [];
+      const skippedDates = [];
+      let bestStreak = 0;
+      let allowedSkipsPerMonth = 3;
+
+      let currentSection = "completed";
+
+      lines.forEach((line) => {
+        if (line === "### 📅 Completion History") {
+          currentSection = "completed";
+          return;
+        }
+
+        if (line === "### 🕒 Skipped Dates") {
+          currentSection = "skipped";
+          return;
+        }
+
+        if (line.includes("- **Category:**")) {
+          category = line.split("📁 ")[1]?.trim() || "General";
+        } else if (line.includes("- **Frequency:**")) {
+          frequency = parseInt(line.split("📅 ")[1]) || 7;
+        } else if (line.includes("- **Created At:**")) {
+          createdAt = line.split("⏰ ")[1]?.trim() || formatDate(new Date());
+        } else if (line.includes("- **Status:**")) {
+          archived = line.includes("📦 Archived");
+        } else if (line.includes("- **Best Streak:**")) {
+          bestStreak = parseInt(line.split("🔥 ")[1]) || 0;
+        } else if (line.includes("- **Allowed Skips/Month:**")) {
+          allowedSkipsPerMonth = parseInt(line.split("🛑 ")[1]) || 3;
+        } else if (/^- \[[ xX]\]/.test(line)) {
+          const date = line.replace(/^- \[[ xX]\]\s*/, "").trim();
+          if (!date) return;
+
+          if (currentSection === "skipped") skippedDates.push(date);
+          else completedDates.push(date);
+        }
+      });
+
+      habits.push({
+        id,
+        name,
+        category,
+        frequency,
+        createdAt,
+        archived,
+        completedDates,
+        skippedDates,
+        stats: { bestStreak, allowedSkipsPerMonth },
+      });
+    }
+
+    return habits;
+  },
+
+  _parseCSVToHabits(text) {
+    const lines = text
+      .split("\n")
+      .map((l) => l.trim())
+      .filter((l) => l.length > 0);
+    if (lines.length <= 1) return [];
+
+    const habits = lines
+      .slice(1)
+      .map((line) => {
+        const matches =
+          line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || line.split(",");
+        if (matches.length < 5) return null;
+
+        const id = matches[0].replace(/^"|"$/g, "");
+        const name = matches[1].replace(/^"|"$/g, "").replace(/""/g, '"');
+        const category = matches[2].replace(/^"|"$/g, "");
+        const frequency = parseInt(matches[3]) || 7;
+        const createdAt = matches[4]
+          ? matches[4].replace(/^"|"$/g, "")
+          : formatDate(new Date());
+        const archived = matches[5].replace(/^"|"$/g, "") === "Archived";
+        const completedDates = matches[6]
+          ? matches[6]
+              .replace(/^"|"$/g, "")
+              .split(";")
+              .map((d) => d.trim())
+              .filter((d) => d.length > 0)
+          : [];
+        const skippedDates = matches[7]
+          ? matches[7]
+              .replace(/^"|"$/g, "")
+              .split(";")
+              .map((d) => d.trim())
+              .filter((d) => d.length > 0)
+          : [];
+        const bestStreak = parseInt(matches[8]) || 0;
+        const allowedSkipsPerMonth = parseInt(matches[9]) || 3;
+
+        return {
+          id,
+          name,
+          category,
+          frequency,
+          createdAt,
+          archived,
+          completedDates,
+          skippedDates,
+          stats: { bestStreak, allowedSkipsPerMonth },
+        };
+      })
+      .filter((h) => h !== null);
+
+    return habits;
+  },
+
   processImportedFile(file) {
-    if (file.type !== "application/json" && !file.name.endsWith(".json")) {
+    const fileName = file.name.toLowerCase();
+    let format = "";
+
+    if (file.type === "application/json" || fileName.endsWith(".json"))
+      format = "json";
+    else if (fileName.endsWith(".md") || fileName.endsWith(".markdown"))
+      format = "markdown";
+    else if (file.type === "text/csv" || fileName.endsWith(".csv"))
+      format = "csv";
+    else {
       NotificationService.show({
         type: "error",
-        message: "Invalid format! Only structural JSON files are permitted.",
+        message:
+          "Invalid format! Only structural JSON, MD, or CSV files are permitted.",
         icon: "fa-circle-xmark",
         iconColor: "text-red-500/80",
         duration: 3500,
@@ -212,12 +433,23 @@ export const SettingsController = {
     }
 
     const reader = new FileReader();
-    reader.onload = async (event) => {
+    reader.addEventListener("load", async (event) => {
       try {
-        const importedHabits = JSON.parse(event.target.result);
+        const rawContent = event.target.result;
+        let importedHabits = [];
 
-        if (!Array.isArray(importedHabits))
-          throw new Error("Format is not a proper tracking array");
+        if (format === "json") {
+          const parsedJson = JSON.parse(rawContent);
+          importedHabits = Array.isArray(parsedJson)
+            ? parsedJson
+            : parsedJson.habits || [];
+        } else if (format === "markdown")
+          importedHabits = this._parseMarkdownToHabits(rawContent);
+        else if (format === "csv")
+          importedHabits = this._parseCSVToHabits(rawContent);
+
+        if (!Array.isArray(importedHabits) || importedHabits.length === 0)
+          throw new Error("No structured data could be extracted.");
 
         const parsedData = {
           version: STORAGE_VERSION,
@@ -239,21 +471,22 @@ export const SettingsController = {
 
         NotificationService.show({
           type: "success",
-          message: "Data ledger synchronized and parsed successfully.",
+          message: `Data ledger parsed and synchronized from ${format.toUpperCase()} file.`,
           icon: "fa-circle-check",
           iconColor: "text-emerald-500/80",
           duration: 3500,
         });
       } catch (err) {
+        console.error("Parser failure:", err);
         NotificationService.show({
           type: "error",
-          message: "Failed to parse structural integrity of JSON file.",
+          message: "Failed to parse structural integrity of the file.",
           icon: "fa-triangle-exclamation",
           iconColor: "text-red-500/80",
           duration: 3500,
         });
       }
-    };
+    });
 
     reader.readAsText(file);
   },
@@ -306,9 +539,7 @@ export const SettingsController = {
       duration: 3000,
     });
 
-    if (nextState) {
-      this.runAutoArchivePipeline();
-    }
+    if (nextState) this.runAutoArchivePipeline();
   },
 
   runAutoArchivePipeline() {
@@ -354,9 +585,7 @@ export const SettingsController = {
     if (modified) {
       StateManager.save(habits);
 
-      if (this.mainController) {
-        this.mainController.refreshUI();
-      }
+      if (this.mainController) this.mainController.refreshUI();
 
       NotificationService.show({
         type: "info",

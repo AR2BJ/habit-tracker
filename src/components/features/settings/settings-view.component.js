@@ -85,7 +85,7 @@ export const SettingsViewComponent = {
           </div>
 
           <div
-            class="bg-surface rounded-2xl p-4 sm:p-6 flex flex-col gap-4 shadow-sm border border-border"
+            class="bg-surface rounded-2xl p-4 sm:p-6 flex flex-col gap-6 shadow-sm border border-border"
           >
             <div class="flex items-center gap-3 border-b border-border pb-3">
               <div
@@ -100,35 +100,62 @@ export const SettingsViewComponent = {
                   Data Backup & Sandbox
                 </h3>
                 <p class="text-[11px] sm:text-xs text-secondary truncate">
-                  Export your tracking ledger, import backups, or seed mock
-                  data.
+                  Export workspace records, import historical snapshots, or seed environment mock data.
                 </p>
               </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
-              <button
-                id="sett-export-btn"
-                class="w-full px-4 py-3 bg-surface-2 hover:bg-(--color-surface-3) border border-border rounded-xl text-primary text-xs sm:text-sm font-medium flex items-center justify-center gap-2 transition cursor-pointer"
-              >
-                <i class="fa-regular fa-download text-emerald-500/80 text-sm"></i>
-                <span>Export Backup (JSON)</span>
-              </button>
+            <div class="flex flex-col gap-2">
+              <label class="text-[10px] sm:text-[11px] font-bold text-secondary uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-regular fa-file-export opacity-70"></i>
+                <span>Export Application Ledger</span>
+              </label>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <button
+                  id="sett-export-btn"
+                  class="w-full px-3 py-2.5 bg-surface-2 hover:bg-(--color-surface-3) border border-border rounded-xl text-primary text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer group"
+                >
+                  <i class="fa-regular fa-file-code text-amber-500/80 text-sm group-hover:scale-105 transition"></i>
+                  <span>JSON Ledger</span>
+                </button>
 
+                <button
+                  id="sett-export-md-btn"
+                  class="w-full px-3 py-2.5 bg-surface-2 hover:bg-(--color-surface-3) border border-border rounded-xl text-primary text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer group"
+                >
+                  <i class="fa-brands fa-markdown text-sky-500/80 text-sm group-hover:scale-105 transition"></i>
+                  <span>Markdown Log</span>
+                </button>
+
+                <button
+                  id="sett-export-notion-btn"
+                  class="w-full px-3 py-2.5 bg-surface-2 hover:bg-(--color-surface-3) border border-border rounded-xl text-primary text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer group"
+                >
+                  <i class="fa-regular fa-table text-emerald-500/80 text-sm group-hover:scale-105 transition"></i>
+                  <span>Spreadsheet CSV</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2 border-t border-border/60 pt-4">
+              <label class="text-[10px] sm:text-[11px] font-bold text-secondary uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-regular fa-flask-vial opacity-70"></i>
+                <span>Development & Sandbox</span>
+              </label>
               <button
                 id="sett-seed-btn"
-                class="w-full px-4 py-3 bg-brand/5 hover:bg-brand/10 border border-brand/20 rounded-xl text-brand/80 text-xs sm:text-sm font-medium flex items-center justify-center gap-2 transition cursor-pointer"
+                class="w-full px-4 py-2.5 bg-brand/5 hover:bg-brand/10 border border-brand/20 rounded-xl text-brand/80 text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer"
               >
                 <i class="fa-regular fa-flask text-sm"></i>
-                <span>Seed Mock Data (Sandbox)</span>
+                <span>Seed 3-Month Historical Mock Data</span>
               </button>
             </div>
 
-            <div class="flex flex-col gap-2 mt-1">
-              <label
-                class="text-[11px] sm:text-xs font-semibold text-secondary uppercase tracking-wider"
-                >Import Database File</label
-              >
+            <div class="flex flex-col gap-2 border-t border-border/60 pt-4">
+              <label class="text-[10px] sm:text-[11px] font-bold text-secondary uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-regular fa-file-import opacity-70"></i>
+                <span>Import Database Snapshot</span>
+              </label>
               <div
                 id="sett-dropzone"
                 class="border-2 border-dashed border-border hover:border-brand/60 rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center gap-2 bg-surface-2/40 hover:bg-surface-2 transition cursor-pointer group text-center"
@@ -136,17 +163,17 @@ export const SettingsViewComponent = {
                 <i
                   class="fa-regular fa-cloud-arrow-up text-lg sm:text-xl text-secondary group-hover:text-brand/80 transition animate-pulse"
                 ></i>
-                <span class="text-xs font-medium text-primary px-2">
+                <span class="text-xs font-semibold text-primary px-2">
                   Drag & drop file here or
-                  <span class="text-brand/80 font-semibold">browse</span>
+                  <span class="text-brand/80 font-bold">browse local files</span>
                 </span>
-                <span class="text-[10px] text-secondary"
-                  >Supports only validated .json structural backups</span
+                <span class="text-[10px] text-secondary font-medium"
+                  >Supports validated .json backups, .md reports or structured .csv tables</span
                 >
                 <input
                   type="file"
                   id="sett-import-file"
-                  accept=".json"
+                  accept=".json,.md,.csv"
                   class="hidden"
                 />
               </div>

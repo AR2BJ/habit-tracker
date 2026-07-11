@@ -2,8 +2,8 @@ import { HabitService } from "@/services/habit.service.js";
 import { NotificationService } from "@/services/notification.service.js";
 import { StateManager } from "@/models/state.model.js";
 
-export let pendingDeleteId = null;
-export let pendingEditId = null;
+let pendingDeleteId = null;
+let pendingEditId = null;
 
 export function setPendingEditId(id) {
   pendingEditId = id;
@@ -29,6 +29,15 @@ export const HabitFormController = {
       const category = categorySelect ? categorySelect.value : "General";
       const frequency = frequencySelect ? frequencySelect.value : 7;
 
+      if (!name)
+        NotificationService.show({
+          type: "error",
+          message: "Habit name cannot be empty.",
+          icon: "fa-triangle-exclamation",
+          iconColor: "text-red-500/80",
+          duration: 5000,
+        });
+
       if (!name.trim()) return;
 
       try {
@@ -49,15 +58,15 @@ export const HabitFormController = {
           message: `Habit "${name}" [${category}] created successfully!`,
           icon: "fa-check",
           iconColor: "text-emerald-500/80",
-          duration: 3000,
+          duration: 5000,
         });
       } catch (error) {
         NotificationService.show({
           type: "error",
           message: error.message,
           icon: "fa-triangle-exclamation",
-          iconColor: "text-rose-500/80",
-          duration: 4000,
+          iconColor: "text-red-500/80",
+          duration: 5000,
         });
       }
     };
@@ -133,7 +142,7 @@ export const HabitFormController = {
       this.mainController.refreshUI();
 
       NotificationService.show({
-        type: "delete",
+        type: "error",
         message: `Deleted "${capturedHabit.name}"`,
         duration: 5000,
         undoAction: () => {
@@ -152,8 +161,8 @@ export const HabitFormController = {
         type: "error",
         message: "Unable to edit habit. Please try again.",
         icon: "fa-triangle-exclamation",
-        iconColor: "text-rose-500/80",
-        duration: 4000,
+        iconColor: "text-red-500/80",
+        duration: 5000,
       });
       return;
     }
@@ -164,8 +173,8 @@ export const HabitFormController = {
         type: "error",
         message: "Habit name cannot be empty.",
         icon: "fa-triangle-exclamation",
-        iconColor: "text-rose-500/80",
-        duration: 4000,
+        iconColor: "text-red-500/80",
+        duration: 5000,
       });
       return;
     }
@@ -188,15 +197,15 @@ export const HabitFormController = {
         message: `Habit renamed to "${newName}"`,
         icon: "fa-check",
         iconColor: "text-emerald-500/80",
-        duration: 3000,
+        duration: 5000,
       });
     } catch (error) {
       NotificationService.show({
         type: "error",
         message: error.message,
         icon: "fa-triangle-exclamation",
-        iconColor: "text-rose-500/80",
-        duration: 4000,
+        iconColor: "text-red-500/80",
+        duration: 5000,
       });
     }
   },

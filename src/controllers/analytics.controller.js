@@ -6,7 +6,7 @@ import {
 
 import { StateManager } from "@/models/state.model.js";
 
-export let currentHeatmapView = "weekly";
+let currentHeatmapView = "weekly";
 
 export const AnalyticsController = {
   init() {

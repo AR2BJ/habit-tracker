@@ -78,6 +78,11 @@ export class NavigationController {
           document.getElementById("theme-toggle")?.click();
           return;
         }
+        if (key === "m") {
+          event.preventDefault();
+          document.getElementById("menu-toggle")?.click();
+          return;
+        }
         if (key === "r") {
           event.preventDefault();
           this.setActiveTab("settings");

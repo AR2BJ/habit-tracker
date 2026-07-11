@@ -117,11 +117,7 @@
         "2026-05-19",
         "2026-05-28",
         "2026-06-07"
-      ],
-      "stats": {
-        "bestStreak": 18,
-        "allowedSkipsPerMonth": 3
-      }
+      ]
     },
     {
       "id": "mock-habit-2-health",
@@ -240,11 +236,7 @@
         "2026-06-27",
         "2026-06-28",
         "2026-06-29"
-      ],
-      "stats": {
-        "bestStreak": 3,
-        "allowedSkipsPerMonth": 3
-      }
+      ]
     },
     {
       "id": "mock-habit-3-work",
@@ -363,11 +355,7 @@
         "2026-06-27",
         "2026-06-28",
         "2026-06-29"
-      ],
-      "stats": {
-        "bestStreak": 59,
-        "allowedSkipsPerMonth": 3
-      }
+      ]
     },
     {
       "id": "mock-habit-4-finance",
@@ -469,11 +457,7 @@
         "2026-06-27",
         "2026-06-28",
         "2026-06-29"
-      ],
-      "stats": {
-        "bestStreak": 4,
-        "allowedSkipsPerMonth": 3
-      }
+      ]
     },
     {
       "id": "mock-habit-5-harmful",
@@ -590,11 +574,7 @@
         "2026-06-28",
         "2026-06-29"
       ],
-      "skippedDates": ["2026-03-30"],
-      "stats": {
-        "bestStreak": 80,
-        "allowedSkipsPerMonth": 3
-      }
+      "skippedDates": ["2026-03-30"]
     },
     {
       "id": "mock-habit-6-stale",
@@ -620,11 +600,7 @@
         "2026-06-28",
         "2026-06-29"
       ],
-      "skippedDates": ["2026-03-20"],
-      "stats": {
-        "bestStreak": 5,
-        "allowedSkipsPerMonth": 3
-      }
+      "skippedDates": ["2026-03-20"]
     }
   ]
 }

@@ -13,10 +13,6 @@ function migrateHabit(habit) {
     archived: habit.archived ?? false,
     completedDates: habit.completedDates ?? [],
     skippedDates: habit.skippedDates ?? [],
-    stats: {
-      bestStreak: habit.stats?.bestStreak ?? 0,
-      allowedSkipsPerMonth: habit.stats?.allowedSkipsPerMonth ?? 3,
-    },
   };
 }
 

@@ -1,9 +1,9 @@
 import { STORAGE_KEY, STORAGE_VERSION } from "@/models/storage.model";
 import { StateManager, state } from "@/models/state.model.js";
-import { formatDate, generateId } from "@/utils/helpers";
 
 import { HabitController } from "./habit.controller";
 import { NotificationService } from "@/services/notification.service.js";
+import { formatDate } from "@/utils/helpers";
 import mockData from "@/models/mocks/habits-seed.json";
 
 export const SettingsController = {
@@ -52,6 +52,8 @@ export const SettingsController = {
     document
       .getElementById("sett-auto-archive-toggle")
       ?.addEventListener("click", () => this.handleAutoArchiveToggle());
+
+    this.syncAutoArchiveToggle();
 
     document.addEventListener("keydown", (e) => {
       const resetModal = document.getElementById("settings-reset-modal");
@@ -148,8 +150,8 @@ export const SettingsController = {
         type: "info",
         message: "There is no data to export.",
         icon: "fa-circle-info",
-        iconColor: "text-sky-500/80",
-        duration: 3000,
+        iconColor: "text-brand/80",
+        duration: 5000,
       });
       return;
     }
@@ -191,8 +193,6 @@ export const SettingsController = {
           });
           fileContent += `\n`;
         }
-        fileContent += `- **Best Streak:** 🔥 ${habit.stats?.bestStreak || 0} days\n`;
-        fileContent += `- **Allowed Skips/Month:** 🛑 ${habit.stats?.allowedSkipsPerMonth || 3}\n`;
         fileContent += `---\n\n`;
       });
       fileName = `Habits_Backup_${dateStr}_v${STORAGE_VERSION}.md`;
@@ -225,8 +225,6 @@ export const SettingsController = {
         escapeCsvValue(h.archived ? "Archived" : "Active"),
         escapeCsvValue((h.completedDates || []).join(";")),
         escapeCsvValue((h.skippedDates || []).join(";")),
-        escapeCsvValue(h.stats?.bestStreak || 0),
-        escapeCsvValue(h.stats?.allowedSkipsPerMonth || 3),
       ]);
 
       fileContent = [headers.join(","), ...rows.map((e) => e.join(","))].join(
@@ -250,7 +248,7 @@ export const SettingsController = {
       message: `Database layer exported successfully as ${format.toUpperCase()}.`,
       icon: "fa-file-arrow-down",
       iconColor: "text-emerald-500/80",
-      duration: 3000,
+      duration: 5000,
     });
   },
 
@@ -279,6 +277,10 @@ export const SettingsController = {
 
     fileInput?.addEventListener("change", (e) => {
       if (e.target.files.length) this.processImportedFile(e.target.files[0]);
+
+      setTimeout(() => {
+        this.runAutoArchivePipeline();
+      }, 200);
     });
   },
 
@@ -301,8 +303,6 @@ export const SettingsController = {
       let archived = false;
       const completedDates = [];
       const skippedDates = [];
-      let bestStreak = 0;
-      let allowedSkipsPerMonth = 3;
 
       let currentSection = "completed";
 
@@ -325,10 +325,6 @@ export const SettingsController = {
           createdAt = line.split("⏰ ")[1]?.trim() || formatDate(new Date());
         } else if (line.includes("- **Status:**")) {
           archived = line.includes("📦 Archived");
-        } else if (line.includes("- **Best Streak:**")) {
-          bestStreak = parseInt(line.split("🔥 ")[1]) || 0;
-        } else if (line.includes("- **Allowed Skips/Month:**")) {
-          allowedSkipsPerMonth = parseInt(line.split("🛑 ")[1]) || 3;
         } else if (/^- \[[ xX]\]/.test(line)) {
           const date = line.replace(/^- \[[ xX]\]\s*/, "").trim();
           if (!date) return;
@@ -347,7 +343,6 @@ export const SettingsController = {
         archived,
         completedDates,
         skippedDates,
-        stats: { bestStreak, allowedSkipsPerMonth },
       });
     }
 
@@ -390,8 +385,6 @@ export const SettingsController = {
               .map((d) => d.trim())
               .filter((d) => d.length > 0)
           : [];
-        const bestStreak = parseInt(matches[8]) || 0;
-        const allowedSkipsPerMonth = parseInt(matches[9]) || 3;
 
         return {
           id,
@@ -402,7 +395,6 @@ export const SettingsController = {
           archived,
           completedDates,
           skippedDates,
-          stats: { bestStreak, allowedSkipsPerMonth },
         };
       })
       .filter((h) => h !== null);
@@ -427,7 +419,7 @@ export const SettingsController = {
           "Invalid format! Only structural JSON, MD, or CSV files are permitted.",
         icon: "fa-circle-xmark",
         iconColor: "text-red-500/80",
-        duration: 3500,
+        duration: 5000,
       });
       return;
     }
@@ -474,7 +466,7 @@ export const SettingsController = {
           message: `Data ledger parsed and synchronized from ${format.toUpperCase()} file.`,
           icon: "fa-circle-check",
           iconColor: "text-emerald-500/80",
-          duration: 3500,
+          duration: 5000,
         });
       } catch (err) {
         console.error("Parser failure:", err);
@@ -483,7 +475,7 @@ export const SettingsController = {
           message: "Failed to parse structural integrity of the file.",
           icon: "fa-triangle-exclamation",
           iconColor: "text-red-500/80",
-          duration: 3500,
+          duration: 5000,
         });
       }
     });
@@ -508,9 +500,35 @@ export const SettingsController = {
       type: "success",
       message: "Sandbox environment seeded with 3 months historical logs.",
       icon: "fa-flask-vial",
-      iconColor: "text-brand/80",
-      duration: 3500,
+      iconColor: "text-emerald-500/80",
+      duration: 5000,
     });
+
+    setTimeout(() => {
+      this.runAutoArchivePipeline();
+    }, 200);
+  },
+
+  syncAutoArchiveToggle() {
+    const current = localStorage.getItem("sett_auto_archive") === "true";
+    const toggleBtn = document.getElementById("sett-auto-archive-toggle");
+    const toggleDot = document.getElementById("sett-auto-archive-dot");
+
+    if (current) {
+      toggleBtn?.classList.replace("bg-neutral-300/80", "bg-brand/80");
+      toggleBtn?.classList.replace(
+        "dark:bg-neutral-700/80",
+        "dark:bg-brand/80",
+      );
+      toggleDot?.classList.replace("translate-x-0", "translate-x-5");
+    } else {
+      toggleBtn?.classList.replace("bg-brand/80", "bg-neutral-300/80");
+      toggleBtn?.classList.replace(
+        "dark:bg-brand/80",
+        "dark:bg-neutral-700/80",
+      );
+      toggleDot?.classList.replace("translate-x-5", "translate-x-0");
+    }
   },
 
   handleAutoArchiveToggle() {
@@ -522,12 +540,18 @@ export const SettingsController = {
     const toggleDot = document.getElementById("sett-auto-archive-dot");
 
     if (nextState) {
-      toggleBtn?.classList.replace("bg-neutral-300/80", "bg-brand");
-      toggleBtn?.classList.replace("dark:bg-neutral-700", "bg-brand");
+      toggleBtn?.classList.replace("bg-neutral-300/80", "bg-brand/80");
+      toggleBtn?.classList.replace(
+        "dark:bg-neutral-700/80",
+        "dark:bg-brand/80",
+      );
       toggleDot?.classList.replace("translate-x-0", "translate-x-5");
     } else {
       toggleBtn?.classList.replace("bg-brand/80", "bg-neutral-300/80");
-      toggleBtn?.classList.add("dark:bg-neutral-700");
+      toggleBtn?.classList.replace(
+        "dark:bg-brand/80",
+        "dark:bg-neutral-700/80",
+      );
       toggleDot?.classList.replace("translate-x-5", "translate-x-0");
     }
 
@@ -535,8 +559,8 @@ export const SettingsController = {
       type: "info",
       message: `Autonomous archiving pipeline has been ${nextState ? "activated" : "deactivated"}.`,
       icon: "fa-robot",
-      iconColor: "text-indigo-500/80",
-      duration: 3000,
+      iconColor: "text-brand/80",
+      duration: 5000,
     });
 
     if (nextState) this.runAutoArchivePipeline();
@@ -592,8 +616,8 @@ export const SettingsController = {
         message:
           "Stale habits exceeding 30 days structural limits auto-archived.",
         icon: "fa-box-archive",
-        iconColor: "text-indigo-400/80",
-        duration: 4000,
+        iconColor: "text-brand/80",
+        duration: 5000,
       });
     }
   },
@@ -627,6 +651,11 @@ export const SettingsController = {
   },
 
   async executeApplicationReset() {
+    const previousPayload = localStorage.getItem(STORAGE_KEY);
+    const previousHabits = StateManager.getHabits().map((habit) => ({
+      ...habit,
+    }));
+
     this.closeResetModal();
 
     localStorage.removeItem(STORAGE_KEY);
@@ -643,12 +672,29 @@ export const SettingsController = {
     HabitController.refreshUI();
 
     NotificationService.show({
-      type: "delete",
+      type: "error",
       message:
         "Application synchronization storage has been completely cleared.",
-      icon: "fa-triangle-exclamation",
-      iconColor: "text-rose-500/80",
-      duration: 3500,
+      duration: 5000,
+      undoAction: async () => {
+        if (previousPayload) {
+          localStorage.setItem(STORAGE_KEY, previousPayload);
+        } else {
+          localStorage.removeItem(STORAGE_KEY);
+        }
+
+        StateManager.save(previousHabits || []);
+        state.habits = previousHabits || [];
+        state.activeTab = "active";
+        state.currentView = "habits";
+        state.currentCategory = "all";
+
+        const { renderHabitList } =
+          await import("@/views/habits/habit-list.renderer.js");
+        renderHabitList(StateManager.getFilteredHabits(), state.activeTab);
+
+        HabitController.refreshUI();
+      },
     });
   },
 };

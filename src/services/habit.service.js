@@ -23,10 +23,6 @@ export const HabitService = {
       archived: false,
       completedDates: [],
       skippedDates: [],
-      stats: {
-        bestStreak: 0,
-        allowedSkipsPerMonth: 3,
-      },
     };
 
     return [newHabit, ...currentHabits];
@@ -62,14 +58,6 @@ export const HabitService = {
       if (skipIndex > -1) {
         skippedDates.splice(skipIndex, 1);
       } else {
-        const currentMonthStr = date.substring(0, 7);
-        const skipsThisMonth = skippedDates.filter((d) =>
-          d.startsWith(currentMonthStr),
-        ).length;
-
-        if (skipsThisMonth >= (habit.stats?.allowedSkipsPerMonth || 3)) {
-          throw new Error("Monthly streak safeguards (Skips) limit reached!");
-        }
         skippedDates.push(date);
       }
 

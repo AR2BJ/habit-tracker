@@ -10,7 +10,7 @@ export const HabitCalendarComponent = {
     const todayDate = new Date();
 
     const diffDays = Math.floor((todayDate - created) / 86400000);
-    const periodIndex = Math.max(0, Math.floor(diffDays / 59));
+    const periodIndex = Math.max(0, Math.floor(diffDays / 60));
 
     const periodStart = new Date(created);
     periodStart.setDate(periodStart.getDate() + periodIndex * 59);

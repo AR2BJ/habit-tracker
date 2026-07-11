@@ -333,7 +333,3 @@ export function renderAnalyticsCharts(habits, currentHeatmapView) {
   );
   barChartInstance.render();
 }
-
-export function renderAnalytics(habits) {
-  renderAnalyticsCharts(habits, "weekly");
-}

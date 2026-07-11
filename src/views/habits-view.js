@@ -256,7 +256,7 @@ export const HabitsView = {
   },
 };
 
-export function setupHabitFiltersDragScroll() {
+function setupHabitFiltersDragScroll() {
   const scrollContainer = document.getElementById("habit-filter-scroll");
   const btnLeft = document.getElementById("btn-scroll-left");
   const btnRight = document.getElementById("btn-scroll-right");

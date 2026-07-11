@@ -41,13 +41,15 @@ export const HabitActionController = {
               .completedDates.includes(todayStr);
 
             NotificationService.show({
-              type: "info",
+              type: isNowCompleted ? "success" : "info",
               message: isNowCompleted
                 ? `Completed "${habit.name}" for today! ✨`
                 : `Removed completion for "${habit.name}".`,
               icon: isNowCompleted ? "fa-circle-check" : "fa-circle",
-              iconColor: isNowCompleted ? "text-emerald-500/80" : "text-slate-400/80",
-              duration: 3000,
+              iconColor: isNowCompleted
+                ? "text-emerald-500/80"
+                : "text-brand/80",
+              duration: 5000,
             });
           }
         } catch (error) {
@@ -55,8 +57,8 @@ export const HabitActionController = {
             type: "error",
             message: error.message,
             icon: "fa-circle-exclamation",
-            iconColor: "text-rose-500/80",
-            duration: 4000,
+            iconColor: "text-red-500/80",
+            duration: 5000,
           });
         }
         return;
@@ -91,16 +93,22 @@ export const HabitActionController = {
               .find((h) => h.id === id)
               .skippedDates?.includes(date);
             NotificationService.show({
-              type: "info",
+              type: isNowSkipped ? "warning" : "info",
               message: isNowSkipped
                 ? `Safeguard activated: Skipped day for "${habit.name}".`
                 : `Removed safeguard for "${habit.name}".`,
               icon: isNowSkipped ? "fa-shield-halved" : "fa-calendar",
-              iconColor: isNowSkipped ? "text-amber-500/80" : "text-slate-400/80",
-              duration: 3000,
+              iconColor: isNowSkipped ? "text-amber-500/80" : "text-brand/80",
+              duration: 5000,
             });
           } catch (error) {
-            NotificationService.show({ type: "error", message: error.message });
+            NotificationService.show({
+              type: "error",
+              message: error.message,
+              icon: "fa-circle-exclamation",
+              iconColor: "text-red-500/80",
+              duration: 5000,
+            });
           }
         } else {
           clickTimeout = setTimeout(() => {
@@ -120,20 +128,23 @@ export const HabitActionController = {
               const dateLabel = date === today ? "Today" : "Yesterday";
 
               NotificationService.show({
-                type: "info",
+                type: isNowCompleted ? "success" : "info",
                 message: isNowCompleted
                   ? `Marked "${habit.name}" as done for ${dateLabel}! ✨`
                   : `Unchecked "${habit.name}" for ${dateLabel}.`,
                 icon: isNowCompleted ? "fa-square-check" : "fa-square-xmark",
                 iconColor: isNowCompleted
                   ? "text-emerald-500/80"
-                  : "text-gary-400/80",
-                duration: 3000,
+                  : "text-brand/80",
+                duration: 5000,
               });
             } catch (error) {
               NotificationService.show({
                 type: "error",
                 message: error.message,
+                icon: "fa-circle-exclamation",
+                iconColor: "text-red-500/80",
+                duration: 5000,
               });
             }
           }, 250);
@@ -171,9 +182,9 @@ export const HabitActionController = {
           this.mainController.refreshUI();
 
           NotificationService.show({
-            type: "archive",
+            type: "info",
             message: `Archived: "${targetHabit.name}"`,
-            duration: 4000,
+            duration: 5000,
             undoAction: () => {
               const rollbackHabits = StateManager.getHabits();
               const restored = HabitService.restoreHabit(rollbackHabits, id);
@@ -197,9 +208,9 @@ export const HabitActionController = {
           this.mainController.refreshUI();
 
           NotificationService.show({
-            type: "restore",
+            type: "info",
             message: `Restored: "${targetHabit.name}"`,
-            duration: 4000,
+            duration: 5000,
             undoAction: () => {
               const rollbackHabits = StateManager.getHabits();
               const archived = HabitService.archiveHabit(rollbackHabits, id);

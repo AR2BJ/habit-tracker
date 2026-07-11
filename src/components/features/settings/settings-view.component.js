@@ -67,7 +67,7 @@ export const SettingsViewComponent = {
                 }"
               >
                 <i class="fa-regular fa-sun text-base"></i>
-                <span>Light</span>
+                <span>Light Mode</span>
               </button>
 
               <button
@@ -79,7 +79,7 @@ export const SettingsViewComponent = {
                 }"
               >
                 <i class="fa-regular fa-moon text-base"></i>
-                <span>Dark</span>
+                <span>Dark Mode</span>
               </button>
             </div>
           </div>

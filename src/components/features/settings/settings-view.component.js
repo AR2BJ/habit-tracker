@@ -144,8 +144,14 @@ export const SettingsViewComponent = {
                 id="sett-seed-btn"
                 class="w-full px-4 py-2.5 bg-brand/5 hover:bg-brand/10 border border-brand/20 rounded-xl text-brand/80 text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer"
               >
-                <i class="fa-regular fa-flask text-sm"></i>
-                <span>Seed 3-Month Historical Mock Data</span>
+                <div id="sett-seed-icon" class="flex">
+                  <i id="sett-seed-icon" class="fa-regular fa-flask text-sm transition-transform duration-200"></i>
+                </div>
+                <div id="sett-seed-spinner" class="hidden">
+                  <i  class="fa-solid fa-spinner fa-spin text-sm"></i>
+                </div>
+                
+                <span id="sett-seed-text" class="flex">Seed Historical Mock Data</span>
               </button>
             </div>
 

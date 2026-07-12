@@ -5,7 +5,7 @@ import { HabitController } from "./habit.controller";
 import { NotificationService } from "@/services/notification.service.js";
 import { StateController } from "./state.controller";
 import { formatDate } from "@/utils/helpers";
-import mockData from "@/models/mocks/habits-seed.json";
+import { generateDynamicMockData } from "@/utils/seed-generator";
 
 export const SettingsController = {
   init(mainController) {
@@ -487,23 +487,24 @@ export const SettingsController = {
   },
 
   async handleDataSeeding() {
-    StateManager.save(mockData.mockHabits);
+    const seedBtn = document.getElementById("sett-seed-btn");
+    const seedIcon = document.getElementById("sett-seed-icon");
+    const seedSpinner = document.getElementById("sett-seed-spinner");
+    const seedText = document.getElementById("sett-seed-text");
 
-    state.activeTab = "active";
-    state.currentView = "habits";
-    state.currentCategory = "all";
+    const mockDataCount = Math.floor(Math.random() * 100);
 
-    const { renderHabitList } =
-      await import("@/views/habits/habit-list.renderer.js");
-    renderHabitList(StateManager.getFilteredHabits(), state.activeTab);
-
-    HabitController.refreshUI();
+    if (seedBtn) seedBtn.disabled = true;
+    if (seedIcon) seedIcon.classList.replace("flex", "hidden");
+    if (seedSpinner) seedSpinner.classList.replace("hidden", "flex");
+    if (seedText)
+      seedText.textContent = "Processing & Constructing Database Layers...";
 
     NotificationService.show({
-      type: "success",
-      message: "Sandbox environment seeded with 3 months historical logs.",
-      icon: "fa-flask-vial",
-      iconColor: "text-emerald-500/80",
+      type: "info",
+      message: `Initiating massive ${mockDataCount}-habit matrix calculation...`,
+      icon: "fa-gears",
+      iconColor: "text-brand/80",
       duration: 5000,
     });
 
@@ -512,12 +513,57 @@ export const SettingsController = {
       this.runAutoArchivePipeline();
       this.resetSession();
     }, 200);
+
+    setTimeout(async () => {
+      try {
+        const dynamicMockData = generateDynamicMockData(mockDataCount);
+
+        StateManager.save(dynamicMockData.habits);
+
+        state.activeTab = "active";
+        state.currentView = "habits";
+        state.currentCategory = "all";
+
+        const { renderHabitList } =
+          await import("@/views/habits/habit-list.renderer.js");
+        renderHabitList(StateManager.getFilteredHabits(), state.activeTab);
+        HabitController.refreshUI();
+
+        setTimeout(() => {
+          NotificationService.show({
+            type: "success",
+            message: `Sandbox environment populated with ${mockDataCount} edge-case routine logs.`,
+            icon: "fa-circle-check",
+            iconColor: "text-emerald-500/80",
+            duration: 5000,
+          });
+
+          if (seedBtn) seedBtn.disabled = false;
+          if (seedIcon) seedIcon.classList.replace("hidden", "flex");
+          if (seedSpinner) seedSpinner.classList.replace("flex", "hidden");
+          if (seedText) seedText.textContent = "Seed Historical Mock Data";
+        }, 200);
+      } catch (error) {
+        console.error("Critical fault inside seeding controller:", error);
+
+        if (seedBtn) seedBtn.disabled = false;
+        if (seedIcon) seedIcon.classList.replace("hidden", "flex");
+        if (seedSpinner) seedSpinner.classList.replace("flex", "hidden");
+
+        NotificationService.show({
+          type: "error",
+          message: error.message || "Fail-Safe Trigger: Retry Seeding",
+          icon: "fa-circle-exclamation",
+          iconColor: "text-red-500/80",
+          duration: 5000,
+        });
+      }
+    }, 60);
   },
 
   resetSession() {
     StateManager.init();
     HabitController.refreshUI();
-    HabitController.bindStaticEvents();
   },
 
   syncAutoArchiveToggle() {

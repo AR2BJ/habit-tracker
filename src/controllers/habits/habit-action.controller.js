@@ -209,7 +209,6 @@ export const HabitActionController = {
           StateController.execute();
           StateManager.init();
           HabitController.refreshUI();
-          HabitController.bindStaticEvents();
           SettingsController.runAutoArchivePipeline();
         }, 200);
 

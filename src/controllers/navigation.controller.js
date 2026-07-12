@@ -1,6 +1,7 @@
 import { StateManager, state } from "@/models/state.model.js";
 
 import { AnalyticsController } from "./analytics.controller.js";
+import { GlobalLoaderService } from "@/services/loader.service.js";
 import { HabitController } from "./habit.controller.js";
 
 export class NavigationController {
@@ -62,73 +63,101 @@ export class NavigationController {
         return;
       }
 
+      const dispatchAsyncClick = (elementId) => {
+        event.preventDefault();
+        setTimeout(() => {
+          document.getElementById(elementId)?.click();
+        }, 10);
+      };
+
       if (event.altKey) {
         if (key === "c") {
-          event.preventDefault();
-          document.getElementById("btn-toggle-habit-form")?.click();
-          return;
-        }
-        if (key === "n") {
-          event.preventDefault();
-          document.getElementById("add-habit-btn")?.click();
+          dispatchAsyncClick("btn-toggle-habit-form");
           return;
         }
         if (key === "t") {
-          event.preventDefault();
-          document.getElementById("theme-toggle")?.click();
+          dispatchAsyncClick("theme-toggle");
           return;
         }
-        if (key === "m") {
-          event.preventDefault();
-          document.getElementById("menu-toggle")?.click();
+        if (key === "n") {
+          dispatchAsyncClick("menu-toggle");
           return;
         }
         if (key === "r") {
           event.preventDefault();
-          this.setActiveTab("settings");
-          document.getElementById("trigger-reset-btn")?.click() ||
-            document.querySelector('[id*="reset"]')?.click();
+
+          GlobalLoaderService.show("Redirecting to purge terminal...");
+
+          setTimeout(() => {
+            try {
+              this.setActiveTab("settings");
+              const resetBtn =
+                document.getElementById("trigger-reset-btn") ||
+                document.querySelector('[id*="reset"]');
+
+              setTimeout(() => resetBtn.click(), 10);
+            } finally {
+              GlobalLoaderService.hide();
+            }
+          }, 50);
           return;
         }
         if (key === "a") {
-          event.preventDefault();
-          document.getElementById("tab-active")?.click();
+          dispatchAsyncClick("tab-active");
           return;
         }
         if (key === "x") {
-          event.preventDefault();
-          document.getElementById("tab-archived")?.click();
+          dispatchAsyncClick("tab-archived");
           return;
         }
         if (["1", "2", "3"].includes(event.key)) {
           const currentSection = document.querySelector("section:not(.hidden)");
           if (currentSection && currentSection.id === "analytics-view") {
-            const chartViewButtons = document.querySelectorAll(
-              "#heatmap-mobile-menu button, #chart-view-switcher button, button[data-view]",
-            );
-            const index = parseInt(event.key) - 1;
-            if (chartViewButtons[index]) {
+            const chartViewButtons = Array.from(
+              document.querySelectorAll(
+                "#heatmap-mobile-menu button, #chart-view-switcher button, button[data-view]",
+              ),
+            ).filter((btn) => {
+              const style = window.getComputedStyle(btn);
+              return (
+                !btn.disabled &&
+                style.display !== "none" &&
+                style.visibility !== "hidden"
+              );
+            });
+
+            const index = parseInt(event.key, 10) - 1;
+            const targetButton = chartViewButtons[index];
+
+            if (targetButton) {
               event.preventDefault();
-              chartViewButtons[index].click();
+              setTimeout(() => targetButton.click(), 10);
             }
           }
         }
       }
 
       if (event.shiftKey) {
-        if (key === "h") {
+        if (["h", "a", "s"].includes(key)) {
           event.preventDefault();
-          this.setActiveTab("habits");
-          return;
-        }
-        if (key === "a") {
-          event.preventDefault();
-          this.setActiveTab("analytics");
-          return;
-        }
-        if (key === "s") {
-          event.preventDefault();
-          this.setActiveTab("settings");
+
+          const viewNames = {
+            h: "Habits Dashboard",
+            a: "Analytical Metrics",
+            s: "System Settings",
+          };
+          const targetTab =
+            key === "h" ? "habits" : key === "a" ? "analytics" : "settings";
+
+          GlobalLoaderService.show(`Navigating to ${viewNames[key]}...`);
+
+          setTimeout(() => {
+            try {
+              this.setActiveTab(targetTab);
+            } finally {
+              GlobalLoaderService.hide();
+            }
+          }, 40);
           return;
         }
       }
@@ -146,21 +175,32 @@ export class NavigationController {
       }
 
       if (event.key === "?") {
-        event.preventDefault();
-        document.getElementById("help-toggle")?.click();
+        dispatchAsyncClick("help-toggle");
         return;
       }
 
       if (["1", "2", "3", "4", "5", "6", "7"].includes(event.key)) {
         const currentSection = document.querySelector("section:not(.hidden)");
         if (currentSection && currentSection.id === "habits-view") {
-          const categoryButtons = document.querySelectorAll(
-            "#category-filters button, .category-filter-btn",
-          );
-          const index = parseInt(event.key) - 1;
-          if (categoryButtons[index]) {
+          const categoryButtons = Array.from(
+            document.querySelectorAll(
+              "#category-filters button, .category-filter-btn",
+            ),
+          ).filter((btn) => {
+            const style = window.getComputedStyle(btn);
+            return (
+              !btn.disabled &&
+              style.display !== "none" &&
+              style.visibility !== "hidden"
+            );
+          });
+
+          const index = parseInt(event.key, 10) - 1;
+          const targetButton = categoryButtons[index];
+
+          if (targetButton) {
             event.preventDefault();
-            categoryButtons[index].click();
+            setTimeout(() => targetButton.click(), 10);
           }
         }
       }

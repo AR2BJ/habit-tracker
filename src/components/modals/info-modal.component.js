@@ -177,28 +177,6 @@ export const InfoModalComponent = {
                 <span
                   class="text-xs font-semibold text-secondary flex items-center gap-2"
                 >
-                  <i class="fa-regular fa-square-plus text-muted"></i> Create
-                  New Habit
-                </span>
-                <div class="flex items-center gap-1">
-                  <kbd
-                    class="px-2 py-1 text-[10px] font-mono font-bold text-primary bg-surface border border-border shadow-sm rounded-md"
-                    >Alt</kbd
-                  >
-                  <span class="text-xs text-muted">+</span>
-                  <kbd
-                    class="px-2 py-1 text-[10px] font-mono font-bold text-primary bg-surface border border-border shadow-sm rounded-md"
-                    >N</kbd
-                  >
-                </div>
-              </div>
-
-              <div
-                class="flex items-center justify-between p-2.5 bg-surface-2/60 border border-border/50 rounded-xl"
-              >
-                <span
-                  class="text-xs font-semibold text-secondary flex items-center gap-2"
-                >
                   <i class="fa-regular fa-square-minus text-muted"></i> Collapse / Expand Habit Creation Form
                 </span>
                 <div class="flex items-center gap-1">
@@ -253,7 +231,7 @@ export const InfoModalComponent = {
                   <span class="text-xs text-muted">+</span>
                   <kbd
                     class="px-2 py-1 text-[10px] font-mono font-bold text-primary bg-surface border border-border shadow-sm rounded-md"
-                    >M</kbd
+                    >N</kbd
                   >
                 </div>
               </div>

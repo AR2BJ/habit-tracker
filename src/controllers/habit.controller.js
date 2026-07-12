@@ -5,6 +5,7 @@ import { AnalyticsView } from "@/views/analytics-view.js";
 import { DeleteModalsComponent } from "@/components/modals/delete-modals.component.js";
 import { DesktopNavComponent } from "@/components/layout/desktop-nav.component.js";
 import { EditModalsComponent } from "@/components/modals/edit-modals.component.js";
+import { GlobalLoaderService } from "@/services/loader.service.js";
 import { HabitActionController } from "./habits/habit-action.controller";
 import { HabitFormController } from "./habits/habit-form.controller";
 import { HabitsView } from "@/views/habits-view.js";
@@ -16,7 +17,7 @@ import { SettingsViewComponent } from "@/components/features/settings/settings-v
 import { renderHabitList } from "@/views/habits/habit-list.renderer.js";
 
 export const HabitController = {
-  initApplication() {
+  init() {
     StateManager.init();
     this.renderComponent();
     this.refreshUI();
@@ -161,13 +162,38 @@ export const HabitController = {
       setFilterButtonState(btn, isActive);
 
       btn.addEventListener("click", (e) => {
-        const selectedCategory = e.currentTarget.dataset.category;
-        StateManager.setCategory(selectedCategory);
+        const currentBtn = e.currentTarget;
+        const selectedCategory = currentBtn.dataset.category;
 
-        filterButtons.forEach((button) => setFilterButtonState(button, false));
-        setFilterButtonState(e.currentTarget, true);
+        if (currentBtn.classList.contains("bg-brand/80")) return;
 
-        this.refreshUI();
+        const categoryNames = {
+          all: "All Habits",
+          mind: "Mind Routine",
+          health: "Health & Fitness",
+          work: "Work Projects",
+          finance: "Finance Logs",
+          harmful: "Harmful Habits",
+          general: "General Metrics",
+        };
+        GlobalLoaderService.show(
+          `Filtering workspace by ${categoryNames[selectedCategory] || selectedCategory}...`,
+        );
+
+        setTimeout(() => {
+          try {
+            StateManager.setCategory(selectedCategory);
+
+            filterButtons.forEach((button) =>
+              setFilterButtonState(button, false),
+            );
+            setFilterButtonState(currentBtn, true);
+
+            this.refreshUI();
+          } finally {
+            GlobalLoaderService.hide();
+          }
+        }, 30);
       });
     });
 
@@ -189,12 +215,75 @@ export const HabitController = {
     }
 
     const searchInput = document.getElementById("search-habits");
+    const clearBtn = document.getElementById("clear-search-btn");
+    const searchContainer = searchInput?.closest(".group\\/search");
+
     if (searchInput) {
       searchInput.value = state.searchQuery || "";
 
+      const evaluateSearchState = () => {
+        const hasValue = searchInput.value.trim().length > 0;
+        const isHovered = searchContainer?.matches(":hover");
+
+        if (hasValue && isHovered) {
+          if (clearBtn) {
+            clearBtn.classList.replace("hidden", "flex");
+            requestAnimationFrame(() => {
+              clearBtn.classList.remove("opacity-0", "scale-75");
+              clearBtn.classList.add("opacity-100", "scale-100");
+            });
+          }
+        } else if (clearBtn) {
+          clearBtn.classList.remove("opacity-100", "scale-100");
+          clearBtn.classList.add("opacity-0", "scale-75");
+
+          setTimeout(() => {
+            if (
+              !searchInput.value.trim().length ||
+              !searchContainer?.matches(":hover")
+            ) {
+              clearBtn.classList.replace("flex", "hidden");
+            }
+          }, 200);
+        }
+      };
+
       searchInput.addEventListener("input", (e) => {
-        state.searchQuery = e.target.value;
-        this.refreshUI();
+        GlobalLoaderService.show("Loading, please wait...");
+
+        setTimeout(() => {
+          try {
+            state.searchQuery = e.target.value;
+            this.refreshUI();
+            evaluateSearchState();
+          } finally {
+            GlobalLoaderService.hide();
+          }
+        }, 10);
+      });
+
+      searchContainer?.addEventListener("mouseenter", evaluateSearchState);
+      searchContainer?.addEventListener("mouseleave", evaluateSearchState);
+
+      clearBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        GlobalLoaderService.show("Loading, please wait...");
+
+        setTimeout(() => {
+          try {
+            searchInput.value = "";
+            state.searchQuery = "";
+
+            setTimeout(() => searchInput.focus(), 10);
+
+            this.refreshUI();
+            evaluateSearchState();
+          } finally {
+            GlobalLoaderService.hide();
+          }
+        }, 10);
       });
     }
 
@@ -202,15 +291,35 @@ export const HabitController = {
     const archivedBtn = document.getElementById("tab-archived");
 
     activeBtn?.addEventListener("click", () => {
-      state.activeTab = "active";
-      this.updateTabStyles("active");
-      this.refreshUI();
+      if (state.activeTab === "active") return;
+
+      GlobalLoaderService.show("Switching workspace to Active Habits...");
+
+      setTimeout(() => {
+        try {
+          state.activeTab = "active";
+          this.updateTabStyles("active");
+          this.refreshUI();
+        } finally {
+          GlobalLoaderService.hide();
+        }
+      }, 30);
     });
 
     archivedBtn?.addEventListener("click", () => {
-      state.activeTab = "archived";
-      this.updateTabStyles("archived");
-      this.refreshUI();
+      if (state.activeTab === "archived") return;
+
+      GlobalLoaderService.show("Loading Archived Habits ledger...");
+
+      setTimeout(() => {
+        try {
+          state.activeTab = "archived";
+          this.updateTabStyles("archived");
+          this.refreshUI();
+        } finally {
+          GlobalLoaderService.hide();
+        }
+      }, 30);
     });
 
     const navButtons = ["habits", "analytics", "settings"];
@@ -219,16 +328,34 @@ export const HabitController = {
       const mobileBtn = document.getElementById(`mobile-${v}`);
 
       const handleNav = () => {
-        state.currentView = v;
-        navButtons.forEach((nav) => {
-          const dEl = document.getElementById(`nav-${nav}`);
-          const mEl = document.getElementById(`mobile-${nav}`);
-          dEl?.classList.replace("text-brand/80", "text-secondary");
-          mEl?.classList.replace("text-brand/80", "text-secondary");
-        });
-        desktopBtn?.classList.replace("text-secondary", "text-brand/80");
-        mobileBtn?.classList.replace("text-secondary", "text-brand/80");
-        this.refreshUI();
+        if (state.currentView === v) return;
+
+        const viewNames = {
+          habits: "Workspace Overview",
+          analytics: "Data Analytics Engine",
+          settings: "System Configuration",
+        };
+        GlobalLoaderService.show(`Navigating to ${viewNames[v] || v}...`);
+
+        setTimeout(() => {
+          try {
+            state.currentView = v;
+
+            navButtons.forEach((nav) => {
+              const dEl = document.getElementById(`nav-${nav}`);
+              const mEl = document.getElementById(`mobile-${nav}`);
+              dEl?.classList.replace("text-brand/80", "text-secondary");
+              mEl?.classList.replace("text-brand/80", "text-secondary");
+            });
+
+            desktopBtn?.classList.replace("text-secondary", "text-brand/80");
+            mobileBtn?.classList.replace("text-secondary", "text-brand/80");
+
+            this.refreshUI();
+          } finally {
+            GlobalLoaderService.hide();
+          }
+        }, 30);
       };
 
       desktopBtn?.addEventListener("click", handleNav);

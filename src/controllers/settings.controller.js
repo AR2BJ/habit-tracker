@@ -1,6 +1,7 @@
 import { STORAGE_KEY, STORAGE_VERSION } from "@/models/storage.model";
 import { StateManager, state } from "@/models/state.model.js";
 
+import { GlobalLoaderService } from "@/services/loader.service";
 import { HabitController } from "./habit.controller";
 import { NotificationService } from "@/services/notification.service.js";
 import { StateController } from "./state.controller";
@@ -429,58 +430,66 @@ export const SettingsController = {
 
     const reader = new FileReader();
     reader.addEventListener("load", async (event) => {
-      try {
-        const rawContent = event.target.result;
-        let importedHabits = [];
+      GlobalLoaderService.show(
+        `Parsing storage integrity from ${format.toUpperCase()}...`,
+      );
 
-        if (format === "json") {
-          const parsedJson = JSON.parse(rawContent);
-          importedHabits = Array.isArray(parsedJson)
-            ? parsedJson
-            : parsedJson.habits || [];
-        } else if (format === "markdown")
-          importedHabits = this._parseMarkdownToHabits(rawContent);
-        else if (format === "csv")
-          importedHabits = this._parseCSVToHabits(rawContent);
+      setTimeout(async () => {
+        try {
+          const rawContent = event.target.result;
+          let importedHabits = [];
 
-        if (!Array.isArray(importedHabits) || importedHabits.length === 0)
-          throw new Error("No structured data could be extracted.");
+          if (format === "json") {
+            const parsedJson = JSON.parse(rawContent);
+            importedHabits = Array.isArray(parsedJson)
+              ? parsedJson
+              : parsedJson.habits || [];
+          } else if (format === "markdown")
+            importedHabits = this._parseMarkdownToHabits(rawContent);
+          else if (format === "csv")
+            importedHabits = this._parseCSVToHabits(rawContent);
 
-        const parsedData = {
-          version: STORAGE_VERSION,
-          habits: importedHabits,
-        };
+          if (!Array.isArray(importedHabits) || importedHabits.length === 0)
+            throw new Error("No structured data could be extracted.");
 
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(parsedData));
-        StateManager.save(parsedData.habits);
+          const parsedData = {
+            version: STORAGE_VERSION,
+            habits: importedHabits,
+          };
 
-        state.activeTab = "active";
-        state.currentView = "habits";
-        state.currentCategory = "all";
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(parsedData));
+          StateManager.save(parsedData.habits);
 
-        const { renderHabitList } =
-          await import("@/views/habits/habit-list.renderer.js");
-        renderHabitList(StateManager.getFilteredHabits(), state.activeTab);
+          state.activeTab = "active";
+          state.currentView = "habits";
+          state.currentCategory = "all";
 
-        HabitController.refreshUI();
+          const { renderHabitList } =
+            await import("@/views/habits/habit-list.renderer.js");
+          renderHabitList(StateManager.getFilteredHabits(), state.activeTab);
 
-        NotificationService.show({
-          type: "success",
-          message: `Data ledger parsed and synchronized from ${format.toUpperCase()} file.`,
-          icon: "fa-circle-check",
-          iconColor: "text-emerald-500/80",
-          duration: 5000,
-        });
-      } catch (err) {
-        console.error("Parser failure:", err);
-        NotificationService.show({
-          type: "error",
-          message: "Failed to parse structural integrity of the file.",
-          icon: "fa-triangle-exclamation",
-          iconColor: "text-red-500/80",
-          duration: 5000,
-        });
-      }
+          HabitController.refreshUI();
+
+          NotificationService.show({
+            type: "success",
+            message: `Data ledger parsed and synchronized from ${format.toUpperCase()} file.`,
+            icon: "fa-circle-check",
+            iconColor: "text-emerald-500/80",
+            duration: 5000,
+          });
+        } catch (err) {
+          console.error("Parser failure:", err);
+          NotificationService.show({
+            type: "error",
+            message: "Failed to parse structural integrity of the file.",
+            icon: "fa-triangle-exclamation",
+            iconColor: "text-red-500/80",
+            duration: 5000,
+          });
+        } finally {
+          GlobalLoaderService.hide();
+        }
+      }, 50);
     });
 
     reader.readAsText(file);
@@ -712,43 +721,61 @@ export const SettingsController = {
 
     this.closeResetModal();
 
-    localStorage.removeItem(STORAGE_KEY);
+    GlobalLoaderService.show("Purging storage layers & resetting workspace...");
 
-    state.habits = [];
-    state.activeTab = "active";
-    state.currentView = "habits";
-    state.currentCategory = "all";
+    setTimeout(async () => {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
 
-    const { renderHabitList } =
-      await import("@/views/habits/habit-list.renderer.js");
-    renderHabitList([], state.activeTab);
-
-    HabitController.refreshUI();
-
-    NotificationService.show({
-      type: "error",
-      message:
-        "Application synchronization storage has been completely cleared.",
-      duration: 5000,
-      undoAction: async () => {
-        if (previousPayload) {
-          localStorage.setItem(STORAGE_KEY, previousPayload);
-        } else {
-          localStorage.removeItem(STORAGE_KEY);
-        }
-
-        StateManager.save(previousHabits || []);
-        state.habits = previousHabits || [];
+        state.habits = [];
         state.activeTab = "active";
         state.currentView = "habits";
         state.currentCategory = "all";
 
         const { renderHabitList } =
           await import("@/views/habits/habit-list.renderer.js");
-        renderHabitList(StateManager.getFilteredHabits(), state.activeTab);
+        renderHabitList([], state.activeTab);
 
         HabitController.refreshUI();
-      },
-    });
+
+        NotificationService.show({
+          type: "error",
+          message:
+            "Application synchronization storage has been completely cleared.",
+          duration: 5000,
+          undoAction: async () => {
+            GlobalLoaderService.show(
+              "Re-instating application database state...",
+            );
+            setTimeout(async () => {
+              try {
+                if (previousPayload) {
+                  localStorage.setItem(STORAGE_KEY, previousPayload);
+                }
+                else {
+                  localStorage.removeItem(STORAGE_KEY);
+                }
+                
+                StateManager.save(previousHabits || []);
+                state.habits = previousHabits || [];
+
+                state.activeTab = "active";
+                state.currentView = "habits";
+                state.currentCategory = "all";
+
+                const { renderHabitList: reloadList } =
+                  await import("@/views/habits/habit-list.renderer.js");
+                reloadList(StateManager.getFilteredHabits(), state.activeTab);
+                HabitController.refreshUI();
+              } finally {
+                GlobalLoaderService.hide();
+              }
+            }, 30);
+          },
+        });
+      } finally {
+        GlobalLoaderService.hide();
+      }
+    }, 50);
   },
 };

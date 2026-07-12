@@ -1,3 +1,4 @@
+import { GlobalLoaderService } from "@/services/loader.service";
 import { HabitService } from "@/services/habit.service.js";
 import { NotificationService } from "@/services/notification.service.js";
 import { StateManager } from "@/models/state.model.js";
@@ -40,35 +41,41 @@ export const HabitFormController = {
 
       if (!name.trim()) return;
 
-      try {
-        const currentHabits = StateManager.getHabits();
-        const updated = HabitService.createHabit(
-          currentHabits,
-          name,
-          category,
-          frequency,
-        );
-        StateManager.save(updated);
+      GlobalLoaderService.show(`Creating habit "${name}"...`);
 
-        input.value = "";
-        this.mainController.refreshUI();
+      setTimeout(() => {
+        try {
+          const currentHabits = StateManager.getHabits();
+          const updated = HabitService.createHabit(
+            currentHabits,
+            name,
+            category,
+            frequency,
+          );
+          StateManager.save(updated);
 
-        NotificationService.show({
-          type: "success",
-          message: `Habit "${name}" [${category}] created successfully!`,
-          icon: "fa-check",
-          iconColor: "text-emerald-500/80",
-          duration: 5000,
-        });
-      } catch (error) {
-        NotificationService.show({
-          type: "error",
-          message: error.message,
-          icon: "fa-triangle-exclamation",
-          iconColor: "text-red-500/80",
-          duration: 5000,
-        });
-      }
+          input.value = "";
+          this.mainController.refreshUI();
+
+          NotificationService.show({
+            type: "success",
+            message: `Habit "${name}" [${category}] created successfully!`,
+            icon: "fa-check",
+            iconColor: "text-emerald-500/80",
+            duration: 5000,
+          });
+        } catch (error) {
+          NotificationService.show({
+            type: "error",
+            message: error.message,
+            icon: "fa-triangle-exclamation",
+            iconColor: "text-red-500/80",
+            duration: 5000,
+          });
+        } finally {
+          GlobalLoaderService.hide();
+        }
+      }, 30);
     };
 
     addBtn?.addEventListener("click", addHabit);
@@ -134,28 +141,46 @@ export const HabitFormController = {
 
     if (habitToDelete) {
       const capturedHabit = { ...habitToDelete };
-      const updated = HabitService.deleteHabit(currentHabits, id);
 
-      StateManager.save(updated);
-      this.mainController.toggleModal("delete-modal", false);
-      pendingDeleteId = null;
-      this.mainController.refreshUI();
+      GlobalLoaderService.show(
+        `Purging "${capturedHabit.name}" from database layers...`,
+      );
 
-      NotificationService.show({
-        type: "error",
-        message: `Deleted "${capturedHabit.name}"`,
-        duration: 5000,
-        undoAction: () => {
-          const latestHabits = StateManager.getHabits();
-          StateManager.save([capturedHabit, ...latestHabits]);
+      setTimeout(() => {
+        try {
+          const updated = HabitService.deleteHabit(currentHabits, id);
+          StateManager.save(updated);
+          this.mainController.toggleModal("delete-modal", false);
+          pendingDeleteId = null;
           this.mainController.refreshUI();
-        },
-      });
+
+          NotificationService.show({
+            type: "error",
+            message: `Deleted "${capturedHabit.name}"`,
+            duration: 5000,
+            undoAction: () => {
+              GlobalLoaderService.show("Re-instating deleted record...");
+              setTimeout(() => {
+                try {
+                  const latestHabits = StateManager.getHabits();
+                  StateManager.save([capturedHabit, ...latestHabits]);
+                  this.mainController.refreshUI();
+                } finally {
+                  GlobalLoaderService.hide();
+                }
+              }, 30);
+            },
+          });
+        } finally {
+          GlobalLoaderService.hide();
+        }
+      }, 30);
     }
   },
 
   executeEdit() {
     const editInput = document.getElementById("edit-habit-input");
+
     if (!pendingEditId || !editInput) {
       NotificationService.show({
         type: "error",
@@ -179,34 +204,40 @@ export const HabitFormController = {
       return;
     }
 
-    try {
-      const currentHabits = StateManager.getHabits();
-      const updated = HabitService.editHabit(
-        currentHabits,
-        pendingEditId,
-        newName,
-      );
+    GlobalLoaderService.show("Re-indexing habit identifiers...");
 
-      StateManager.save(updated);
-      this.mainController.toggleModal("edit-modal", false);
-      pendingEditId = null;
-      this.mainController.refreshUI();
+    setTimeout(() => {
+      try {
+        const currentHabits = StateManager.getHabits();
+        const updated = HabitService.editHabit(
+          currentHabits,
+          pendingEditId,
+          newName,
+        );
 
-      NotificationService.show({
-        type: "success",
-        message: `Habit renamed to "${newName}"`,
-        icon: "fa-check",
-        iconColor: "text-emerald-500/80",
-        duration: 5000,
-      });
-    } catch (error) {
-      NotificationService.show({
-        type: "error",
-        message: error.message,
-        icon: "fa-triangle-exclamation",
-        iconColor: "text-red-500/80",
-        duration: 5000,
-      });
-    }
+        StateManager.save(updated);
+        this.mainController.toggleModal("edit-modal", false);
+        pendingEditId = null;
+        this.mainController.refreshUI();
+
+        NotificationService.show({
+          type: "success",
+          message: `Habit renamed to "${newName}"`,
+          icon: "fa-check",
+          iconColor: "text-emerald-500/80",
+          duration: 5000,
+        });
+      } catch (error) {
+        NotificationService.show({
+          type: "error",
+          message: error.message,
+          icon: "fa-triangle-exclamation",
+          iconColor: "text-red-500/80",
+          duration: 5000,
+        });
+      } finally {
+        GlobalLoaderService.hide();
+      }
+    }, 30);
   },
 };

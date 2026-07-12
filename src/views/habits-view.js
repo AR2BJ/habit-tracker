@@ -31,7 +31,7 @@ export const HabitsView = {
             </button>
           </div>
 
-          <div class="relative w-full sm:w-72">
+          <div class="relative w-full sm:w-72 group/search">
             <span
               class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-muted"
             >
@@ -43,14 +43,25 @@ export const HabitsView = {
               placeholder="Search habits...."
               class="w-full pl-10 pr-10 py-3 text-sm rounded-xl border border-border bg-surface text-primary placeholder:text-muted/70 focus:outline-none focus:border-brand/50 transition-all shadow-sm"
             />
-            <kbd
-              class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
+
+            <div
+              class="absolute inset-y-0 right-0 flex items-center pr-3 gap-3"
             >
-              <span
-                class="px-1.5 py-0.5 text-[10px] font-mono bg-surface-2 border border-border text-muted rounded-md shadow-2xs"
-                >/</span
+              <button
+                id="clear-search-btn"
+                class="hidden opacity-0 scale-75 h-5 w-5 cursor-pointer items-center justify-center rounded-full border border-border bg-surface-2 hover:bg-(--color-surface-4) text-secondary hover:text-primary transition-all duration-200 ease-out"
+                title="Clear Search"
               >
-            </kbd>
+                <i class="fa-solid fa-xmark text-[10px]"></i>
+              </button>
+
+              <kbd class="flex items-center pointer-events-none">
+                <span
+                  class="px-1.5 py-0.5 text-[10px] font-mono bg-surface-2 border border-border text-muted rounded-md shadow-2xs"
+                  >/</span
+                >
+              </kbd>
+            </div>
           </div>
         </div>
 
@@ -61,7 +72,7 @@ export const HabitsView = {
           <div
             class="mb-6 flex flex-col rounded-xl border border-border bg-surface transition-all overflow-hidden shadow-sm"
           >
-            <button 
+            <button
               id="btn-toggle-habit-form"
               class="w-full px-5 py-4 flex flex-row items-center justify-between text-left font-bold text-slate-500/80 hover:bg-surface-2/40 transition cursor-pointer"
             >
@@ -69,13 +80,18 @@ export const HabitsView = {
                 <i class="fa-regular fa-square-plus text-brand/80"></i>
                 <span class="text-sm">Create New Habit</span>
               </div>
-              <div id="form-chevron" class="flex items-center">
-                <i class="fa-regular fa-chevron-down text-secondary text-sm transition-transform duration-300"></i>
+              <div
+                id="form-chevron"
+                class="flex items-center"
+              >
+                <i
+                  class="fa-regular fa-chevron-down text-secondary text-sm transition-transform duration-300"
+                ></i>
               </div>
             </button>
 
-            <div 
-              id="habit-form-container" 
+            <div
+              id="habit-form-container"
               class="hidden p-5 bg-surface-2/20 animate-slide-down flex-col gap-4 rounded-b-2xl border-t border-border"
             >
               <div
@@ -159,15 +175,15 @@ export const HabitsView = {
           <div
             id="category-filters"
             class="relative mb-6 flex flex-row items-center justify-between gap-4 border-b border-border pb-4 w-full group"
-            >
+          >
             <p
               class="text-xs font-bold uppercase tracking-wider text-secondary shrink-0 mr-1 hidden sm:block"
             >
               Filter by:
             </p>
-            
-            <button 
-              id="btn-scroll-left" 
+
+            <button
+              id="btn-scroll-left"
               class="absolute left-1.5 sm:left-23 z-20 lg:hidden hidden h-7 w-7 items-center justify-center rounded-lg border border-border bg-surface text-secondary hover:text-primary shadow-xs opacity-0 group-hover:opacity-80 hover:opacity-100 transition-opacity cursor-pointer"
             >
               <i class="fa-regular fa-chevron-left text-xs"></i>
@@ -188,7 +204,9 @@ export const HabitsView = {
                 data-category="General"
                 class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
-                <i class="category-icon fa-regular fa-folders text-amber-500/80"></i>
+                <i
+                  class="category-icon fa-regular fa-folders text-amber-500/80"
+                ></i>
                 <span>General</span>
               </button>
 
@@ -196,7 +214,9 @@ export const HabitsView = {
                 data-category="Health"
                 class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
-                <i class="category-icon fa-regular fa-apple-whole text-emerald-500/80"></i>
+                <i
+                  class="category-icon fa-regular fa-apple-whole text-emerald-500/80"
+                ></i>
                 <span>Health</span>
               </button>
 
@@ -204,7 +224,9 @@ export const HabitsView = {
                 data-category="Work"
                 class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
-                <i class="category-icon fa-regular fa-laptop text-sky-500/80"></i>
+                <i
+                  class="category-icon fa-regular fa-laptop text-sky-500/80"
+                ></i>
                 <span>Work</span>
               </button>
 
@@ -212,7 +234,9 @@ export const HabitsView = {
                 data-category="Finance"
                 class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
-                <i class="category-icon fa-regular fa-dollar-sign text-violet-500/80"></i>
+                <i
+                  class="category-icon fa-regular fa-dollar-sign text-violet-500/80"
+                ></i>
                 <span>Finance</span>
               </button>
 
@@ -228,13 +252,15 @@ export const HabitsView = {
                 data-category="Harmful"
                 class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
-                <i class="category-icon fa-regular fa-ban-smoking text-mauve-500/80"></i>
+                <i
+                  class="category-icon fa-regular fa-ban-smoking text-mauve-500/80"
+                ></i>
                 <span>Harmful</span>
               </button>
             </div>
 
-            <button 
-              id="btn-scroll-right" 
+            <button
+              id="btn-scroll-right"
               class="absolute right-26 z-20 lg:hidden flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-surface text-secondary hover:text-primary shadow-xs opacity-0 group-hover:opacity-80 hover:opacity-100 transition-opacity cursor-pointer"
             >
               <i class="fa-regular fa-chevron-right text-xs"></i>

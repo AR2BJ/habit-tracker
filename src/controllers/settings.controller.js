@@ -3,6 +3,7 @@ import { StateManager, state } from "@/models/state.model.js";
 
 import { HabitController } from "./habit.controller";
 import { NotificationService } from "@/services/notification.service.js";
+import { StateController } from "./state.controller";
 import { formatDate } from "@/utils/helpers";
 import mockData from "@/models/mocks/habits-seed.json";
 
@@ -280,6 +281,8 @@ export const SettingsController = {
 
       setTimeout(() => {
         this.runAutoArchivePipeline();
+        StateController.execute();
+        this.resetSession();
       }, 200);
     });
   },
@@ -506,7 +509,15 @@ export const SettingsController = {
 
     setTimeout(() => {
       this.runAutoArchivePipeline();
+      StateController.execute();
+      this.resetSession();
     }, 200);
+  },
+
+  resetSession() {
+    StateManager.init();
+    HabitController.refreshUI();
+    HabitController.bindStaticEvents();
   },
 
   syncAutoArchiveToggle() {

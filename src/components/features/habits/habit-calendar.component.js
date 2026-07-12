@@ -5,23 +5,46 @@ export const HabitCalendarComponent = {
     const dateSet = new Set(dates);
     const skipSet = new Set(skippedDates);
 
-    const days = [];
     const created = new Date(createdAt);
-    const todayDate = new Date();
+    created.setHours(0, 0, 0, 0);
 
-    const diffDays = Math.floor((todayDate - created) / 86400000);
-    const periodIndex = Math.max(0, Math.floor(diffDays / 60));
+    const todayObj = new Date();
+    todayObj.setHours(0, 0, 0, 0);
+    const todayIso = formatDate(todayObj);
 
-    const periodStart = new Date(created);
-    periodStart.setDate(periodStart.getDate() + periodIndex * 59);
+    const yesterdayObj = new Date(todayObj);
+    yesterdayObj.setDate(yesterdayObj.getDate() - 1);
+    const yesterdayIso = formatDate(yesterdayObj);
 
-    const periodEnd = new Date(periodStart);
-    periodEnd.setDate(periodEnd.getDate() + 59);
+    const utcCreated = Date.UTC(
+      created.getFullYear(),
+      created.getMonth(),
+      created.getDate(),
+    );
+    const utcToday = Date.UTC(
+      todayObj.getFullYear(),
+      todayObj.getMonth(),
+      todayObj.getDate(),
+    );
+    const diffDaysFromStart = Math.floor((utcToday - utcCreated) / 86400000);
 
+    let periodIndex = 0;
+    const sprintStart = new Date(created);
+
+    if (diffDaysFromStart >= 60) {
+      periodIndex = Math.floor((diffDaysFromStart - 60) / 59) + 1;
+
+      sprintStart.setDate(created.getDate() + 60 + (periodIndex - 1) * 59 - 1);
+    }
+
+    const sprintEnd = new Date(sprintStart);
+    sprintEnd.setDate(sprintStart.getDate() + 59);
+
+    const days = [];
     for (let i = 0; i < 60; i++) {
-      const date = new Date(periodStart);
-      date.setDate(periodStart.getDate() + i);
-      const iso = formatDate(date);
+      const currentDate = new Date(sprintStart);
+      currentDate.setDate(sprintStart.getDate() + i);
+      const iso = formatDate(currentDate);
 
       days.push({
         date: iso,
@@ -30,65 +53,91 @@ export const HabitCalendarComponent = {
       });
     }
 
-    const today = formatDate(new Date());
-    const yesterday = formatDate(new Date(Date.now() - 86400000));
-
     return `
-    <div class="space-y-4 p-4 overflow-hidden">
-      <!-- Timeline -->
+      <div
+        class="space-y-4 p-3 sm:p-4 w-full max-w-full overflow-hidden box-border"
+      >
+        <div
+          class="flex flex-col sm:flex-row gap-2 sm:gap-0 justify-between items-center text-secondary text-xs sm:text-sm select-none font-medium w-full"
+        >
+          <span
+            class="flex items-center gap-1 order-2 sm:order-1 text-[11px] sm:text-xs md:text-sm whitespace-nowrap"
+          >
+            <i class="fa-regular fa-calendar-range text-brand/70"></i>
+            Start: ${formatDate(sprintStart)}
+          </span>
 
-      <div class="flex justify-between text-secondary text-xs sm:text-sm select-none">
-        <span>${formatDate(periodStart)}</span>
-        <span>${formatDate(periodEnd)}</span>
-      </div>
+          <span
+            class="relative inline-flex items-center justify-center order-1 sm:order-2"
+          >
+            <span
+              class="absolute inset-0 animate-micro-ping rounded-full bg-brand/25"
+            ></span>
+            <span
+              class="relative text-[10px] sm:text-xs bg-brand/10 text-brand px-3 py-1 rounded-full font-bold tracking-wide border border-brand/20 shadow-sm select-none whitespace-nowrap"
+            >
+              Sprint ${periodIndex + 1}
+            </span>
+          </span>
 
-      <!-- Calendar Grid -->
+          <span
+            class="flex items-center gap-1 order-3 text-[11px] sm:text-xs md:text-sm whitespace-nowrap"
+          >
+            End: ${formatDate(sprintEnd)}
+            <i class="fa-regular fa-calendar-check text-brand/70"></i>
+          </span>
+        </div>
 
-      <div class="grid gap-2 grid-cols-5 sm:grid-cols-10 md:grid-cols-12 lg:grid-cols-30">
-        ${days
-          .map((day) => {
-            let tooltip = `Status: Pending • ${day.date}`;
-            if (day.completed) tooltip = `Status: Completed • ${day.date}`;
-            if (day.skipped)
-              tooltip = `Status: Skipped (Safeguard) • ${day.date}`;
+        <div
+          class="grid gap-1 sm:gap-1.5 md:gap-2 grid-cols-5 xs:grid-cols-6 sm:grid-cols-10 md:grid-cols-15 xl:grid-cols-30 w-full distribution-grid"
+        >
+          ${days
+            .map((day) => {
+              let tooltip = `Status: Pending • ${day.date}`;
+              if (day.completed) tooltip = `Status: Completed • ${day.date}`;
+              if (day.skipped)
+                tooltip = `Status: Skipped (Auto Guard) • ${day.date}`;
 
-            const editable = day.date === today || day.date === yesterday;
+              const editable =
+                day.date === todayIso || day.date === yesterdayIso;
 
-            let bgClass = "bg-(--color-surface-4)";
-            if (day.completed) {
-              bgClass = "bg-emerald-500/80 shadow-lg shadow-emerald-500/20";
-            } else if (day.skipped) {
-              bgClass = "bg-amber-500/80 shadow-lg shadow-amber-500/20";
-            }
+              let bgClass = "bg-(--color-surface-4)";
+              if (day.completed) {
+                bgClass =
+                  "bg-emerald-500/80 shadow-md sm:shadow-lg shadow-emerald-500/20 text-white";
+              } else if (day.skipped) {
+                bgClass =
+                  "bg-amber-500/80 shadow-md sm:shadow-lg shadow-amber-500/20 text-white";
+              }
 
-            return `
-              <button
-                data-date="${day.date}"
-                data-habit-id="${habitId}"
-                title="${tooltip}"
-                class="calendar-day w-full aspect-square ${
-                  editable && !isArchived
-                    ? "cursor-pointer hover:scale-110"
-                    : "cursor-not-allowed opacity-45"
-                } rounded-md flex flex-row justify-center items-center transition-all duration-200 ${bgClass} ${
-                  editable && !isArchived && !day.completed && !day.skipped
-                    ? "hover:bg-(--color-surface-4)/60"
+              return `
+            <button
+              data-date="${day.date}"
+              data-habit-id="${habitId}"
+              title="${tooltip}"
+              class="calendar-day w-full aspect-square ${
+                editable && !isArchived
+                  ? "cursor-pointer hover:scale-105 sm:hover:scale-110 active:scale-95 border border-brand/40 sm:border-2"
+                  : "cursor-not-allowed opacity-45"
+              } rounded-sm sm:rounded-md flex flex-row justify-center items-center transition-all duration-200 ${bgClass} ${
+                editable && !isArchived && !day.completed && !day.skipped
+                  ? "hover:bg-(--color-surface-4)/60"
+                  : ""
+              }"
+            >
+              ${
+                day.completed
+                  ? `<span class="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-bold leading-none select-none">✓</span>`
+                  : day.skipped
+                    ? `<span class="text-xs md:text-sm lg:text-base xl:text-lg 2xl:text-2xl font-bold leading-none select-none"><i class="fa-regular fa-shield"></i></span>`
                     : ""
-                }"
-              >
-                ${
-                  day.completed
-                    ? `<span class="text-lg lg:text-xl xl:text-2xl 2xl:text-3xl @min-[100rem]:text-4xl leading-none text-white">✓</span>`
-                    : day.skipped
-                      ? `<span class="text-base xl:text-xl 2xl:text-2xl @min-[100rem]:text-3xl leading-none text-white"><i class="fa-regular fa-shield leading-none text-white"></i></span>`
-                      : ""
-                }
-              </button>
-            `;
-          })
-          .join("")}
+              }
+            </button>
+          `;
+            })
+            .join("")}
+        </div>
       </div>
-    </div>
-  `;
+    `;
   },
 };

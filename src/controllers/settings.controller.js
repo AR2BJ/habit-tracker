@@ -280,8 +280,8 @@ export const SettingsController = {
       if (e.target.files.length) this.processImportedFile(e.target.files[0]);
 
       setTimeout(() => {
-        this.runAutoArchivePipeline();
         StateController.execute();
+        this.runAutoArchivePipeline();
         this.resetSession();
       }, 200);
     });
@@ -508,8 +508,8 @@ export const SettingsController = {
     });
 
     setTimeout(() => {
-      this.runAutoArchivePipeline();
       StateController.execute();
+      this.runAutoArchivePipeline();
       this.resetSession();
     }, 200);
   },
@@ -592,9 +592,7 @@ export const SettingsController = {
     habits.forEach((habit) => {
       if (habit.archived === true) return;
 
-      const allActivityDates = [
-        ...(habit.completedDates || []),
-      ];
+      const allActivityDates = [...(habit.completedDates || [])];
 
       let lastActivityDateStr = habit.createdAt;
 

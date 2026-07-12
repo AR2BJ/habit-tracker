@@ -4,8 +4,11 @@ import {
   setPendingEditId,
 } from "./habit-form.controller.js";
 
+import { HabitController } from "../habit.controller.js";
 import { HabitService } from "@/services/habit.service.js";
 import { NotificationService } from "@/services/notification.service.js";
+import { SettingsController } from "../settings.controller.js";
+import { StateController } from "../state.controller.js";
 import { StateManager } from "@/models/state.model.js";
 
 let clickTimeout = null;
@@ -201,6 +204,14 @@ export const HabitActionController = {
         const id = restoreBtn.dataset.id;
         const currentHabits = StateManager.getHabits();
         const targetHabit = currentHabits.find((h) => h.id === id);
+
+        setTimeout(() => {
+          StateController.execute();
+          StateManager.init();
+          HabitController.refreshUI();
+          HabitController.bindStaticEvents();
+          SettingsController.runAutoArchivePipeline();
+        }, 200);
 
         if (targetHabit) {
           const updated = HabitService.restoreHabit(currentHabits, id);

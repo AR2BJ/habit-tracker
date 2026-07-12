@@ -309,7 +309,9 @@ export const DashboardComponent = {
                 </div>
               </div>
             </div>
-            <div class="w-full mt-6 overflow-x-auto scroll-smooth scrollbar-thin scrollbar-thumb-surface px-6">
+            <div
+              class="w-full mt-6 overflow-x-auto scroll-smooth scrollbar-thin scrollbar-thumb-surface px-6"
+            >
               <div
                 id="apex-heatmap-chart"
                 class="min-w-150 md:min-w-full"
@@ -355,7 +357,7 @@ export const DashboardComponent = {
           <div class="grid grid-cols-1 gap-0">
             ${
               habits.length === 0
-                ? `<div class="text-center py-12 text-secondary text-base bg-surface-2 rounded-2xl border         border-dashed border-border flex flex-col items-center justify-center gap-2 mt-5">
+                ? `<div class="text-center py-12 text-secondary text-base bg-surface-2 rounded-2xl border border-dashed border-border flex flex-col items-center justify-center gap-2 mt-5">
                       <i class="fa-regular fa-box-open text-2xl opacity-20"></i>
                       <span>No active habits to review.</span>
                   </div>`

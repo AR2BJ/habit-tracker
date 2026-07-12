@@ -594,7 +594,6 @@ export const SettingsController = {
 
       const allActivityDates = [
         ...(habit.completedDates || []),
-        ...(habit.skippedDates || []),
       ];
 
       let lastActivityDateStr = habit.createdAt;

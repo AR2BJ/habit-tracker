@@ -445,6 +445,53 @@ export const HabitController = {
     btnCloseHelp?.addEventListener("click", closeHelp);
     helpBackdrop?.addEventListener("click", closeHelp);
 
+    const scrollTopBtn = document.getElementById("scroll-to-top-btn");
+
+    if (scrollTopBtn) {
+      let isVisible = false;
+      let hideTimeout;
+
+      window.addEventListener("scroll", () => {
+        const scrollThreshold = 600;
+
+        if (window.scrollY > scrollThreshold) {
+          if (!isVisible) {
+            isVisible = true;
+            clearTimeout(hideTimeout);
+
+            scrollTopBtn.classList.replace("hidden", "flex");
+
+            requestAnimationFrame(() => {
+              scrollTopBtn.classList.remove("opacity-0", "scale-75");
+              scrollTopBtn.classList.add("opacity-100", "scale-100");
+            });
+          }
+        } else {
+          if (isVisible) {
+            isVisible = false;
+
+            requestAnimationFrame(() => {
+              scrollTopBtn.classList.remove("opacity-100", "scale-100");
+              scrollTopBtn.classList.add("opacity-0", "scale-75");
+            });
+
+            hideTimeout = setTimeout(() => {
+              if (!isVisible) {
+                scrollTopBtn.classList.replace("flex", "hidden");
+              }
+            }, 400);
+          }
+        }
+      });
+
+      scrollTopBtn.addEventListener("click", () => {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      });
+    }
+
     if (window.currentThemeListener) {
       document.removeEventListener("themeChanged", window.currentThemeListener);
     }

@@ -71,6 +71,10 @@ export class NavigationController {
       };
 
       if (event.altKey) {
+        if (key === "b") {
+          dispatchAsyncClick("scroll-to-top-btn");
+          return;
+        }
         if (key === "c") {
           dispatchAsyncClick("btn-toggle-habit-form");
           return;

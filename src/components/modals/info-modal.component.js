@@ -177,7 +177,30 @@ export const InfoModalComponent = {
                 <span
                   class="text-xs font-semibold text-secondary flex items-center gap-2"
                 >
-                  <i class="fa-regular fa-square-minus text-muted"></i> Collapse / Expand Habit Creation Form
+                  <i class="fa-regular fa-chevron-square-up text-muted"></i>
+                  Scrolling To Top
+                </span>
+                <div class="flex items-center gap-1">
+                  <kbd
+                    class="px-2 py-1 text-[10px] font-mono font-bold text-primary bg-surface border border-border shadow-sm rounded-md"
+                    >Alt</kbd
+                  >
+                  <span class="text-xs text-muted">+</span>
+                  <kbd
+                    class="px-2 py-1 text-[10px] font-mono font-bold text-primary bg-surface border border-border shadow-sm rounded-md"
+                    >B</kbd
+                  >
+                </div>
+              </div>
+
+              <div
+                class="flex items-center justify-between p-2.5 bg-surface-2/60 border border-border/50 rounded-xl"
+              >
+                <span
+                  class="text-xs font-semibold text-secondary flex items-center gap-2"
+                >
+                  <i class="fa-regular fa-square-minus text-muted"></i> Collapse
+                  / Expand Habit Creation Form
                 </span>
                 <div class="flex items-center gap-1">
                   <kbd
@@ -213,7 +236,7 @@ export const InfoModalComponent = {
                   >
                 </div>
               </div>
-              
+
               <div
                 class="flex items-center justify-between p-2.5 bg-surface-2/60 border border-border/50 rounded-xl"
               >
@@ -320,15 +343,15 @@ export const InfoModalComponent = {
                   >
                 </div>
               </div>
-              
+
               <div
                 class="flex items-center justify-between p-2.5 bg-surface-2/60 border border-border/50 rounded-xl"
               >
                 <span
                   class="text-xs font-semibold text-secondary flex items-center gap-2"
                 >
-                  <i class="fa-regular fa-chart-line text-muted"></i> Switch Chart View
-                  (Weekly / Monthly / Yearly)
+                  <i class="fa-regular fa-chart-line text-muted"></i> Switch
+                  Chart View (Weekly / Monthly / Yearly)
                 </span>
                 <div class="flex items-center gap-1">
                   <kbd

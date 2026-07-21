@@ -132,10 +132,10 @@ export const HabitController = {
       button.classList.toggle("bg-brand/80", isActive);
       button.classList.toggle("shadow-brand/10", isActive);
       button.classList.toggle("text-white", isActive);
-      button.classList.toggle("bg-surface-2", !isActive);
+      button.classList.toggle("bg-(--color-surface-3)", !isActive);
       button.classList.toggle("text-secondary", !isActive);
       button.classList.toggle(
-        "hover:bg-(--color-(--color-surface-3))",
+        "hover:bg-(--color-surface-4)",
         !isActive,
       );
       button.classList.toggle("hover:text-secondary", !isActive);

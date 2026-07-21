@@ -231,7 +231,7 @@ export const HabitsView = {
 
               <button
                 data-category="General"
-                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-(--color-surface-3) px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-4) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i
                   class="category-icon fa-regular fa-folders text-yellow-500/80"
@@ -241,7 +241,7 @@ export const HabitsView = {
 
               <button
                 data-category="Health"
-                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-(--color-surface-3) px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-4) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i
                   class="category-icon fa-regular fa-apple-whole text-emerald-500/80"
@@ -251,7 +251,7 @@ export const HabitsView = {
 
               <button
                 data-category="Work"
-                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-(--color-surface-3) px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-4) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i
                   class="category-icon fa-regular fa-laptop-code text-cyan-500/80"
@@ -261,7 +261,7 @@ export const HabitsView = {
               
               <button
                 data-category="Research"
-                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-(--color-surface-3) px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-4) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i
                   class="category-icon fa-regular fa-microscope text-violet-500/80"
@@ -271,7 +271,7 @@ export const HabitsView = {
 
               <button
                 data-category="Academics"
-                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-(--color-surface-3) px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-4) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i
                   class="category-icon fa-regular fa-graduation-cap text-pink-500/80"
@@ -281,7 +281,7 @@ export const HabitsView = {
 
               <button
                 data-category="OpenSource"
-                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-(--color-surface-3) px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-4) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i class="category-icon fa-regular fa-code-branch text-lime-500/80"></i>
                 <span>OpenSource</span>
@@ -289,7 +289,7 @@ export const HabitsView = {
 
               <button
                 data-category="SystemDesign"
-                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-(--color-surface-3) px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-4) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i class="category-icon fa-regular fa-diagram-project text-blue-500/80"></i>
                 <span>SystemDesign</span>
@@ -297,7 +297,7 @@ export const HabitsView = {
 
               <button
                 data-category="DigitalDetox"
-                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-(--color-surface-3) px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-4) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i class="category-icon fa-regular fa-person-meditating text-fuchsia-500/80"></i>
                 <span>DigitalDetox</span>
@@ -305,7 +305,7 @@ export const HabitsView = {
 
               <button
                 data-category="Routine"
-                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-(--color-surface-3) px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-4) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i class="category-icon fa-regular fa-calendar-check text-orange-500/80"></i>
                 <span>Routine</span>
@@ -313,7 +313,7 @@ export const HabitsView = {
 
               <button
                 data-category="Harmful"
-                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-(--color-surface-3) px-4 text-xs font-medium text-secondary transition hover:bg-(--color-surface-4) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i
                   class="category-icon fa-regular fa-ban-smoking text-red-500/80"

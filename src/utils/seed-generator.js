@@ -14,19 +14,34 @@ const VERBS = [
   "Limit",
   "Enhance",
 ];
+
 const NOUNS = [
-  "Meditation",
+  "LeetCode & Algorithms",
   "Workout Routine",
   "Code Refactoring",
-  "Budget & Expenses",
+  "Thesis Writing",
   "Hydration Goal",
-  "Skill Learning",
-  "Deep Work",
-  "Sleep Cycle",
-  "Fast Food Intake",
-  "Social Media Time",
+  "System Design Blueprint",
+  "Deep Work Session",
+  "Sleep Cycle Recovery",
+  "Screen Time Exposure",
+  "Social Media Scrolling",
 ];
-const CATEGORIES = ["Mind", "Health", "Work", "Finance", "Harmful", "General"];
+
+const CATEGORIES = [
+  "General",
+  "Health",
+  "Work",
+  "Research",
+  "Academics",
+  "OpenSource",
+  "SystemDesign",
+  "DigitalDetox",
+  "Routine",
+  "Harmful",
+];
+
+const SCENARIOS = ["perfect", "average", "struggling", "stale"];
 
 function getRandomElement(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -97,7 +112,6 @@ export function generateDynamicMockData(count = 40) {
   };
 
   const habits = [];
-  const scenarios = ["perfect", "average", "struggling", "stale"];
 
   for (let i = 1; i <= count; i++) {
     const category = getRandomElement(CATEGORIES);
@@ -108,7 +122,7 @@ export function generateDynamicMockData(count = 40) {
     const daysAgoCreated = getRandomInt(10, 120);
     const createdAtDate = subtractDays(today, daysAgoCreated);
 
-    let scenario = getRandomElement(scenarios);
+    let scenario = getRandomElement(SCENARIOS);
 
     if (daysAgoCreated < 35 && scenario === "stale") {
       scenario = "average";

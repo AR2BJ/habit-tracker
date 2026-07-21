@@ -5,6 +5,10 @@ import { GlobalLoaderService } from "@/services/loader.service.js";
 import { HabitController } from "./habit.controller.js";
 
 export class NavigationController {
+  static categoryKeyBuffer = "";
+  static categoryKeyTimeoutId = null;
+  static CATEGORY_KEY_TIMEOUT = 300;
+
   static init() {
     this.setupNavigationListeners();
     this.setupKeyboardShortcuts();
@@ -183,32 +187,56 @@ export class NavigationController {
         return;
       }
 
-      if (["1", "2", "3", "4", "5", "6", "7"].includes(event.key)) {
+      if (
+        ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(event.key)
+      ) {
         const currentSection = document.querySelector("section:not(.hidden)");
         if (currentSection && currentSection.id === "habits-view") {
-          const categoryButtons = Array.from(
-            document.querySelectorAll(
-              "#category-filters button, .category-filter-btn",
-            ),
-          ).filter((btn) => {
-            const style = window.getComputedStyle(btn);
-            return (
-              !btn.disabled &&
-              style.display !== "none" &&
-              style.visibility !== "hidden"
-            );
-          });
-
-          const index = parseInt(event.key, 10) - 1;
-          const targetButton = categoryButtons[index];
-
-          if (targetButton) {
-            event.preventDefault();
-            setTimeout(() => targetButton.click(), 10);
-          }
+          event.preventDefault();
+          this.queueCategoryShortcutKey(event.key);
         }
       }
     });
+  }
+
+  static queueCategoryShortcutKey(digit) {
+    if (this.categoryKeyTimeoutId) {
+      clearTimeout(this.categoryKeyTimeoutId);
+    }
+
+    if (this.categoryKeyBuffer.length >= 2) {
+      this.categoryKeyBuffer = digit;
+    } else {
+      this.categoryKeyBuffer += digit;
+    }
+
+    this.categoryKeyTimeoutId = setTimeout(() => {
+      this.processCategoryShortcutKey();
+    }, this.CATEGORY_KEY_TIMEOUT);
+  }
+
+  static processCategoryShortcutKey() {
+    const index = parseInt(this.categoryKeyBuffer, 10);
+    this.categoryKeyBuffer = "";
+    this.categoryKeyTimeoutId = null;
+
+    const categoryButtons = Array.from(
+      document.querySelectorAll(
+        "#category-filters button, .category-filter-btn",
+      ),
+    ).filter((btn) => {
+      const style = window.getComputedStyle(btn);
+      return (
+        !btn.disabled &&
+        style.display !== "none" &&
+        style.visibility !== "hidden"
+      );
+    });
+
+    const targetButton = categoryButtons[index];
+    if (targetButton) {
+      setTimeout(() => targetButton.click(), 10);
+    }
   }
 
   static closeAllActiveModals() {

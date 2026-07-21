@@ -124,12 +124,33 @@ export const HabitsView = {
                       id="habit-category-select"
                       class="form-select h-12 w-full cursor-pointer rounded-xl border border-border bg-surface px-3 pr-10 text-sm text-primary focus:border-brand/80 focus:outline-none"
                     >
-                      <option value="General">General</option>
-                      <option value="Health">Health & Fitness</option>
-                      <option value="Work">Work & Dev</option>
-                      <option value="Finance">Finance</option>
-                      <option value="Mind">Mind & Soul</option>
-                      <option value="Harmful">Harmful</option>
+                      <option
+                        value="General"
+                        selected
+                      >
+                        General
+                      </option>
+                      <option value="Health">Health & Bio-Maintenance</option>
+                      <option value="Work">Work & Production Dev</option>
+                      <option value="Research">
+                        Research & Deep Dive (Thesis/Next-Gen Tech)
+                      </option>
+                      <option value="Academics">
+                        Academics & Advanced Knowledge
+                      </option>
+                      <option value="OpenSource">
+                        Open Source & Side Projects
+                      </option>
+                      <option value="SystemDesign">
+                        System Design & Soft Skills
+                      </option>
+                      <option value="DigitalDetox">
+                        Digital Detox & Reset
+                      </option>
+                      <option value="Routine">
+                        Daily Architecture & Workflow
+                      </option>
+                      <option value="Harmful">Harmful Habits</option>
                     </select>
                   </div>
                 </div>
@@ -146,10 +167,18 @@ export const HabitsView = {
                       id="habit-frequency-select"
                       class="form-select h-12 w-full cursor-pointer rounded-xl border border-border bg-surface px-3 pr-10 text-sm text-primary focus:border-brand/80 focus:outline-none"
                     >
-                      <option value="7">Everyday (7 days/wk)</option>
-                      <option value="5">Standard (5 days/wk)</option>
-                      <option value="3">Flexible (3 days/wk)</option>
-                      <option value="1">Minimal (1 day/wk)</option>
+                      <option
+                        value="7"
+                        selected
+                      >
+                        Everyday (7 days/wk)
+                      </option>
+                      <option value="6">High Intensity (6 days/wk)</option>
+                      <option value="5">Workweek Pace (5 days/wk)</option>
+                      <option value="4">Consistent (4 days/wk)</option>
+                      <option value="3">Flexible Routine (3 days/wk)</option>
+                      <option value="2">Intermittent (2 days/wk)</option>
+                      <option value="1">Minimal Focus (1 day/wk)</option>
                     </select>
                   </div>
                 </div>
@@ -205,7 +234,7 @@ export const HabitsView = {
                 class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i
-                  class="category-icon fa-regular fa-folders text-amber-500/80"
+                  class="category-icon fa-regular fa-folders text-yellow-500/80"
                 ></i>
                 <span>General</span>
               </button>
@@ -225,27 +254,61 @@ export const HabitsView = {
                 class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i
-                  class="category-icon fa-regular fa-laptop text-sky-500/80"
+                  class="category-icon fa-regular fa-laptop-code text-cyan-500/80"
                 ></i>
                 <span>Work</span>
               </button>
-
+              
               <button
-                data-category="Finance"
+                data-category="Research"
                 class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i
-                  class="category-icon fa-regular fa-dollar-sign text-violet-500/80"
+                  class="category-icon fa-regular fa-microscope text-violet-500/80"
                 ></i>
-                <span>Finance</span>
+                <span>Research</span>
               </button>
 
               <button
-                data-category="Mind"
+                data-category="Academics"
                 class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
-                <i class="category-icon fa-regular fa-spa text-rose-500/80"></i>
-                <span>Mind</span>
+                <i
+                  class="category-icon fa-regular fa-graduation-cap text-pink-500/80"
+                ></i>
+                <span>Academics</span>
+              </button>
+
+              <button
+                data-category="OpenSource"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+              >
+                <i class="category-icon fa-regular fa-code-branch text-lime-500/80"></i>
+                <span>OpenSource</span>
+              </button>
+
+              <button
+                data-category="SystemDesign"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+              >
+                <i class="category-icon fa-regular fa-diagram-project text-blue-500/80"></i>
+                <span>SystemDesign</span>
+              </button>
+
+              <button
+                data-category="DigitalDetox"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+              >
+                <i class="category-icon fa-regular fa-person-meditating text-fuchsia-500/80"></i>
+                <span>DigitalDetox</span>
+              </button>
+
+              <button
+                data-category="Routine"
+                class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
+              >
+                <i class="category-icon fa-regular fa-calendar-check text-orange-500/80"></i>
+                <span>Routine</span>
               </button>
 
               <button
@@ -253,7 +316,7 @@ export const HabitsView = {
                 class="category-filter-btn h-8 shrink-0 whitespace-nowrap rounded-lg bg-surface-2 px-4 text-xs font-medium text-secondary transition hover:bg-(--color-(--color-surface-3)) flex flex-row justify-center items-center gap-2 hover:text-secondary cursor-pointer"
               >
                 <i
-                  class="category-icon fa-regular fa-ban-smoking text-mauve-500/80"
+                  class="category-icon fa-regular fa-ban-smoking text-red-500/80"
                 ></i>
                 <span>Harmful</span>
               </button>

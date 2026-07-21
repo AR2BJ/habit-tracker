@@ -377,7 +377,7 @@ export const InfoModalComponent = {
                 </span>
                 <kbd
                   class="px-2 py-1 text-[10px] font-mono font-bold text-primary bg-surface border border-border shadow-sm rounded-md"
-                  >1 - 7</kbd
+                  >0 - 9 / 10</kbd
                 >
               </div>
 

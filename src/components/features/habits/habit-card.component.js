@@ -36,12 +36,17 @@ export const HabitCardComponent = {
     }
 
     const categoryColors = {
-      General: "bg-amber-500/10 text-amber-500/80 border-amber-500/20",
+      General: "bg-yellow-500/10 text-yellow-500/80 border-yellow-500/20",
       Health: "bg-emerald-500/10 text-emerald-500/80 border-emerald-500/20",
-      Work: "bg-sky-500/10 text-sky-500/80 border-sky-500/20",
-      Finance: "bg-violet-500/10 text-violet-500/80 border-violet-500/20",
-      Mind: "bg-rose-500/10 text-rose-500/80 border-rose-500/20",
-      Harmful: "bg-mauve-500/10 text-mauve-500/80 border-mauve-500/20",
+      Work: "bg-cyan-500/10 text-cyan-500/80 border-cyan-500/20",
+      Research: "bg-violet-500/10 text-violet-500/80 border-violet-500/20",
+      Academics: "bg-pink-500/10 text-pink-500/80 border-pink-500/20",
+      OpenSource: "bg-lime-500/10 text-lime-500/80 border-lime-500/20",
+      SystemDesign: "bg-blue-500/10 text-blue-500/80 border-blue-500/20",
+      DigitalDetox:
+        "bg-fuchsia-500/10 text-fuchsia-500/80 border-fuchsia-500/20",
+      Routine: "bg-orange-500/10 text-orange-500/80 border-orange-500/20",
+      Harmful: "bg-red-500/10 text-red-500/80 border-red-500/20",
     };
     const badgeClass = categoryColors[habit.category] || categoryColors.General;
 

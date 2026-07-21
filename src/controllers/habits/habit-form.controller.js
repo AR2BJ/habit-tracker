@@ -55,6 +55,8 @@ export const HabitFormController = {
           StateManager.save(updated);
 
           input.value = "";
+          categorySelect.value = "General";
+          frequencySelect.value = "7";
           this.mainController.refreshUI();
 
           NotificationService.show({

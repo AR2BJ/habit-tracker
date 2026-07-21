@@ -169,12 +169,16 @@ export const HabitController = {
 
         const categoryNames = {
           all: "All Habits",
-          mind: "Mind Routine",
-          health: "Health & Fitness",
-          work: "Work Projects",
-          finance: "Finance Logs",
+          general: "General",
+          health: "Health & Bio-Maintenance",
+          work: "Work & Production Dev",
+          research: "Research & Deep Dive",
+          academics: "Academics & Advanced Knowledge",
+          opensource: "Open Source & Side Projects",
+          systemdesign: "System Design & Soft Skills",
+          digitaldetox: "Digital Detox & Reset",
+          routine: "Daily Architecture & Workflow",
           harmful: "Harmful Habits",
-          general: "General Metrics",
         };
         GlobalLoaderService.show(
           `Filtering workspace by ${categoryNames[selectedCategory] || selectedCategory}...`,

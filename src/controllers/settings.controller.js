@@ -75,6 +75,10 @@ export const SettingsController = {
     });
 
     this.initResetModalEvents();
+
+    window.addEventListener("resize", () => {
+      this.syncThemeControls(localStorage.getItem("theme") || "light");
+    });
   },
 
   syncThemeControls(targetTheme) {
@@ -84,8 +88,22 @@ export const SettingsController = {
 
     if (!indicator || !btnLight || !btnDark) return;
 
+    const isDesktop = window.screen.availWidth >= 375;
+
+    indicator.classList.remove(
+      "xs:translate-x-0",
+      "xs:translate-x-full",
+      "translate-y-0",
+      "translate-y-full",
+    );
+
     if (targetTheme === "dark") {
-      indicator.classList.replace("translate-x-0", "translate-x-full");
+      if (isDesktop) {
+        indicator.classList.add("xs:translate-x-full");
+      } else {
+        indicator.classList.add("translate-y-full");
+      }
+
       btnDark.classList.replace(
         "text-secondary",
         "text-(--color-btn-primary-text)",
@@ -95,7 +113,12 @@ export const SettingsController = {
         "text-secondary",
       );
     } else {
-      indicator.classList.replace("translate-x-full", "translate-x-0");
+      if (isDesktop) {
+        indicator.classList.add("xs:translate-x-0");
+      } else {
+        indicator.classList.add("translate-y-0");
+      }
+
       btnLight.classList.replace(
         "text-secondary",
         "text-(--color-btn-primary-text)",
@@ -118,9 +141,23 @@ export const SettingsController = {
     const btnLight = document.getElementById("sett-theme-light");
     const btnDark = document.getElementById("sett-theme-dark");
 
+    const isDesktop = window.screen.availWidth >= 375;
+
     if (indicator && btnLight && btnDark) {
+      indicator.classList.remove(
+        "xs:translate-x-0",
+        "xs:translate-x-full",
+        "translate-y-0",
+        "translate-y-full",
+      );
+
       if (targetTheme === "dark") {
-        indicator.classList.replace("translate-x-0", "translate-x-full");
+        if (isDesktop) {
+          indicator.classList.add("xs:translate-x-full");
+        } else {
+          indicator.classList.add("translate-y-full");
+        }
+
         btnDark.classList.replace(
           "text-secondary",
           "text-(--color-btn-primary-text)",
@@ -130,7 +167,12 @@ export const SettingsController = {
           "text-secondary",
         );
       } else {
-        indicator.classList.replace("translate-x-full", "translate-x-0");
+        if (isDesktop) {
+          indicator.classList.add("xs:translate-x-0");
+        } else {
+          indicator.classList.add("translate-y-0");
+        }
+
         btnLight.classList.replace(
           "text-secondary",
           "text-(--color-btn-primary-text)",
@@ -751,11 +793,10 @@ export const SettingsController = {
               try {
                 if (previousPayload) {
                   localStorage.setItem(STORAGE_KEY, previousPayload);
-                }
-                else {
+                } else {
                   localStorage.removeItem(STORAGE_KEY);
                 }
-                
+
                 StateManager.save(previousHabits || []);
                 state.habits = previousHabits || [];
 

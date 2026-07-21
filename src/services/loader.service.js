@@ -6,25 +6,38 @@ export const GlobalLoaderService = {
       return;
 
     const overlayHTML = `
-      <div 
-        id="global-glass-overlay" 
-        class="fixed inset-0 z-9999 flex items-center justify-center bg-background/50 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 ease-in-out"
+      <div
+        id="global-glass-overlay"
+        class="fixed inset-0 z-9999 flex items-center justify-center bg-background/50 backdrop-blur-xl opacity-0 pointer-events-none transition-opacity duration-300 ease-in-out"
       >
-        <div class="flex flex-col items-center gap-5 p-8 bg-surface/90 rounded-3xl shadow-2xl border border-border transform scale-95 transition-transform duration-300" id="global-loader-modal">
-          
+        <div
+          class="flex flex-col items-center gap-5 p-8 rounded-3xl transform scale-95 transition-transform duration-300 backdrop-blur-xl"
+          id="global-loader-modal"
+        >
           <div class="relative flex items-center justify-center">
-            <div class="absolute w-16 h-16 border-4 border-brand/20 rounded-full"></div>
-            <div class="w-16 h-16 border-4 border-brand border-t-transparent rounded-full animate-spin"></div>
-            <i class="fa-solid fa-bolt text-brand absolute text-lg animate-pulse"></i>
+            <div class="book">
+              <div class="book__pg-shadow"></div>
+              <div class="book__pg"></div>
+              <div class="book__pg book__pg--2"></div>
+              <div class="book__pg book__pg--3"></div>
+              <div class="book__pg book__pg--4"></div>
+              <div class="book__pg book__pg--5"></div>
+            </div>
           </div>
 
           <div class="flex flex-col items-center gap-1 text-center">
-            <h3 class="text-base sm:text-lg font-bold text-primary tracking-tight">System Processing</h3>
-            <p id="global-loader-msg" class="text-xs sm:text-sm text-secondary font-medium max-w-62.5">
+            <h3
+              class="text-base sm:text-lg font-bold text-primary tracking-tight"
+            >
+              System Processing
+            </h3>
+            <p
+              id="global-loader-msg"
+              class="text-xs sm:text-sm text-secondary font-medium max-w-62.5"
+            >
               Please wait while operations complete...
             </p>
           </div>
-
         </div>
       </div>
     `;

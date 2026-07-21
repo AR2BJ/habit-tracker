@@ -15,6 +15,10 @@
       rel="stylesheet"
     />
     <link
+      href="./src/assets/css/loading.css"
+      rel="stylesheet"
+    />
+    <link
       type="text/css"
       href="./vendor/fontawesome/css/all.css"
       rel="stylesheet"
@@ -24,6 +28,8 @@
       href="./favicon.ico"
       type="image/x-icon"
     />
+
+    <script src="./src/app/theme.js"></script>
   </head>
 
   <body class="min-h-screen bg-surface text-primary">
@@ -32,8 +38,22 @@
     <!-- ============================= -->
 
     <div
+      id="app-loader"
+      class="fixed inset-0 z-9999 grid place-items-center"
+    >
+      <div class="book">
+        <div class="book__pg-shadow"></div>
+        <div class="book__pg"></div>
+        <div class="book__pg book__pg--2"></div>
+        <div class="book__pg book__pg--3"></div>
+        <div class="book__pg book__pg--4"></div>
+        <div class="book__pg book__pg--5"></div>
+      </div>
+    </div>
+
+    <div
       id="app"
-      class="px-8 py-12 lg:pl-8 transition-all duration-300"
+      class="hidden px-8 py-12 lg:pl-8 transition-all duration-300"
     >
       <div id="header-container"></div>
 

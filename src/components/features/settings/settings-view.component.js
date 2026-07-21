@@ -47,21 +47,23 @@ export const SettingsViewComponent = {
             </div>
 
             <div
-              class="relative flex w-full bg-surface-2 rounded-xl p-1 border border-border mt-1"
+              class="relative flex flex-col xs:flex-row w-full bg-surface-2 rounded-xl p-1 border border-border mt-1 gap-1 xs:gap-0"
             >
               <div
                 id="theme-tab-indicator"
-                class="absolute top-1 left-1 h-[calc(100%-8px)] w-[calc(50%-4px)] rounded-lg bg-brand/80 transition-all duration-300 ${
-                  isDark ? "translate-x-full" : "translate-x-0"
+                class="absolute top-1 left-1 h-[calc(50%-4px)] w-[calc(100%-8px)] rounded-lg bg-brand/80 transition-all duration-300 xs:h-[calc(100%-8px)] xs:w-[calc(50%-4px)] ${
+                  isDark
+                    ? "translate-y-full xs:translate-x-full"
+                    : "translate-y-0 xs:translate-x-0"
                 }"
               ></div>
 
               <button
                 id="sett-theme-light"
-                class="relative z-10 w-1/2 py-2.5 text-xs sm:text-sm font-medium rounded-lg transition cursor-pointer flex items-center justify-center gap-2 ${
+                class="relative z-10 w-full py-2.5 text-xs xs:text-sm font-medium rounded-lg transition cursor-pointer flex items-center justify-center gap-1 xs:w-1/2 ${
                   !isDark
                     ? "text-(--color-btn-primary-text)"
-                    : "text-secondary hover:text-primary"
+                    : "text-secondary"
                 }"
               >
                 <i class="fa-regular fa-sun text-base"></i>
@@ -70,10 +72,10 @@ export const SettingsViewComponent = {
 
               <button
                 id="sett-theme-dark"
-                class="relative z-10 w-1/2 py-2.5 text-xs sm:text-sm font-medium rounded-lg transition cursor-pointer flex items-center justify-center gap-2 ${
+                class="relative z-10 w-full py-2.5 text-xs xs:text-sm font-medium rounded-lg transition cursor-pointer flex items-center justify-center gap-1 xs:w-1/2 ${
                   isDark
                     ? "text-(--color-btn-primary-text)"
-                    : "text-secondary hover:text-primary"
+                    : "text-secondary"
                 }"
               >
                 <i class="fa-regular fa-moon text-base"></i>
@@ -98,13 +100,16 @@ export const SettingsViewComponent = {
                   Data Backup & Sandbox
                 </h3>
                 <p class="text-[11px] sm:text-xs text-secondary truncate">
-                  Export workspace records, import historical snapshots, or seed environment mock data.
+                  Export workspace records, import historical snapshots, or seed
+                  environment mock data.
                 </p>
               </div>
             </div>
 
             <div class="flex flex-col gap-2">
-              <label class="text-[10px] sm:text-[11px] font-bold text-secondary uppercase tracking-wider flex items-center gap-1.5">
+              <label
+                class="text-[10px] sm:text-[11px] font-bold text-secondary uppercase tracking-wider flex items-center gap-1.5"
+              >
                 <i class="fa-regular fa-file-export opacity-70"></i>
                 <span>Export Application Ledger</span>
               </label>
@@ -113,7 +118,9 @@ export const SettingsViewComponent = {
                   id="sett-export-btn"
                   class="w-full px-3 py-2.5 bg-surface-2 hover:bg-(--color-surface-3) border border-border rounded-xl text-primary text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer group"
                 >
-                  <i class="fa-regular fa-file-code text-amber-500/80 text-sm group-hover:scale-105 transition"></i>
+                  <i
+                    class="fa-regular fa-file-code text-amber-500/80 text-sm group-hover:scale-105 transition"
+                  ></i>
                   <span>JSON Ledger</span>
                 </button>
 
@@ -121,7 +128,9 @@ export const SettingsViewComponent = {
                   id="sett-export-md-btn"
                   class="w-full px-3 py-2.5 bg-surface-2 hover:bg-(--color-surface-3) border border-border rounded-xl text-primary text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer group"
                 >
-                  <i class="fa-brands fa-markdown text-sky-500/80 text-sm group-hover:scale-105 transition"></i>
+                  <i
+                    class="fa-brands fa-markdown text-sky-500/80 text-sm group-hover:scale-105 transition"
+                  ></i>
                   <span>Markdown Log</span>
                 </button>
 
@@ -129,14 +138,18 @@ export const SettingsViewComponent = {
                   id="sett-export-notion-btn"
                   class="w-full px-3 py-2.5 bg-surface-2 hover:bg-(--color-surface-3) border border-border rounded-xl text-primary text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer group"
                 >
-                  <i class="fa-regular fa-table text-emerald-500/80 text-sm group-hover:scale-105 transition"></i>
+                  <i
+                    class="fa-regular fa-table text-emerald-500/80 text-sm group-hover:scale-105 transition"
+                  ></i>
                   <span>Spreadsheet CSV</span>
                 </button>
               </div>
             </div>
 
             <div class="flex flex-col gap-2 border-t border-border/60 pt-4">
-              <label class="text-[10px] sm:text-[11px] font-bold text-secondary uppercase tracking-wider flex items-center gap-1.5">
+              <label
+                class="text-[10px] sm:text-[11px] font-bold text-secondary uppercase tracking-wider flex items-center gap-1.5"
+              >
                 <i class="fa-regular fa-flask-vial opacity-70"></i>
                 <span>Development & Sandbox</span>
               </label>
@@ -144,19 +157,34 @@ export const SettingsViewComponent = {
                 id="sett-seed-btn"
                 class="w-full px-4 py-2.5 bg-brand/5 hover:bg-brand/10 border border-brand/20 rounded-xl text-brand/80 text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer"
               >
-                <div id="sett-seed-icon" class="flex">
-                  <i id="sett-seed-icon" class="fa-regular fa-flask text-sm transition-transform duration-200"></i>
+                <div
+                  id="sett-seed-icon"
+                  class="flex"
+                >
+                  <i
+                    id="sett-seed-icon"
+                    class="fa-regular fa-flask text-sm transition-transform duration-200"
+                  ></i>
                 </div>
-                <div id="sett-seed-spinner" class="hidden">
-                  <i  class="fa-solid fa-spinner fa-spin text-sm"></i>
+                <div
+                  id="sett-seed-spinner"
+                  class="hidden"
+                >
+                  <i class="fa-solid fa-spinner fa-spin text-sm"></i>
                 </div>
-                
-                <span id="sett-seed-text" class="flex">Seed Historical Mock Data</span>
+
+                <span
+                  id="sett-seed-text"
+                  class="flex"
+                  >Seed Historical Mock Data</span
+                >
               </button>
             </div>
 
             <div class="flex flex-col gap-2 border-t border-border/60 pt-4">
-              <label class="text-[10px] sm:text-[11px] font-bold text-secondary uppercase tracking-wider flex items-center gap-1.5">
+              <label
+                class="text-[10px] sm:text-[11px] font-bold text-secondary uppercase tracking-wider flex items-center gap-1.5"
+              >
                 <i class="fa-regular fa-file-import opacity-70"></i>
                 <span>Import Database Snapshot</span>
               </label>
@@ -169,10 +197,13 @@ export const SettingsViewComponent = {
                 ></i>
                 <span class="text-xs font-semibold text-primary px-2">
                   Drag & drop file here or
-                  <span class="text-brand/80 font-bold">browse local files</span>
+                  <span class="text-brand/80 font-bold"
+                    >browse local files</span
+                  >
                 </span>
                 <span class="text-[10px] text-secondary font-medium"
-                  >Supports validated .json backups, .md reports or structured .csv tables</span
+                  >Supports validated .json backups, .md reports or structured
+                  .csv tables</span
                 >
                 <input
                   type="file"

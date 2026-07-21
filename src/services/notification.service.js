@@ -55,7 +55,7 @@ export const NotificationService = {
     const toast = document.createElement("div");
     toast.className = `animate-slide-up ${toastTypeClass} backdrop-blur-md rounded-2xl px-5 py-3.5 shadow-2xl flex flex-row justify-between items-center gap-4 transition-all duration-300 transform w-full`;
 
-    const countdownId = `toast-cd-${Math.random().toString(36).substr(2, 9)}`;
+    const countdownId = `toast-cd-${Math.random().toString(36).slice(2, 11)}`;
 
     const iconHTML = icon
       ? `<i class="fa-regular ${icon} ${toastIconColor} text-lg"></i>`
@@ -125,6 +125,6 @@ export const NotificationService = {
       if (toast.parentNode) {
         toast.remove();
       }
-    }, 300);
+    }, 200);
   },
 };

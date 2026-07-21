@@ -7,7 +7,7 @@ import { HabitController } from "./habit.controller.js";
 export class NavigationController {
   static categoryKeyBuffer = "";
   static categoryKeyTimeoutId = null;
-  static CATEGORY_KEY_TIMEOUT = 300;
+  static CATEGORY_KEY_TIMEOUT = 200;
 
   static init() {
     this.setupNavigationListeners();

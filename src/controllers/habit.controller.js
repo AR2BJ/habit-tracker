@@ -483,7 +483,7 @@ export const HabitController = {
               if (!isVisible) {
                 scrollTopBtn.classList.replace("flex", "hidden");
               }
-            }, 400);
+            }, 200);
           }
         }
       });

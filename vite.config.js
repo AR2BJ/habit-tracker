@@ -6,7 +6,6 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [tailwindcss(), VitePWA()],
-  base: "habit-tracker",
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),

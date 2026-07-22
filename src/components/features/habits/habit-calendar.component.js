@@ -127,7 +127,7 @@ export const HabitCalendarComponent = {
             >
               ${
                 day.completed
-                  ? `<span class="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-bold leading-none select-none">✓</span>`
+                  ? `<span class="text-xs md:text-sm lg:text-base xl:text-lg 2xl:text-2xl font-bold leading-none select-none"><i class="fa-regular fa-check"></i></span>`
                   : day.skipped
                     ? `<span class="text-xs md:text-sm lg:text-base xl:text-lg 2xl:text-2xl font-bold leading-none select-none"><i class="fa-regular fa-shield"></i></span>`
                     : ""

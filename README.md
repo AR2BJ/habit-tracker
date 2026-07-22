@@ -1,10 +1,14 @@
-<div align="left" style="width: 100%;display: flex; flex-direction: row; justify-content: center; align-items: center; margin-bottom: 40px;">
+<div align="center">
   <img src="public/picture/logo-4.png" alt="Habit Tracker Logo" height="145" />
 </div>
 
-<div align="center" style="margin: 40px 0;">
+<br/>
+
+<div align="center">
   <img src="public/picture/demo-2.gif" alt="Habit Tracker Demo" width="100%" />
 </div>
+
+<br/>
 
 <p align="center">
   <img alt="Vite" src="https://img.shields.io/badge/Vite-6.x-646CFF?style=flat-square&logo=vite" />

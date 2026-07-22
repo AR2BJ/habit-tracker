@@ -1,4 +1,4 @@
-![Habit Tracker Demo](public/picture/demo.png)
+![Habit Tracker Demo](public/picture/demo-2.gif)
 
 # Habit Tracker
 

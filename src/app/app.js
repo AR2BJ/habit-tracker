@@ -1,8 +1,10 @@
 import { GlobalLoaderService } from "@/services/loader.service";
 import { HabitController } from "@/controllers/habit.controller.js";
 import { NavigationController } from "@/controllers/navigation.controller.js";
+import { SettingsController } from "@/controllers/settings.controller";
 import { StateController } from "@/controllers/state.controller";
 import { ThemeController } from "@/controllers/theme.controller.js";
+import { TooltipController } from "@/controllers/tooltip.controller";
 import { state } from "@/models/state.model";
 
 const loader = document.querySelector("#app-loader");
@@ -13,9 +15,13 @@ app.classList.add("hidden");
 document.addEventListener("DOMContentLoaded", () => {
   GlobalLoaderService.init();
 
-  HabitController.init();
   NavigationController.init();
+  HabitController.init();
+  SettingsController.init();
+
   StateController.execute();
+
+  TooltipController.init();
 
   ThemeController.init();
 

@@ -10,8 +10,26 @@ export const HeaderComponent = {
             <i class="fa-regular fa-bars"></i>
           </button>
 
+          <div class="w-10 h-10 lg:hidden flex flex-row justify-center items-center">
+            <a href="/">
+              <img
+                id="logo"
+                src="/public/picture/logo.png"
+                class="logo h-full justify-center shadow-brand/10"
+                title="Habit Tracker"
+                alt="Habit Tracker Logo"
+              />
+            </a>
+          </div>
+
           <h1
-            class="truncate text-xl font-bold tracking-tight text-primary sm:text-2xl lg:text-3xl"
+            class="truncate block xs:hidden text-xl font-bold tracking-tight text-primary sm:text-2xl lg:text-3xl cursor-pointer"
+            data-tooltip-title="Habit Tracker"
+          >
+            Habit Tracker
+          </h1>
+          <h1
+            class="truncate hidden xs:block text-xl font-bold tracking-tight text-primary sm:text-2xl lg:text-3xl"
           >
             Habit Tracker
           </h1>

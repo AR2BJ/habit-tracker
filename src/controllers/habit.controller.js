@@ -25,18 +25,14 @@ export const HabitController = {
     HabitFormController.init(this);
     HabitActionController.init(this);
 
-    SettingsController.init(this);
     SettingsController.runAutoArchivePipeline();
 
     this.bindStaticEvents();
     this.bindMenuToggle();
     this.bindActionMenuToggle();
+    this.setupTabIndicatorObserver();
 
-    window.addEventListener("DOMContentLoaded", () => {
-      this.updateTabStyles(state.activeTab);
-    });
-
-    window.addEventListener("resize", () => {
+    requestAnimationFrame(() => {
       this.updateTabStyles(state.activeTab);
     });
   },
@@ -134,10 +130,7 @@ export const HabitController = {
       button.classList.toggle("text-white", isActive);
       button.classList.toggle("bg-(--color-surface-3)", !isActive);
       button.classList.toggle("text-secondary", !isActive);
-      button.classList.toggle(
-        "hover:bg-(--color-surface-4)",
-        !isActive,
-      );
+      button.classList.toggle("hover:bg-(--color-surface-4)", !isActive);
       button.classList.toggle("hover:text-secondary", !isActive);
 
       if (icon) {
@@ -555,6 +548,31 @@ export const HabitController = {
         mobileBtn?.classList.remove("active");
       }
     });
+
+    requestAnimationFrame(() => {
+      if (state.currentView === "habits") {
+        this.updateTabStyles(state.activeTab);
+      }
+    });
+  },
+
+  setupTabIndicatorObserver() {
+    const activeBtn = document.getElementById("tab-active");
+    const archivedBtn = document.getElementById("tab-archived");
+
+    if (!activeBtn || !archivedBtn) return;
+
+    if (!window.habitTabResizeObserver) {
+      window.habitTabResizeObserver = new ResizeObserver(() => {
+        requestAnimationFrame(() => {
+          this.updateTabStyles(state.activeTab);
+        });
+      });
+    }
+
+    window.habitTabResizeObserver.disconnect();
+    window.habitTabResizeObserver.observe(activeBtn);
+    window.habitTabResizeObserver.observe(archivedBtn);
   },
 
   updateTabStyles(tab) {
@@ -564,7 +582,11 @@ export const HabitController = {
 
     if (!indicator || !activeBtn || !archivedBtn) return;
 
-    const buttonWidth = activeBtn.getBoundingClientRect().width;
+    const buttonWidth =
+      activeBtn.offsetWidth || activeBtn.getBoundingClientRect().width;
+
+    if (!buttonWidth) return;
+
     const offset = 4;
 
     indicator.style.width = `${buttonWidth}px`;

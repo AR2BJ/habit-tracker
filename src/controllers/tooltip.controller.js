@@ -63,6 +63,11 @@ function handleKeydown(event) {
 }
 
 export const TooltipController = {
+  init() {
+    this.unbind();
+    this.bind();
+  },
+
   bind(root = document.body) {
     const container =
       typeof root === "string" ? document.querySelector(root) : root;

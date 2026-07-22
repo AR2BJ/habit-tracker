@@ -9,8 +9,7 @@ import { formatDate } from "@/utils/helpers";
 import { generateDynamicMockData } from "@/utils/seed-generator";
 
 export const SettingsController = {
-  init(mainController) {
-    this.mainController = mainController;
+  init() {
     this.bindSettingsEvents();
   },
 
@@ -714,7 +713,7 @@ export const SettingsController = {
     if (modified) {
       StateManager.save(habits);
 
-      if (this.mainController) this.mainController.refreshUI();
+      HabitController.refreshUI();
 
       NotificationService.show({
         type: "info",

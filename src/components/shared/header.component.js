@@ -16,7 +16,7 @@ export const HeaderComponent = {
             <a href="/">
               <img
                 id="logo"
-                src="../../../picture/logo.png"
+                src="/public/picture/logo.png"
                 class="logo h-full justify-center shadow-brand/10"
                 title="Habit Tracker"
                 alt="Habit Tracker Logo"

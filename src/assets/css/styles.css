@@ -181,12 +181,12 @@ select.form-select {
 }
 
 .dark select.form-select {
-  background-image: url("../../../picture/chevron-down-solid-light.svg");
+  background-image: url("../../../public/picture/chevron-down-solid-light.svg");
   background-color: var(--color-surface);
 }
 
 .light select.form-select {
-  background-image: url("../../../picture/chevron-down-solid-dark.svg");
+  background-image: url("../../../public/picture/chevron-down-solid-dark.svg");
   background-color: var(--color-surface);
 }
 

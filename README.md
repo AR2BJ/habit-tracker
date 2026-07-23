@@ -1,12 +1,12 @@
 <div align="center">
-  <img src="public/picture/demo-2.gif" alt="Habit Tracker Demo" width="100%" />
+  <img src="/public/picture/demo-2.gif" alt="Habit Tracker Demo" width="100%" />
 </div>
 
 <br/>
 <br>
 
 <div align="center">
-  <img src="public/picture/logo-4.png" alt="Habit Tracker Logo" height="145" />
+  <img src="/public/picture/logo-4.png" alt="Habit Tracker Logo" height="145" />
 </div>
 
 <br/>
@@ -102,7 +102,7 @@ This organization improves maintainability, readability, and extensibility while
 A visual demonstration of the interface is available in:
 
 ```text
-public/picture/demo-2.gif
+/public/picture/demo-2.gif
 ```
 
 ## Installation

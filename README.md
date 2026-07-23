@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/picture/demo.png" alt="Habit Tracker Demo" height="600" />
+  <img src="public/picture/demo.png" alt="Habit Tracker Demo" width="100%" height="800" />
 </div>
 
 # Habit Tracker

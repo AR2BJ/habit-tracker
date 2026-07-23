@@ -1,4 +1,6 @@
-![Habit Tracker Demo](public/picture/demo.png)
+<div align="center">
+  <img src="public/picture/demo.png" alt="Habit Tracker Demo" height="600" />
+</div>
 
 # Habit Tracker
 

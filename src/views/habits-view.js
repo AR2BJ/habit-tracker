@@ -281,7 +281,7 @@ export const HabitsView = {
                 <button
                   id="btn-scroll-right"
                   type="button"
-                  class="absolute right-0 z-20 h-7 w-7 items-center justify-center rounded-lg border border-border bg-surface/95 backdrop-blur-xl shadow-2xl text-secondary hover:text-primary hover:border-brand/50 transition-all cursor-pointer"
+                  class="absolute right-0 z-20 hidden h-7 w-7 items-center justify-center rounded-lg border border-border bg-surface/95 backdrop-blur-xl shadow-2xl text-secondary hover:text-primary hover:border-brand/50 transition-all cursor-pointer"
                 >
                   <i class="fa-regular fa-chevron-right text-xs"></i>
                 </button>
@@ -328,7 +328,6 @@ function setupHabitFiltersDragScroll() {
   const checkOverflowState = () => {
     const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
     const hasOverflow = scrollWidth > clientWidth + 2;
-    console.log(scrollWidth, clientWidth);
 
     if (
       scrollContainer.offsetParent === null ||
@@ -373,7 +372,7 @@ function setupHabitFiltersDragScroll() {
 
   const triggerCheck = () => {
     requestAnimationFrame(() => {
-      setTimeout(checkOverflowState, 50);
+      setTimeout(checkOverflowState, 100);
     });
   };
 
@@ -397,7 +396,23 @@ function setupHabitFiltersDragScroll() {
     });
   }
 
+  const resizeObserver = new ResizeObserver(() => {
+    triggerCheck();
+  });
+
+  resizeObserver.observe(scrollContainer);
+
+  if (viewSection) {
+    resizeObserver.observe(viewSection);
+  }
+
   window.addEventListener("resize", triggerCheck);
+  window.addEventListener("load", triggerCheck);
+
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(() => triggerCheck());
+  }
+
   triggerCheck();
 }
 

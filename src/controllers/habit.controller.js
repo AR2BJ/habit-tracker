@@ -133,7 +133,7 @@ export const HabitController = {
       button.classList.toggle("bg-surface", !isActive);
       button.classList.toggle("border-border", !isActive);
       button.classList.toggle("text-secondary", !isActive);
-      button.classList.toggle("hover:text-primary", !isActive);
+      button.classList.toggle("hover:text-color", !isActive);
       button.classList.toggle("hover:bg-surface-2", !isActive);
 
       if (icon) {

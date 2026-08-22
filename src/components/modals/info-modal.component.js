@@ -124,7 +124,7 @@ export const InfoModalComponent = {
                               .map(
                                 (key) =>
                                   `<kbd
-                                    class="px-1.5 sm:px-2 py-0.5 sm:py-1 text-[9px] sm:text-xs font-mono font-bold text-primary bg-surface border border-border shadow-2xs rounded-md"
+                                    class="px-1.5 sm:px-2 py-0.5 sm:py-1 text-[9px] sm:text-xs font-mono font-bold text-color bg-surface border border-border shadow-2xs rounded-md"
                                     >${key}</kbd
                                   >`,
                               )
@@ -171,7 +171,7 @@ export const InfoModalComponent = {
                 <i class="fa-regular fa-square-terminal"></i>
               </div>
               <div>
-                <h3 class="text-sm sm:text-base font-bold text-primary">
+                <h3 class="text-sm sm:text-base font-bold text-color">
                   Habit Tracker Help Center
                 </h3>
                 <p
@@ -183,7 +183,7 @@ export const InfoModalComponent = {
             </div>
             <button
               id="close-help-modal"
-              class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg lg:rounded-xl bg-surface-2 hover:bg-red-600/10 border border-border text-secondary hover:text-primary flex items-center justify-center transition cursor-pointer shrink-0"
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg lg:rounded-xl bg-surface-2 hover:bg-red-600/10 border border-border text-secondary hover:text-color flex items-center justify-center transition cursor-pointer shrink-0"
             >
               <i class="fa-regular fa-xmark text-sm sm:text-base"></i>
             </button>

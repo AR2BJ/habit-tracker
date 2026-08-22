@@ -485,7 +485,7 @@ export const SettingsController = {
             importedHabits = this._parseCSVToHabits(rawContent);
 
           if (!Array.isArray(importedHabits) || importedHabits.length === 0)
-            throw new Error("No structured data could be extracted.");
+            throw new Error("No structured data could be extracted");
 
           const parsedData = {
             version: STORAGE_VERSION,

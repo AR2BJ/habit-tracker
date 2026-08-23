@@ -7,6 +7,7 @@ import { NotificationService } from "@/services/notification.service.js";
 import { StateController } from "./state.controller";
 import { formatDate } from "@/utils/helpers";
 import { getTheme } from "@/services/theme.service";
+import { renderHabitList } from "@/views/habits/habit-list.renderer.js";
 
 export const SettingsController = {
   init() {
@@ -499,8 +500,6 @@ export const SettingsController = {
           state.currentView = "habits";
           state.currentCategory = "all";
 
-          const { renderHabitList } =
-            await import("@/views/habits/habit-list.renderer.js");
           renderHabitList(StateManager.getFilteredHabits(), state.activeTab);
 
           HabitController.refreshUI();
@@ -692,8 +691,6 @@ export const SettingsController = {
         state.currentView = "habits";
         state.currentCategory = "all";
 
-        const { renderHabitList } =
-          await import("@/views/habits/habit-list.renderer.js");
         renderHabitList([], state.activeTab);
 
         HabitController.refreshUI();
@@ -722,9 +719,10 @@ export const SettingsController = {
                 state.currentView = "habits";
                 state.currentCategory = "all";
 
-                const { renderHabitList: reloadList } =
-                  await import("@/views/habits/habit-list.renderer.js");
-                reloadList(StateManager.getFilteredHabits(), state.activeTab);
+                renderHabitList(
+                  StateManager.getFilteredHabits(),
+                  state.activeTab,
+                );
                 HabitController.refreshUI();
               } finally {
                 GlobalLoaderService.hide();

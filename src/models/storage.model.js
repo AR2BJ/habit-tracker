@@ -37,7 +37,7 @@ export function saveToStorage(data) {
     STORAGE_KEY,
     JSON.stringify({
       version: STORAGE_VERSION,
-      ...data,
+      habits: data,
     }),
   );
 }

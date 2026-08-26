@@ -266,7 +266,7 @@ export const DashboardComponent = {
 
               <div
                 id="chart-view-switcher"
-                class="hidden sm:flex relative overflow-hidden rounded-xl border border-border/80 bg-surface p-1 isolation-auto"
+                class="hidden sm:flex relative overflow-hidden rounded-xl border border-border/80 bg-surface-2 p-1 isolation-auto"
               >
                 <div
                   id="heatmap-tab-indicator"

@@ -126,6 +126,9 @@ export const AnalyticsController = {
     };
 
     renderAnalyticsCharts(renderData);
+
+    // assign event
+    this._bindEvents();
   },
 
   getCurrentView() {

@@ -136,7 +136,7 @@ function renderEmptyState(chartEl, title, icon, subtitle) {
 
   chartEl.innerHTML = `
     <div
-      class="empty-state-box flex w-full h-full min-h-60 items-center justify-center rounded-2xl border border-dashed border-border/80 bg-surface p-6 text-center"
+      class="empty-state-box flex w-full h-full min-h-60 items-center justify-center rounded-2xl border border-dashed border-border/80 bg-surface-2 p-6 text-center"
     >
       <div class="max-w-xs">
         <i class="text-4xl mb-3 fa-regular ${icon} text-brand/60"></i>
@@ -166,7 +166,7 @@ function renderNoDataState() {
     {
       id: "apex-weekday-chart",
       title: "Weekly Activity",
-      icon: "fa-calendar-days",
+      icon: "fa-chart-bar",
       subtitle:
         "Your habit activity by weekday will appear here once data exists.",
     },

@@ -132,7 +132,7 @@ export const HabitCardComponent = {
                   ${habit.category}
                 </span>
                 <span
-                  class="inline-flex items-center rounded-md border bg-surface-3 text-secondary border-border/50 px-1.5 py-0.5 text-[9px] uppercase tracking-wider"
+                  class="inline-flex items-center rounded-md border bg-surface text-secondary border-border/50 px-1.5 py-0.5 text-[9px] uppercase tracking-wider"
                 >
                   ${habit.frequency ?? 7} days/wk
                 </span>
@@ -142,7 +142,7 @@ export const HabitCardComponent = {
               >
                 ${habit.name}
               </h2>
-              <span class="w-fit mt-2 inline-flex items-center rounded-md border bg-surface-2 text-secondary border-border/50 px-1.5 py-0.5 text-[9px]">
+              <span class="w-fit mt-2 inline-flex items-center rounded-md border bg-surface-2 text-secondary border-border shadow-sm px-1.5 py-0.5 text-[9px]">
                 Created on ${habit.createdAt}
               </span>
             </div>

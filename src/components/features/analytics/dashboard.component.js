@@ -61,7 +61,7 @@ export const DashboardComponent = {
     return `
       <!-- Total Habits -->
       <div
-        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-sky-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] hover:-translate-y-1 hover:border-sky-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
       >
         <i
           class="fa-solid fa-layer-group absolute -right-4 -bottom-6 text-[10rem] text-sky-500 opacity-[0.04] dark:opacity-[0.06] rotate-20 pointer-events-none group-hover:scale-110 group-hover:rotate-10 transition-transform duration-500"
@@ -86,7 +86,7 @@ export const DashboardComponent = {
 
       <!-- Completed Today -->
       <div
-        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-emerald-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] hover:-translate-y-1 hover:border-emerald-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
       >
         <i
           class="fa-solid fa-calendar-check absolute -right-4 -bottom-6 text-[10rem] text-emerald-500 opacity-[0.04] dark:opacity-[0.06] rotate-15 pointer-events-none group-hover:scale-110 group-hover:rotate-5 transition-transform duration-500"
@@ -108,7 +108,7 @@ export const DashboardComponent = {
 
       <!-- Weekly Targets -->
       <div
-        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 ${weeklyBorderClass} rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] ${weeklyBorderClass} rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
       >
         <i
           class="fa-solid ${weeklyIcon} absolute -right-2 -bottom-6 text-[10rem] opacity-[0.04] dark:opacity-[0.06] rotate-25 pointer-events-none group-hover:scale-110 group-hover:rotate-15 transition-transform duration-500"
@@ -132,7 +132,7 @@ export const DashboardComponent = {
 
       <!-- Best Streak -->
       <div
-        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-orange-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] hover:-translate-y-1 hover:border-orange-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
       >
         <i
           class="fa-solid fa-fire absolute -right-2 -bottom-4 text-[10rem] text-orange-500 opacity-[0.04] dark:opacity-[0.06] rotate-12 pointer-events-none group-hover:scale-110 group-hover:rotate-0 transition-transform duration-500"
@@ -157,7 +157,7 @@ export const DashboardComponent = {
 
       <!-- Avg Success -->
       <div
-        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-yellow-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] hover:-translate-y-1 hover:border-yellow-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
       >
         <i
           class="fa-solid fa-chart-line absolute -right-4 -bottom-6 text-[10rem] text-yellow-500 opacity-[0.04] dark:opacity-[0.06] rotate-18 pointer-events-none group-hover:scale-110 group-hover:rotate-[8deg] transition-transform duration-500"
@@ -179,7 +179,7 @@ export const DashboardComponent = {
 
       <!-- Archived -->
       <div
-        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 hover:-translate-y-1 hover:border-slate-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] hover:-translate-y-1 hover:border-slate-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
       >
         <i
           class="fa-regular fa-box-archive absolute -right-4 -bottom-6 text-[10rem] text-slate-500 opacity-[0.04] dark:opacity-[0.06] rotate-18 pointer-events-none group-hover:scale-110 group-hover:rotate-[8deg] transition-transform duration-500"
@@ -213,7 +213,7 @@ export const DashboardComponent = {
       >
         <!-- Heatmap Chart -->
         <div
-          class="lg:col-span-2 bg-surface-2 border border-border/70 rounded-2xl p-6 flex flex-col justify-between"
+          class="lg:col-span-2 bg-surface border border-border/70 shadow-sm rounded-2xl p-6 flex flex-col justify-between"
         >
           <div
             class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between"
@@ -234,7 +234,7 @@ export const DashboardComponent = {
             <div class="relative flex items-center justify-end">
               <button
                 id="heatmap-mobile-menu-toggle"
-                class="sm:hidden inline-flex items-center justify-center h-8 w-8 rounded-lg border border-border bg-surface text-secondary hover:text-color transition shadow-sm cursor-pointer"
+                class="sm:hidden inline-flex items-center justify-center h-8 w-8 rounded-lg border border-border bg-surface-2 text-secondary hover:text-color transition shadow-sm cursor-pointer"
                 aria-label="Open view menu"
               >
                 <i class="fa-regular fa-ellipsis-vertical text-lg"></i>
@@ -310,7 +310,7 @@ export const DashboardComponent = {
 
         <!-- Weekday Chart -->
         <div
-          class="bg-surface-2 border border-border/70 rounded-2xl p-6 flex flex-col justify-between"
+          class="bg-surface border border-border/70 shadow-sm rounded-2xl p-6 flex flex-col justify-between"
         >
           <div>
             <h4
@@ -339,9 +339,8 @@ export const DashboardComponent = {
 
       <!-- Individual Habits List -->
       <div
-        class="w-full col-span-2 sm:col-span-full mt-4 bg-surface-2 rounded-2xl"
+        class="col-span-full bg-surface border border-border/70 shadow-sm rounded-2xl p-6 flex flex-col justify-between"
       >
-        <div class="w-full col-span-full bg-surface-2 border border-border/70 rounded-2xl p-6">
           <div
             class="flex flex-wrap sm:flex-nowrap sm:items-center justify-between gap-2"
           >
@@ -360,7 +359,7 @@ export const DashboardComponent = {
               </p>
             </div>
             <span
-              class="text-xs text-center font-semibold px-2.5 py-1 rounded-lg bg-surface border border-border text-secondary self-center sm:self-auto w-full sm:w-auto"
+              class="text-xs text-center font-semibold px-2.5 py-1 rounded-lg bg-surface-2 border border-border shadow-sm text-secondary self-center sm:self-auto w-full sm:w-auto"
             >
               ${activeCount} Active Tracked (${archivedCount} Archived)
             </span>
@@ -369,7 +368,6 @@ export const DashboardComponent = {
           <div class="mt-6 space-y-3">
             ${this._renderHabitList(habits, stats)}
           </div>
-        </div>
       </div>
     `;
   },
@@ -381,17 +379,19 @@ export const DashboardComponent = {
     if (habits.length === 0) {
       return `
         <div
-          class="min-h-80 bg-surface border border-dashed border-border rounded-2xl p-16 text-center"
+          class="flex w-full h-full min-h-60 items-center justify-center rounded-2xl border border-dashed border-border/80 bg-surface-2 p-6 text-center"
         >
-          <div class="text-6xl mb-6">
-            <i class="fa-regular fa-box-open text-brand/60"></i>
+          <div class="max-w-xs">
+            <i
+              class="fa-regular fa-box-open text-4xl mb-3 fa-regular text-brand/60"
+            ></i>
+            <div class="mb-2 text-lg font-semibold text-color">
+              No active habits
+            </div>
+            <p class="text-sm leading-6 text-secondary">
+              You're all caught up! Create a new habit to get started.
+            </p>
           </div>
-          <h2 class="text-2xl font-bold text-color">
-            No active habits
-          </h2>
-          <p class="mt-3 text-secondary max-w-sm mx-auto">
-            You're all caught up! Create a new habit to get started.
-          </p>
         </div>
       `;
     }
@@ -414,7 +414,7 @@ export const DashboardComponent = {
                 ? "bg-lime-500/10 text-lime-500/80 border-lime-500/30 font-bold animate-pulse shadow-sm"
                 : goalStatus.status === "met"
                   ? "bg-brand/10 text-brand/80 border-brand/20 font-semibold"
-                  : "bg-surface-3 text-secondary border-border/50";
+                  : "bg-surface text-secondary border-border/50";
 
             const rowBadgeText = goalStatus.label;
             const rowBadgeIcon =
@@ -436,7 +436,7 @@ export const DashboardComponent = {
 
             return `
               <div
-                class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 group/row bg-surface p-4 rounded-xl shadow-sm"
+                class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 group/row bg-surface-2 p-4 rounded-xl border border-border shadow-sm"
               >
                 <div class="flex items-center gap-3 min-w-0 flex-1">
                   <div class="w-full">
@@ -463,7 +463,7 @@ export const DashboardComponent = {
                       </span>
                       ${
                         habit.archived
-                          ? `<span class="inline-flex lg:hidden items-center rounded-md border bg-surface-3 text-secondary border-border/50 px-1.5 py-0.5 text-[9px] uppercase tracking-wider">Archived</span>`
+                          ? `<span class="inline-flex lg:hidden items-center rounded-md border bg-surface text-secondary border-border shadow-sm px-1.5 py-0.5 text-[9px] uppercase tracking-wider">Archived</span>`
                           : ""
                       }
                     </div>
@@ -482,7 +482,7 @@ export const DashboardComponent = {
                         </span>
                         ${
                           habit.archived
-                            ? `<span class="inline-flex items-center rounded-md border bg-surface-3 text-secondary border-border/50 px-1.5 py-0.5 text-[9px] uppercase tracking-wider">Archived</span>`
+                            ? `<span class="inline-flex items-center rounded-md border bg-surface text-secondary border-border/50 px-1.5 py-0.5 text-[9px] uppercase tracking-wider">Archived</span>`
                             : ""
                         }
                       </div>
@@ -520,7 +520,7 @@ export const DashboardComponent = {
                 </div>
 
                 <div
-                  class="flex flex-col sm:flex-row sm:justify-between items-center gap-6 lg:gap-8 bg-surface-2 lg:bg-transparent p-4 lg:p-0 rounded-xl border border-border/30 lg:border-0 shadow-sm lg:shadow-none"
+                  class="flex flex-col sm:flex-row sm:justify-between items-center gap-6 lg:gap-8 bg-surface lg:bg-transparent p-4 lg:p-0 rounded-xl border border-border lg:border-0 shadow-sm lg:shadow-none"
                 >
                   <div
                     class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-4 lg:gap-8 text-center sm:text-left min-w-0"

@@ -1,4 +1,4 @@
-import "../../vendor/fontawesome/js/all";
+import "@/vendor/fontawesome/js/all";
 
 import { BootstrapService } from "@/services/bootstrap.service";
 import { StorageSyncService } from "@/infrastructure/persistence/storage-sync.service";

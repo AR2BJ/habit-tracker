@@ -1,4 +1,4 @@
-import { STORAGE_KEY } from "./local-storage.adapter.js";
+import { STORAGE_KEY } from "./local-storage.adapter";
 import { Store } from "@/infrastructure/store/store";
 
 export const StorageSyncService = {

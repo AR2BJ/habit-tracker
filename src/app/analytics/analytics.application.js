@@ -8,7 +8,6 @@ export const AnalyticsApplication = {
    * @param {boolean} isDark - Whether dark mode is active
    * @returns {Object} Analytics data
    */
-  // src/app/analytics/analytics.application.js
   getAnalyticsData(view = "weekly", isDark = false, habits = null) {
     const allHabits = habits || HabitApplication.getHabits();
 

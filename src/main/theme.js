@@ -8,7 +8,7 @@
  * @deprecated Will be removed after full migration
  */
 
-import { ThemeApplication } from "@/infrastructure/theme/theme.application.js";
+import { ThemeApplication } from "@/infrastructure/theme/theme.application";
 
 // Apply theme immediately - prevents FOUC
 ThemeApplication.init();

@@ -1,4 +1,3 @@
-// src/controllers/habit.controller.js
 import { AnalyticsController } from "./analytics.controller";
 import { AnalyticsView } from "@/views/analytics-view";
 import { CategoryFilterManager } from "@/ui/services/category-filter-manager.service";

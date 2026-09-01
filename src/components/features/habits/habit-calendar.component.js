@@ -1,57 +1,26 @@
-import { formatDate } from "@/utils/helpers";
+import { SprintCalculator } from "@/domain/habits/habit-sprint.calculator";
+import { todayISO } from "@/shared/utils/date.utils";
 
 export const HabitCalendarComponent = {
-  render(dates, habitId, createdAt, isArchived = false, skippedDates = []) {
-    const dateSet = new Set(dates);
-    const skipSet = new Set(skippedDates);
+  /**
+   * Render habit calendar
+   * @param {Object} habit - Habit object
+   * @param {string} today - ISO date string of today (for consistency)
+   * @returns {string} HTML string
+   */
+  render(habit, today = todayISO()) {
+    const {
+      createdAt,
+      id,
+      archived,
+    } = habit;
 
-    const created = new Date(createdAt);
-    created.setHours(0, 0, 0, 0);
+    // Calculate sprint
+    const { sprintIndex, sprintStart, sprintEnd } =
+      SprintCalculator.calculateSprint(createdAt, today);
 
-    const todayObj = new Date();
-    todayObj.setHours(0, 0, 0, 0);
-    const todayIso = formatDate(todayObj);
-
-    const yesterdayObj = new Date(todayObj);
-    yesterdayObj.setDate(yesterdayObj.getDate() - 1);
-    const yesterdayIso = formatDate(yesterdayObj);
-
-    const utcCreated = Date.UTC(
-      created.getFullYear(),
-      created.getMonth(),
-      created.getDate(),
-    );
-    const utcToday = Date.UTC(
-      todayObj.getFullYear(),
-      todayObj.getMonth(),
-      todayObj.getDate(),
-    );
-    const diffDaysFromStart = Math.floor((utcToday - utcCreated) / 86400000);
-
-    let periodIndex = 0;
-    const sprintStart = new Date(created);
-
-    if (diffDaysFromStart >= 60) {
-      periodIndex = Math.floor((diffDaysFromStart - 60) / 59) + 1;
-
-      sprintStart.setDate(created.getDate() + 60 + (periodIndex - 1) * 59 - 1);
-    }
-
-    const sprintEnd = new Date(sprintStart);
-    sprintEnd.setDate(sprintStart.getDate() + 59);
-
-    const days = [];
-    for (let i = 0; i < 60; i++) {
-      const currentDate = new Date(sprintStart);
-      currentDate.setDate(sprintStart.getDate() + i);
-      const iso = formatDate(currentDate);
-
-      days.push({
-        date: iso,
-        completed: dateSet.has(iso),
-        skipped: skipSet.has(iso),
-      });
-    }
+    // Generate days
+    const days = SprintCalculator.generateSprintDays(sprintStart, 60);
 
     return `
       <div
@@ -64,7 +33,7 @@ export const HabitCalendarComponent = {
             class="flex items-center gap-1 order-2 sm:order-1 text-[11px] sm:text-xs md:text-sm whitespace-nowrap"
           >
             <i class="fa-regular fa-calendar-range text-brand/70"></i>
-            Start: ${formatDate(sprintStart)}
+            Start: ${sprintStart}
           </span>
 
           <span
@@ -76,14 +45,14 @@ export const HabitCalendarComponent = {
             <span
               class="relative text-[10px] sm:text-xs bg-brand/10 text-brand/80 px-3 py-1 rounded-full font-bold tracking-wide border border-brand/20 shadow-sm select-none whitespace-nowrap"
             >
-              Sprint ${periodIndex + 1}
+              Sprint ${sprintIndex + 1}
             </span>
           </span>
 
           <span
             class="flex items-center gap-1 order-3 text-[11px] sm:text-xs md:text-sm whitespace-nowrap"
           >
-            End: ${formatDate(sprintEnd)}
+            End: ${sprintEnd}
             <i class="fa-regular fa-calendar-check text-brand/70"></i>
           </span>
         </div>
@@ -92,46 +61,45 @@ export const HabitCalendarComponent = {
           class="grid gap-1 sm:gap-1.5 md:gap-2 grid-cols-5 xs:grid-cols-6 sm:grid-cols-10 md:grid-cols-15 xl:grid-cols-30 w-full distribution-grid"
         >
           ${days
-            .map((day) => {
-              let tooltip = `Status: Pending • ${day.date}`;
-              if (day.completed) tooltip = `Status: Completed • ${day.date}`;
-              if (day.skipped)
-                tooltip = `Status: Skipped (Auto Guard) • ${day.date}`;
-
+            .map((date) => {
+              const status = SprintCalculator.getDayStatus(habit, date);
               const editable =
-                day.date === todayIso || day.date === yesterdayIso;
+                !archived && SprintCalculator.isDateEditable(date, today);
 
+              let tooltip = `Status: Pending • ${date}`;
               let bgClass = "bg-surface-4";
-              if (day.completed) {
+
+              if (status === "completed") {
+                tooltip = `Status: Completed • ${date}`;
                 bgClass =
                   "bg-emerald-500/80 shadow-md sm:shadow-lg shadow-emerald-500/20 text-white";
-              } else if (day.skipped) {
+              } else if (status === "skipped") {
+                tooltip = `Status: Skipped (Auto Guard) • ${date}`;
                 bgClass =
                   "bg-amber-500/80 shadow-md sm:shadow-lg shadow-amber-500/20 text-white";
               }
 
+              const icon =
+                status === "completed"
+                  ? '<i class="fa-regular fa-check"></i>'
+                  : status === "skipped"
+                    ? '<i class="fa-regular fa-shield"></i>'
+                    : "";
+
               return `
             <button
-              data-date="${day.date}"
-              data-habit-id="${habitId}"
+              data-date="${date}"
+              data-habit-id="${id}"
               title="${tooltip}"
               class="calendar-day w-full aspect-square ${
-                editable && !isArchived
+                editable
                   ? "cursor-pointer hover:scale-105 sm:hover:scale-110 active:scale-95 border border-brand/40 sm:border-2"
                   : "cursor-not-allowed opacity-45"
               } rounded-sm sm:rounded-md flex flex-row justify-center items-center transition-all duration-200 ${bgClass} ${
-                editable && !isArchived && !day.completed && !day.skipped
-                  ? "hover:bg-surface-4/60"
-                  : ""
+                editable && status === "pending" ? "hover:bg-surface-4/60" : ""
               }"
             >
-              ${
-                day.completed
-                  ? `<span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-2xl font-bold leading-none select-none"><i class="fa-regular fa-check"></i></span>`
-                  : day.skipped
-                    ? `<span class="text-xs xs:text-sm sm:text-base lg:text-lg xl:text-xl 2xl:text-2xl font-bold leading-none select-none"><i class="fa-regular fa-shield"></i></span>`
-                    : ""
-              }
+              ${icon ? `<span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-2xl font-bold leading-none select-none">${icon}</span>` : ""}
             </button>
           `;
             })

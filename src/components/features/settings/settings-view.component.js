@@ -1,10 +1,34 @@
-import { SettingsResetComponent } from "@/components/modals/settings-reset-modal.component.js";
+import { SettingsResetComponent } from "@/components/modals/settings-reset-modal.component";
 
 export const SettingsViewComponent = {
-  render() {
-    const isDark =
-      document.documentElement.classList.contains("dark") ||
-      localStorage.getItem("theme") === "dark";
+  /**
+   * Render settings view
+   * @param {Object} options - Render options
+   * @param {boolean} options.isDark - Whether dark mode is active
+   * @param {boolean} options.autoArchiveEnabled - Whether auto-archive is enabled
+   * @returns {string} HTML string
+   */
+  render(options = {}) {
+    const { isDark = false, autoArchiveEnabled = false } = options;
+
+    // Theme toggle state
+    const themeIndicatorClass = isDark
+      ? "translate-y-full xs:translate-x-full"
+      : "translate-y-0 xs:translate-x-0";
+    const lightModeClass = !isDark
+      ? "text-(--color-btn-primary-text)"
+      : "text-secondary";
+    const darkModeClass = isDark
+      ? "text-(--color-btn-primary-text)"
+      : "text-secondary";
+
+    // Auto-archive toggle state
+    const archiveToggleClass = autoArchiveEnabled
+      ? "bg-brand/80 dark:bg-brand/80"
+      : "bg-neutral-300/80 dark:bg-neutral-700/80";
+    const archiveDotClass = autoArchiveEnabled
+      ? "translate-x-5"
+      : "translate-x-0";
 
     return `
       <section
@@ -25,6 +49,7 @@ export const SettingsViewComponent = {
             </p>
           </div>
 
+          <!-- Appearance Theme -->
           <div
             class="bg-surface rounded-2xl p-4 sm:p-6 flex flex-col gap-4 shadow-sm border border-border"
           >
@@ -51,18 +76,12 @@ export const SettingsViewComponent = {
             >
               <div
                 id="theme-tab-indicator"
-                class="absolute top-1 left-1 h-[calc(50%-4px)] w-[calc(100%-8px)] rounded-lg bg-brand/80 transition-all duration-300 xs:h-[calc(100%-8px)] xs:w-[calc(50%-4px)] ${
-                  isDark
-                    ? "translate-y-full xs:translate-x-full"
-                    : "translate-y-0 xs:translate-x-0"
-                }"
+                class="absolute top-1 left-1 h-[calc(50%-4px)] w-[calc(100%-8px)] rounded-lg bg-brand/80 transition-all duration-300 xs:h-[calc(100%-8px)] xs:w-[calc(50%-4px)] ${themeIndicatorClass}"
               ></div>
 
               <button
                 id="sett-theme-light"
-                class="relative z-10 w-full py-2.5 text-xs xs:text-sm font-medium rounded-lg transition cursor-pointer flex items-center justify-center gap-1 xs:w-1/2 ${
-                  !isDark ? "text-(--color-btn-primary-text)" : "text-secondary"
-                }"
+                class="relative z-10 w-full py-2.5 text-xs xs:text-sm font-medium rounded-lg transition cursor-pointer flex items-center justify-center gap-1 xs:w-1/2 ${lightModeClass}"
               >
                 <i class="fa-regular fa-sun text-base"></i>
                 <span>Light Mode</span>
@@ -70,9 +89,7 @@ export const SettingsViewComponent = {
 
               <button
                 id="sett-theme-dark"
-                class="relative z-10 w-full py-2.5 text-xs xs:text-sm font-medium rounded-lg transition cursor-pointer flex items-center justify-center gap-1 xs:w-1/2 ${
-                  isDark ? "text-(--color-btn-primary-text)" : "text-secondary"
-                }"
+                class="relative z-10 w-full py-2.5 text-xs xs:text-sm font-medium rounded-lg transition cursor-pointer flex items-center justify-center gap-1 xs:w-1/2 ${darkModeClass}"
               >
                 <i class="fa-regular fa-moon text-base"></i>
                 <span>Dark Mode</span>
@@ -80,6 +97,7 @@ export const SettingsViewComponent = {
             </div>
           </div>
 
+          <!-- Data Backup & Sandbox -->
           <div
             class="bg-surface rounded-2xl p-4 sm:p-6 flex flex-col gap-6 shadow-sm border border-border"
           >
@@ -102,12 +120,12 @@ export const SettingsViewComponent = {
             </div>
 
             <div class="flex flex-col gap-2">
-              <label
+              <div
                 class="text-[10px] sm:text-[11px] font-bold text-secondary uppercase tracking-wider flex items-center gap-1.5"
               >
                 <i class="fa-regular fa-file-export opacity-70"></i>
                 <span>Export Application Ledger</span>
-              </label>
+              </div>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <button
                   id="sett-export-btn"
@@ -142,12 +160,12 @@ export const SettingsViewComponent = {
             </div>
 
             <div class="flex flex-col gap-2 border-t border-border/60 pt-4">
-              <label
+              <div
                 class="text-[10px] sm:text-[11px] font-bold text-secondary uppercase tracking-wider flex items-center gap-1.5"
               >
                 <i class="fa-regular fa-file-import opacity-70"></i>
                 <span>Import Database Snapshot</span>
-              </label>
+              </div>
               <div
                 id="sett-dropzone"
                 class="border-2 border-dashed border-border hover:border-brand/60 rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center gap-2 bg-surface-2/40 hover:bg-surface-2 transition cursor-pointer group text-center"
@@ -175,6 +193,7 @@ export const SettingsViewComponent = {
             </div>
           </div>
 
+          <!-- Automation Rules -->
           <div
             class="bg-surface rounded-2xl p-4 sm:p-6 flex flex-col gap-4 shadow-sm border border-border"
           >
@@ -211,16 +230,17 @@ export const SettingsViewComponent = {
 
               <button
                 id="sett-auto-archive-toggle"
-                class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none mt-0.5 bg-neutral-300/80 dark:bg-neutral-700/80"
+                class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none mt-0.5 ${archiveToggleClass}"
               >
                 <span
                   id="sett-auto-archive-dot"
-                  class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"
+                  class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${archiveDotClass}"
                 ></span>
               </button>
             </div>
           </div>
 
+          <!-- Storage & Factory Reset -->
           <div
             class="bg-surface rounded-2xl p-4 sm:p-6 flex flex-col gap-4 shadow-sm border border-border"
           >

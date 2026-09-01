@@ -1,14 +1,19 @@
 import { HabitCardComponent } from "@/components/features/habits/habit-card.component";
 
+/**
+ * Render habit list
+ * @param {Array} habits - Array of habit objects
+ * @param {string} activeTab - 'active' or 'archived'
+ */
 export function renderHabitList(habits, activeTab = "active") {
   const container = document.getElementById("habit-list");
   const countBadge = document.getElementById("habit-count-badge");
 
   if (!container) return;
 
+  // Update count badge
   if (countBadge) {
     const totalCount = habits.length;
-
     countBadge.innerHTML = `
       <p class="text-secondary font-semibold text-sm p-0.5">
         <span class="text-brand/80 font-extrabold">${totalCount}</span>&nbsp;

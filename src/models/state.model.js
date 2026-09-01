@@ -1,75 +1,72 @@
-import { loadFromStorage, saveToStorage } from "./storage.model.js";
-
-export const state = {
-  habits: [],
-  lastDeletedHabit: null,
-  activeTab: "active",
-  currentView: "habits",
-  currentCategory: "all",
-  searchQuery: "",
-};
+import { HabitRepository } from "@/infrastructure/persistence/habit.repository";
+import { HabitSelectors } from "@/domain/habits/habit.selectors";
+import { Store } from "@/infrastructure/store/store";
 
 export const StateManager = {
   init() {
-    const saved = loadFromStorage();
-    if (saved) {
-      state.habits = saved.habits || [];
+    const data = HabitRepository.load();
+    if (data) {
+      Store.setHabits(data.habits || []);
     }
-    return state.habits;
+    return Store.getHabits();
   },
 
   getHabits() {
-    return state.habits;
+    return Store.getHabits();
   },
 
   getFilteredHabits() {
-    let list = this.getHabits();
-
-    if (state.activeTab === "active") {
-      list = list.filter((h) => !h.archived);
-    } else {
-      list = list.filter((h) => h.archived);
-    }
-
-    if (state.currentCategory && state.currentCategory !== "all") {
-      list = list.filter((h) => h.category === state.currentCategory);
-    }
-
-    if (state.searchQuery) {
-      const query = state.searchQuery.toLowerCase().trim();
-      list = list.filter((h) => {
-        const name = (h.name || "").toLowerCase();
-        const createdAt = h.createdAt || "";
-        const category = (h.category || "").toLowerCase();
-        return (
-          name.includes(query) ||
-          createdAt.includes(query) ||
-          category.includes(query)
-        );
-      });
-    }
-
-    return list;
+    const state = Store.getState();
+    return HabitSelectors.getFiltered(Store.getHabits(), {
+      tab: state.ui.activeTab,
+      category: state.ui.currentCategory,
+      searchQuery: state.ui.searchQuery,
+    });
   },
 
   setCategory(category) {
-    state.currentCategory = category;
+    Store.setCategory(category);
   },
 
   setTab(tab) {
-    state.activeTab = tab;
+    Store.setActiveTab(tab);
   },
 
   setView(view) {
-    state.currentView = view;
+    Store.setView(view);
   },
 
   setSearchQuery(query) {
-    state.searchQuery = query;
+    Store.setSearchQuery(query);
   },
 
   save(habits) {
-    state.habits = habits;
-    saveToStorage(state.habits);
+    Store.setHabits(habits);
+    HabitRepository.save(habits);
+  },
+
+  get state() {
+    const state = Store.getState();
+    return {
+      habits: state.habits,
+      lastDeletedHabit: state.session.lastDeletedHabit,
+      activeTab: state.ui.activeTab,
+      currentView: state.ui.currentView,
+      currentCategory: state.ui.currentCategory,
+      searchQuery: state.ui.searchQuery,
+    };
+  },
+
+  set state(value) {
+    if (value.habits !== undefined) {
+      Store.setHabits(value.habits);
+    }
+  },
+
+  // Subscribe to store changes
+  subscribe(listener) {
+    return Store.subscribe(listener);
   },
 };
+
+export const state = StateManager.state;

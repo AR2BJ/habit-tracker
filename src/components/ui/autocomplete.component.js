@@ -1,4 +1,4 @@
-import { generateId } from "@/utils/helpers";
+import { generateId } from "@/infrastructure/browser/id-generator.adapter";
 
 export class AutocompleteComponent {
   constructor(container, items = [], options = {}) {
@@ -225,9 +225,9 @@ export class AutocompleteComponent {
         e.target &&
         e.target instanceof Node &&
         this.elements.dropdown.contains(e.target)
-      ) {
+      )
         return;
-      }
+
       if (this.isOpen) this.closeDropdown();
     };
     window.addEventListener("scroll", this.boundScroll, true);

@@ -10,32 +10,38 @@
       content="width=device-width, initial-scale=1.0"
     />
     <title>Habit Tracker</title>
+
+    <!-- Styles -->
     <link
       href="./src/assets/css/styles.css"
       rel="stylesheet"
     />
-    <link
-      type="text/css"
-      href="./vendor/fontawesome/css/all.css"
-      rel="stylesheet"
-    />
+
+    <!-- Favicon -->
     <link
       rel="shortcut icon"
       href="./favicon.ico"
       type="image/x-icon"
     />
 
-    <script src="./src/app/theme.js"></script>
+    <!-- 
+      Theme is now applied by ThemeApplication via app.js
+      theme.js is kept as a legacy bridge for backward compatibility
+      but is now loaded as a module 
+    -->
+    <script
+      type="module"
+      src="./src/main/theme.js"
+    ></script>
   </head>
 
   <body class="min-h-screen bg-surface text-color">
     <!-- ============================= -->
-    <!-- APP CONTAINER START -->
+    <!-- LOADER START                  -->
     <!-- ============================= -->
-
     <div
       id="app-loader"
-      class="fixed inset-0 z-9999 grid place-items-center"
+      class="fixed inset-0 z-9999 grid place-items-center bg-surface transition-opacity duration-300"
     >
       <div class="book">
         <div class="book__pg-shadow"></div>
@@ -47,26 +53,30 @@
       </div>
     </div>
 
+    <!-- ============================= -->
+    <!-- APP CONTAINER                 -->
+    <!-- ============================= -->
     <div
       id="app"
       class="hidden px-8 py-12 lg:ps-8 transition-all duration-300"
     >
+      <!-- Header -->
       <div id="header-container"></div>
 
+      <!-- Desktop Navigation -->
       <div id="desktop-nav-container"></div>
 
+      <!-- Feature Views -->
       <div id="habits-view-container"></div>
-
       <div id="analytics-view-container"></div>
-
       <div id="settings-view-container"></div>
 
+      <!-- Modals -->
       <div id="edit-modals-container"></div>
-
       <div id="delete-modals-container"></div>
-
       <div id="help-modal-container"></div>
 
+      <!-- Notification Container -->
       <div
         id="notification-container"
         class="fixed bottom-6 left-1/2 -translate-x-1/2 z-500 flex flex-col gap-3 min-w-70 sm:min-w-80 max-w-lg"
@@ -74,11 +84,13 @@
     </div>
 
     <!-- ============================= -->
-    <!-- APP CONTAINER END -->
+    <!-- MOBILE NAVIGATION             -->
     <!-- ============================= -->
-
     <div id="mobile-nav-container"></div>
 
+    <!-- ============================= -->
+    <!-- SCROLL TO TOP BUTTON          -->
+    <!-- ============================= -->
     <button
       id="scroll-to-top-btn"
       class="fixed bottom-24 lg:bottom-6 right-6 z-40 hidden opacity-0 scale-75 h-10 w-10 cursor-pointer items-center justify-center rounded-lg bg-brand/70 text-white shadow-lg transition duration-400 hover:bg-(--color-brand-hover) hover:scale-110"
@@ -87,10 +99,16 @@
       <i class="fa-regular fa-chevron-up text-lg"></i>
     </button>
 
+    <!-- ============================= -->
+    <!-- SCRIPTS                       -->
+    <!-- ============================= -->
+    <!-- 
+      app.js is the main entry point - loads as ES Module
+      All dependencies are resolved via import statements
+    -->
     <script
       type="module"
-      src="./src/app/app.js"
+      src="./src/main/app.js"
     ></script>
-    <script src="./vendor/fontawesome/js/all.js"></script>
   </body>
 </html>

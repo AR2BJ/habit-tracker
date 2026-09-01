@@ -1,40 +1,49 @@
-import {
-  calculateStreak,
-  getWeeklyCompletionCount,
-  todayISO,
-} from "@/utils/helpers.js";
-
+import { HabitAnalytics } from "@/domain/habits/habit.analytics";
 import { HabitCalendarComponent } from "./habit-calendar.component";
+import { todayISO } from "@/shared/utils/date.utils";
 
 export const HabitCardComponent = {
-  render(habit) {
-    const { current, best } = calculateStreak(
+  /**
+   * Get goal status for a habit
+   * @param {Object} habit - Habit object
+   * @returns {Object} { isGoalMet, isGoalOverflow, icon, labelColor }
+   */
+  _getGoalStatus(habit) {
+    const weeklyChecks = HabitAnalytics.getWeeklyCompletionCount(
       habit.completedDates,
-      habit.skippedDates || [],
     );
-    const completedToday = habit.completedDates.includes(todayISO());
-    const totalChecks = habit.completedDates.length;
-    const isHabitArchived = habit.archived;
-
-    const weeklyChecks = getWeeklyCompletionCount(habit.completedDates);
     const targetFrequency = habit.frequency ?? 7;
 
     const isGoalMet = weeklyChecks >= targetFrequency;
     const isGoalOverflow = weeklyChecks > targetFrequency;
 
-    let goalIcon = "fa-bullseye-arrow text-pink-500/80";
-    let goalLabelColor = "text-secondary";
+    let icon = "fa-bullseye-arrow text-pink-500/80";
+    let labelColor = "text-secondary";
 
     if (isGoalMet) {
-      goalIcon = "fa-circle-check text-brand/80";
-      goalLabelColor = "text-brand/80 dark:text-brand/80";
+      icon = "fa-circle-check text-brand/80";
+      labelColor = "text-brand/80 dark:text-brand/80";
     }
 
     if (isGoalOverflow) {
-      goalIcon = "fa-bolt-lightning text-lime-500/80";
-      goalLabelColor = "text-lime-600/80 dark:text-lime-400/80";
+      icon = "fa-bolt-lightning text-lime-500/80";
+      labelColor = "text-lime-600/80 dark:text-lime-400/80";
     }
 
+    return {
+      isGoalMet,
+      isGoalOverflow,
+      icon,
+      labelColor,
+      weeklyChecks,
+      targetFrequency,
+    };
+  },
+
+  /**
+   * Get category badge class
+   */
+  _getCategoryBadgeClass(category) {
     const categoryColors = {
       general: "bg-yellow-500/10 text-yellow-500/80 border-yellow-500/20",
       health: "bg-emerald-500/10 text-emerald-500/80 border-emerald-500/20",
@@ -48,7 +57,27 @@ export const HabitCardComponent = {
       routine: "bg-orange-500/10 text-orange-500/80 border-orange-500/20",
       harmful: "bg-red-500/10 text-red-500/80 border-red-500/20",
     };
-    const badgeClass = categoryColors[habit.category] || categoryColors.general;
+    return categoryColors[category] || categoryColors.general;
+  },
+
+  /**
+   * Render habit card
+   * @param {Object} habit - Habit object
+   * @param {boolean} isArchived - Whether the habit is archived
+   * @param {string} today - ISO date string (for consistency)
+   * @returns {string} HTML string
+   */
+  render(habit, isArchived = false, today = todayISO()) {
+    const { current, best } = HabitAnalytics.calculateStreak(
+      habit.completedDates,
+      habit.skippedDates || [],
+    );
+    const completedToday = habit.completedDates.includes(today);
+    const totalChecks = habit.completedDates.length;
+    const isHabitArchived = isArchived || habit.archived;
+
+    const goalStatus = this._getGoalStatus(habit);
+    const badgeClass = this._getCategoryBadgeClass(habit.category);
 
     const actionButtonClass = isHabitArchived
       ? "restore-btn hover:bg-emerald-600/10"
@@ -161,24 +190,24 @@ export const HabitCardComponent = {
                 class="flex flex-col items-center px-1"
               >
                 <span
-                  class="text-[9px] md:text-xs font-semibold text-secondary uppercase tracking-wider ${goalLabelColor}"
+                  class="text-[9px] md:text-xs font-semibold text-secondary uppercase tracking-wider ${goalStatus.labelColor}"
                   >This Wk</span
                 >
                 <span
                   class="text-xs md:text-sm font-bold text-color flex items-center gap-1 mt-0.5"
                 >
                   <i
-                    class="fa-regular ${goalIcon} text-[10px] md:text-sm pe-0.5"
+                    class="fa-regular ${goalStatus.icon} text-[10px] md:text-sm pe-0.5"
                   ></i>
                   <span
                     class="${
-                      isGoalOverflow
+                      goalStatus.isGoalOverflow
                         ? "text-lime-500/80"
-                        : isGoalMet
+                        : goalStatus.isGoalMet
                           ? "text-brand/80"
                           : "text-color"
                     }"
-                    >${weeklyChecks}/${targetFrequency}</span
+                    >${goalStatus.weeklyChecks}/${goalStatus.targetFrequency}</span
                   >
                 </span>
               </div>
@@ -301,13 +330,7 @@ export const HabitCardComponent = {
         </div>
 
         <div class="overflow-x-auto pt-1 scrollbar-thin">
-          ${HabitCalendarComponent.render(
-            habit.completedDates,
-            habit.id,
-            habit.createdAt,
-            habit.archived,
-            habit.skippedDates || [],
-          )}
+          ${HabitCalendarComponent.render(habit, today)}
         </div>
       </div>
     `;

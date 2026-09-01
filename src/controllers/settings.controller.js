@@ -1,15 +1,17 @@
-import { STORAGE_KEY, STORAGE_VERSION } from "@/models/storage.model";
-import { StateManager, state } from "@/models/state.model.js";
+import { StateManager, state } from "@/models/state.model";
 
+import { FileService } from "@/ui/services/file.service";
 import { GlobalLoaderService } from "@/services/loader.service";
-import { HabitController } from "./habit.controller";
-import { NotificationService } from "@/services/notification.service.js";
+import { HabitApplication } from "@/app/habits/habit.application";
+import { NotificationService } from "@/services/notification.service";
+import { SettingsApplication } from "@/app/settings/settings.application";
 import { StateController } from "./state.controller";
-import { formatDate } from "@/utils/helpers";
 import { getTheme } from "@/services/theme.service";
-import { renderHabitList } from "@/views/habits/habit-list.renderer.js";
+import { todayISO } from "@/shared/utils/date.utils";
 
 export const SettingsController = {
+  _themeUnsubscribe: null,
+
   init() {
     this.bindSettingsEvents();
   },
@@ -18,60 +20,99 @@ export const SettingsController = {
     const settingsView = document.getElementById("settings-view");
     if (!settingsView) return;
 
-    document
-      .getElementById("sett-theme-light")
-      ?.addEventListener("click", () => this.handleThemeSwitch("light"));
-    document
-      .getElementById("sett-theme-dark")
-      ?.addEventListener("click", () => this.handleThemeSwitch("dark"));
+    // Theme controls
+    this._bindThemeControls();
 
+    // Export buttons
+    this._bindExportButtons();
+
+    // Import dropzone
+    this._bindImportDropzone();
+
+    // Auto-archive toggle
+    this._bindAutoArchiveToggle();
+
+    // Reset modal
+    this._bindResetModal();
+
+    // Theme change listener
     document.addEventListener("themeChanged", (event) => {
       this.syncThemeControls(event.detail?.theme || getTheme());
     });
 
     this.syncThemeControls(getTheme());
 
+    window.addEventListener("resize", () => {
+      this.syncThemeControls(getTheme());
+    });
+  },
+
+  _bindThemeControls() {
+    document
+      .getElementById("sett-theme-light")
+      ?.addEventListener("click", () => this.handleThemeSwitch("light"));
+    document
+      .getElementById("sett-theme-dark")
+      ?.addEventListener("click", () => this.handleThemeSwitch("dark"));
+  },
+
+  _bindExportButtons() {
     document
       .getElementById("sett-export-btn")
       ?.addEventListener("click", () => this.handleDataExport("json"));
-
     document
       .getElementById("sett-export-md-btn")
       ?.addEventListener("click", () => this.handleDataExport("markdown"));
-
     document
       .getElementById("sett-export-csv-btn")
       ?.addEventListener("click", () => this.handleDataExport("csv"));
+  },
 
-    this.initImportDropzone();
+  _bindImportDropzone() {
+    const dropzone = document.getElementById("sett-dropzone");
+    const fileInput = document.getElementById("sett-import-file");
 
+    FileService.setupDropzone(dropzone, fileInput, async (file) => {
+      await this.handleFileImport(file);
+    });
+  },
+
+  _bindAutoArchiveToggle() {
     document
       .getElementById("sett-auto-archive-toggle")
       ?.addEventListener("click", () => this.handleAutoArchiveToggle());
-
     this.syncAutoArchiveToggle();
+  },
+
+  _bindResetModal() {
+    const triggerResetBtn = document.getElementById("trigger-reset-btn");
+    const resetModal = document.getElementById("settings-reset-modal");
+    const cancelResetBtn = document.getElementById("cancel-settings-reset");
+    const confirmResetBtn = document.getElementById("confirm-settings-reset");
+
+    triggerResetBtn?.addEventListener("click", () => {
+      resetModal?.classList.replace("hidden", "flex");
+      document.body.classList.add("overflow-hidden");
+    });
+
+    cancelResetBtn?.addEventListener("click", () => this.closeResetModal());
+
+    confirmResetBtn?.addEventListener("click", () => {
+      this.closeResetModal();
+      this.executeApplicationReset();
+    });
 
     document.addEventListener("keydown", (e) => {
-      const resetModal = document.getElementById("settings-reset-modal");
       const resetOpen = resetModal && !resetModal.classList.contains("hidden");
-
       if (!resetOpen) return;
-
       if (e.key === "Escape" || e.key === "Enter") {
         e.preventDefault();
         e.stopPropagation();
       }
-
       if (e.key === "Escape") this.closeResetModal();
-
-      if (e.ctrlKey && e.key === "Enter")
+      if (e.ctrlKey && e.key === "Enter") {
         document.getElementById("confirm-settings-reset")?.click();
-    });
-
-    this.initResetModalEvents();
-
-    window.addEventListener("resize", () => {
-      this.syncThemeControls(getTheme());
+      }
     });
   },
 
@@ -82,7 +123,7 @@ export const SettingsController = {
 
     if (!indicator || !btnLight || !btnDark) return;
 
-    const isDesktop = window.screen.availWidth >= 375;
+    const isDesktop = window.innerWidth >= 375;
 
     indicator.classList.remove(
       "xs:translate-x-0",
@@ -97,7 +138,6 @@ export const SettingsController = {
       } else {
         indicator.classList.add("translate-y-full");
       }
-
       btnDark.classList.replace(
         "text-secondary",
         "text-(--color-btn-primary-text)",
@@ -112,7 +152,6 @@ export const SettingsController = {
       } else {
         indicator.classList.add("translate-y-0");
       }
-
       btnLight.classList.replace(
         "text-secondary",
         "text-(--color-btn-primary-text)",
@@ -130,58 +169,10 @@ export const SettingsController = {
 
     document.getElementById("theme-toggle")?.click();
     this.syncThemeControls(targetTheme);
-
-    const indicator = document.getElementById("theme-tab-indicator");
-    const btnLight = document.getElementById("sett-theme-light");
-    const btnDark = document.getElementById("sett-theme-dark");
-
-    const isDesktop = window.screen.availWidth >= 375;
-
-    if (indicator && btnLight && btnDark) {
-      indicator.classList.remove(
-        "xs:translate-x-0",
-        "xs:translate-x-full",
-        "translate-y-0",
-        "translate-y-full",
-      );
-
-      if (targetTheme === "dark") {
-        if (isDesktop) {
-          indicator.classList.add("xs:translate-x-full");
-        } else {
-          indicator.classList.add("translate-y-full");
-        }
-
-        btnDark.classList.replace(
-          "text-secondary",
-          "text-(--color-btn-primary-text)",
-        );
-        btnLight.classList.replace(
-          "text-(--color-btn-primary-text)",
-          "text-secondary",
-        );
-      } else {
-        if (isDesktop) {
-          indicator.classList.add("xs:translate-x-0");
-        } else {
-          indicator.classList.add("translate-y-0");
-        }
-
-        btnLight.classList.replace(
-          "text-secondary",
-          "text-(--color-btn-primary-text)",
-        );
-        btnDark.classList.replace(
-          "text-(--color-btn-primary-text)",
-          "text-secondary",
-        );
-      }
-    }
   },
 
   handleDataExport(format = "json") {
-    const localData = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    const habits = localData?.habits || [];
+    const habits = HabitApplication.getHabits();
 
     if (habits.length === 0) {
       NotificationService.show({
@@ -194,349 +185,68 @@ export const SettingsController = {
       return;
     }
 
-    let fileContent = "";
-    let fileName = "";
-    let contentType = "";
-
-    const dateStr = formatDate(new Date());
-
-    if (format === "json") {
-      fileContent = JSON.stringify(localData, null, 2);
-      fileName = `Habits_Backup_${dateStr}_v${STORAGE_VERSION}.json`;
-      contentType = "application/json";
-    } else if (format === "markdown") {
-      fileContent = `# 📊 Habit Tracker Workspace Progress Report\n\nGenerated: ${new Date().toLocaleDateString()}\n\n **Storage Version:** ${STORAGE_VERSION}\n\n---\n\n`;
-      habits.forEach((habit) => {
-        fileContent += `## #️⃣ ${habit.id}\n`;
-        fileContent += `## 🎯 ${habit.name}\n`;
-        fileContent += `- **Category:** 📁 ${habit.category}\n`;
-        fileContent += `- **Frequency:** 📅 ${habit.frequency} days/wk\n`;
-        fileContent += `- **Created At:** ⏰ ${habit.createdAt}\n`;
-        fileContent += `- **Status:** ${habit.archived ? "📦 Archived" : "⚡ Active"}\n\n`;
-        fileContent += `### 📅 Completion History\n`;
-        if (!habit.completedDates || habit.completedDates.length === 0)
-          fileContent += `_No check-ins recorded yet._\n\n`;
-        else {
-          habit.completedDates.forEach((d) => {
-            fileContent += `- [x] ${d}\n`;
-          });
-          fileContent += `\n`;
-        }
-        fileContent += `### 🕒 Skipped Dates\n`;
-        if (!habit.skippedDates || habit.skippedDates.length === 0) {
-          fileContent += `_No skipped dates recorded yet._\n\n`;
-        } else {
-          habit.skippedDates.forEach((d) => {
-            fileContent += `- [x] ${d}\n`;
-          });
-          fileContent += `\n`;
-        }
-        fileContent += `---\n\n`;
+    try {
+      FileService.exportData(habits, format);
+      NotificationService.show({
+        type: "success",
+        message: `Database layer exported successfully as ${format.toUpperCase()}`,
+        icon: "fa-file-arrow-down",
+        iconColor: "text-emerald-500/80",
+        duration: 5000,
       });
-      fileName = `Habits_Backup_${dateStr}_v${STORAGE_VERSION}.md`;
-      contentType = "text/markdown";
-    } else if (format === "csv") {
-      const escapeCsvValue = (value) => {
-        const text = value == null ? "" : String(value);
-        return `"${text.replace(/"/g, '""')}"`;
-      };
-
-      let content = `# VERSION: ${STORAGE_VERSION}\n`;
-
-      const headers = [
-        "Id",
-        "Name",
-        "Category",
-        "Frequency",
-        "Created At",
-        "Archived",
-        "Completed Dates",
-        "Skipped Dates",
-        "Best Streak",
-        "Allowed Skips/Month",
-      ];
-
-      habits.map((h) => {
-        const rows = [
-          escapeCsvValue(h.id),
-          escapeCsvValue(h.name),
-          escapeCsvValue(h.category),
-          escapeCsvValue(h.frequency),
-          escapeCsvValue(h.createdAt),
-          escapeCsvValue(h.archived ? "Archived" : "Active"),
-          escapeCsvValue((h.completedDates || []).join(";")),
-          escapeCsvValue((h.skippedDates || []).join(";")),
-        ];
-        content += rows.join(",") + "\n";
-      });
-
-      fileContent = content;
-      fileName = `Habits_Backup_${dateStr}_v${STORAGE_VERSION}.csv`;
-      contentType = "text/csv;charset=utf-8;";
-    }
-
-    const blob = new Blob([fileContent], { type: contentType });
-    const downloadAnchor = document.createElement("a");
-    downloadAnchor.href = URL.createObjectURL(blob);
-    downloadAnchor.download = fileName;
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-    URL.revokeObjectURL(downloadAnchor.href);
-
-    NotificationService.show({
-      type: "success",
-      message: `Database layer exported successfully as ${format.toUpperCase()}`,
-      icon: "fa-file-arrow-down",
-      iconColor: "text-emerald-500/80",
-      duration: 5000,
-    });
-  },
-
-  initImportDropzone() {
-    const dropzone = document.getElementById("sett-dropzone");
-    const fileInput = document.getElementById("sett-import-file");
-
-    dropzone?.addEventListener("click", () => fileInput?.click());
-
-    dropzone?.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      dropzone.classList.add("border-brand/80", "bg-brand/5");
-    });
-
-    ["dragleave", "drop"].forEach((event) => {
-      dropzone?.addEventListener(event, () => {
-        dropzone.classList.remove("border-brand/80", "bg-brand/5");
-      });
-    });
-
-    dropzone?.addEventListener("drop", (e) => {
-      e.preventDefault();
-      const files = e.dataTransfer.files;
-      if (files.length) this.processImportedFile(files[0]);
-    });
-
-    fileInput?.addEventListener("change", (e) => {
-      if (e.target.files.length) this.processImportedFile(e.target.files[0]);
-
-      setTimeout(() => {
-        StateController.execute();
-        this.runAutoArchivePipeline();
-        this.resetSession();
-      }, 200);
-    });
-  },
-
-  _parseMarkdownToHabits(text) {
-    const habits = [];
-    const blockRegex =
-      /## #️⃣ ([^\n]+)\n## 🎯 ([^\n]+)\n([\s\S]*?)(?=\n## #️⃣ |\n*$)/g;
-
-    let match;
-    while ((match = blockRegex.exec(text)) !== null) {
-      const [, id, name, block] = match;
-      const lines = block
-        .split("\n")
-        .map((line) => line.trim())
-        .filter(Boolean);
-
-      let category = "general";
-      let frequency = 7;
-      let createdAt = formatDate(new Date());
-      let archived = false;
-      const completedDates = [];
-      const skippedDates = [];
-
-      let currentSection = "completed";
-
-      lines.forEach((line) => {
-        if (line === "### 📅 Completion History") {
-          currentSection = "completed";
-          return;
-        }
-
-        if (line === "### 🕒 Skipped Dates") {
-          currentSection = "skipped";
-          return;
-        }
-
-        if (line.includes("- **Category:**")) {
-          category = line.split("📁 ")[1]?.trim() || "general";
-        } else if (line.includes("- **Frequency:**")) {
-          frequency = parseInt(line.split("📅 ")[1]) || 7;
-        } else if (line.includes("- **Created At:**")) {
-          createdAt = line.split("⏰ ")[1]?.trim() || formatDate(new Date());
-        } else if (line.includes("- **Status:**")) {
-          archived = line.includes("📦 Archived");
-        } else if (/^- \[[ xX]\]/.test(line)) {
-          const date = line.replace(/^- \[[ xX]\]\s*/, "").trim();
-          if (!date) return;
-
-          if (currentSection === "skipped") skippedDates.push(date);
-          else completedDates.push(date);
-        }
-      });
-
-      habits.push({
-        id,
-        name,
-        category,
-        frequency,
-        createdAt,
-        archived,
-        completedDates,
-        skippedDates,
-      });
-    }
-
-    return habits;
-  },
-
-  _parseCSVToHabits(text) {
-    const lines = text
-      .split("\n")
-      .map((l) => l.trim())
-      .filter((l) => l.length > 0);
-    if (lines.length <= 1) return [];
-
-    const habits = lines
-      .slice(1)
-      .map((line) => {
-        const matches =
-          line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || line.split(",");
-        if (matches.length < 5) return null;
-
-        const id = matches[0].replace(/^"|"$/g, "");
-        const name = matches[1].replace(/^"|"$/g, "").replace(/""/g, '"');
-        const category = matches[2].replace(/^"|"$/g, "");
-        const frequency = parseInt(matches[3]) || 7;
-        const createdAt = matches[4]
-          ? matches[4].replace(/^"|"$/g, "")
-          : formatDate(new Date());
-        const archived = matches[5].replace(/^"|"$/g, "") === "Archived";
-        const completedDates = matches[6]
-          ? matches[6]
-              .replace(/^"|"$/g, "")
-              .split(";")
-              .map((d) => d.trim())
-              .filter((d) => d.length > 0)
-          : [];
-        const skippedDates = matches[7]
-          ? matches[7]
-              .replace(/^"|"$/g, "")
-              .split(";")
-              .map((d) => d.trim())
-              .filter((d) => d.length > 0)
-          : [];
-
-        return {
-          id,
-          name,
-          category,
-          frequency,
-          createdAt,
-          archived,
-          completedDates,
-          skippedDates,
-        };
-      })
-      .filter((h) => h !== null);
-
-    return habits;
-  },
-
-  processImportedFile(file) {
-    const fileName = file.name.toLowerCase();
-    let format = "";
-
-    if (file.type === "application/json" || fileName.endsWith(".json"))
-      format = "json";
-    else if (fileName.endsWith(".md") || fileName.endsWith(".markdown"))
-      format = "markdown";
-    else if (file.type === "text/csv" || fileName.endsWith(".csv"))
-      format = "csv";
-    else {
+    } catch (error) {
       NotificationService.show({
         type: "error",
-        message:
-          "Invalid format! Only structural JSON, MD, or CSV files are permitted",
-        icon: "fa-circle-xmark",
+        message: error.message || "Export failed",
+        icon: "fa-triangle-exclamation",
+        duration: 5000,
+      });
+    }
+  },
+
+  async handleFileImport(file) {
+    GlobalLoaderService.show(`Parsing storage integrity from ${file.name}...`);
+
+    try {
+      const importedHabits = await FileService.importFile(file);
+
+      // Save imported habits
+      HabitApplication.saveHabits(importedHabits);
+
+      StateController.runManual();
+
+      // Reset UI state
+      StateManager.setTab("active");
+      StateManager.setView("habits");
+      StateManager.setCategory("all");
+
+      NotificationService.show({
+        type: "success",
+        message: `Data ledger parsed and synchronized from ${file.name}`,
+        icon: "fa-circle-check",
+        iconColor: "text-emerald-500/80",
+        duration: 5000,
+      });
+    } catch (error) {
+      console.error("Import error:", error);
+      NotificationService.show({
+        type: "error",
+        message: error.message || "Failed to parse file",
+        icon: "fa-triangle-exclamation",
         iconColor: "text-red-500/80",
         duration: 5000,
       });
-      return;
+    } finally {
+      GlobalLoaderService.hide();
     }
-
-    const reader = new FileReader();
-    reader.addEventListener("load", async (event) => {
-      GlobalLoaderService.show(
-        `Parsing storage integrity from ${format.toUpperCase()}...`,
-      );
-
-      setTimeout(async () => {
-        try {
-          const rawContent = event.target.result;
-          let importedHabits = [];
-
-          if (format === "json") {
-            const parsedJson = JSON.parse(rawContent);
-            importedHabits = Array.isArray(parsedJson)
-              ? parsedJson
-              : parsedJson.habits || [];
-          } else if (format === "markdown")
-            importedHabits = this._parseMarkdownToHabits(rawContent);
-          else if (format === "csv")
-            importedHabits = this._parseCSVToHabits(rawContent);
-
-          if (!Array.isArray(importedHabits) || importedHabits.length === 0)
-            throw new Error("No structured data could be extracted");
-
-          StateManager.save(importedHabits);
-
-          state.activeTab = "active";
-          state.currentView = "habits";
-          state.currentCategory = "all";
-
-          renderHabitList(StateManager.getFilteredHabits(), state.activeTab);
-
-          HabitController.refreshUI();
-
-          NotificationService.show({
-            type: "success",
-            message: `Data ledger parsed and synchronized from ${format.toUpperCase()} file`,
-            icon: "fa-circle-check",
-            iconColor: "text-emerald-500/80",
-            duration: 5000,
-          });
-        } catch (err) {
-          console.error("Parser failure:", err);
-          NotificationService.show({
-            type: "error",
-            message: "Failed to parse structural integrity of the file",
-            icon: "fa-triangle-exclamation",
-            iconColor: "text-red-500/80",
-            duration: 5000,
-          });
-        } finally {
-          GlobalLoaderService.hide();
-        }
-      }, 50);
-    });
-
-    reader.readAsText(file);
-  },
-
-  resetSession() {
-    StateManager.init();
-    HabitController.refreshUI();
   },
 
   syncAutoArchiveToggle() {
-    const current = localStorage.getItem("sett_auto_archive") === "true";
+    const enabled = SettingsApplication.getAutoArchiveEnabled();
     const toggleBtn = document.getElementById("sett-auto-archive-toggle");
     const toggleDot = document.getElementById("sett-auto-archive-dot");
 
-    if (current) {
+    if (enabled) {
       toggleBtn?.classList.replace("bg-neutral-300/80", "bg-brand/80");
       toggleBtn?.classList.replace(
         "dark:bg-neutral-700/80",
@@ -554,28 +264,8 @@ export const SettingsController = {
   },
 
   handleAutoArchiveToggle() {
-    const current = localStorage.getItem("sett_auto_archive") === "true";
-    const nextState = !current;
-    localStorage.setItem("sett_auto_archive", nextState ? "true" : "false");
-
-    const toggleBtn = document.getElementById("sett-auto-archive-toggle");
-    const toggleDot = document.getElementById("sett-auto-archive-dot");
-
-    if (nextState) {
-      toggleBtn?.classList.replace("bg-neutral-300/80", "bg-brand/80");
-      toggleBtn?.classList.replace(
-        "dark:bg-neutral-700/80",
-        "dark:bg-brand/80",
-      );
-      toggleDot?.classList.replace("translate-x-0", "translate-x-5");
-    } else {
-      toggleBtn?.classList.replace("bg-brand/80", "bg-neutral-300/80");
-      toggleBtn?.classList.replace(
-        "dark:bg-brand/80",
-        "dark:bg-neutral-700/80",
-      );
-      toggleDot?.classList.replace("translate-x-5", "translate-x-0");
-    }
+    const nextState = SettingsApplication.toggleAutoArchive();
+    this.syncAutoArchiveToggle();
 
     NotificationService.show({
       type: "info",
@@ -585,55 +275,24 @@ export const SettingsController = {
       duration: 5000,
     });
 
-    if (nextState) this.runAutoArchivePipeline();
+    if (nextState) {
+      this.runAutoArchivePipeline();
+    }
   },
 
   runAutoArchivePipeline() {
-    if (localStorage.getItem("sett_auto_archive") !== "true") return;
+    if (!SettingsApplication.getAutoArchiveEnabled()) return;
 
-    const habits = StateManager.getHabits() || [];
+    const habits = HabitApplication.getHabits();
     if (habits.length === 0) return;
 
-    let modified = false;
+    const today = todayISO();
+    const result = HabitApplication.applyAutoArchivePolicy(today, 30);
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayTimestamp = today.getTime();
-
-    habits.forEach((habit) => {
-      if (habit.archived === true) return;
-
-      const allActivityDates = [...(habit.completedDates || [])];
-
-      let lastActivityDateStr = habit.createdAt;
-
-      if (allActivityDates.length > 0) {
-        allActivityDates.sort();
-        lastActivityDateStr = allActivityDates[allActivityDates.length - 1];
-      }
-
-      const lastActivityDate = new Date(lastActivityDateStr);
-      lastActivityDate.setHours(0, 0, 0, 0);
-      const lastActivityTimestamp = lastActivityDate.getTime();
-
-      const msDiff = todayTimestamp - lastActivityTimestamp;
-      const daysDiff = Math.floor(msDiff / (1000 * 60 * 60 * 24));
-
-      if (daysDiff >= 30) {
-        habit.archived = true;
-        modified = true;
-      }
-    });
-
-    if (modified) {
-      StateManager.save(habits);
-
-      HabitController.refreshUI();
-
+    if (result.archived > 0) {
       NotificationService.show({
         type: "info",
-        message:
-          "Stale habits exceeding 30 days structural limits auto-archived",
+        message: `${result.archived} stale habit(s) exceeding 30 days auto-archived`,
         icon: "fa-box-archive",
         iconColor: "text-brand/80",
         duration: 5000,
@@ -644,92 +303,49 @@ export const SettingsController = {
   closeResetModal() {
     const resetModal = document.getElementById("settings-reset-modal");
     if (!resetModal) return;
-
     resetModal.classList.add("hidden");
     resetModal.classList.remove("flex");
-
     document.body.classList.remove("overflow-hidden");
   },
 
-  initResetModalEvents() {
-    const triggerResetBtn = document.getElementById("trigger-reset-btn");
-    const resetModal = document.getElementById("settings-reset-modal");
-    const cancelResetBtn = document.getElementById("cancel-settings-reset");
-    const confirmResetBtn = document.getElementById("confirm-settings-reset");
-
-    triggerResetBtn?.addEventListener("click", () => {
-      resetModal?.classList.replace("hidden", "flex");
-      document.body.classList.add("overflow-hidden");
-    });
-    cancelResetBtn?.addEventListener("click", () => this.closeResetModal());
-
-    confirmResetBtn?.addEventListener("click", () => {
-      this.closeResetModal();
-      this.executeApplicationReset();
-    });
-  },
-
   async executeApplicationReset() {
-    const previousPayload = localStorage.getItem(STORAGE_KEY);
-    const previousHabits = StateManager.getHabits().map((habit) => ({
-      ...habit,
-    }));
-
     this.closeResetModal();
 
     GlobalLoaderService.show("Purging storage layers & resetting workspace...");
 
-    setTimeout(async () => {
-      try {
-        localStorage.removeItem(STORAGE_KEY);
+    try {
+      const snapshot = SettingsApplication.reset();
 
-        state.habits = [];
-        state.activeTab = "active";
-        state.currentView = "habits";
-        state.currentCategory = "all";
+      // Reset UI state
+      StateManager.setTab("active");
+      StateManager.setView("habits");
+      StateManager.setCategory("all");
 
-        renderHabitList([], state.activeTab);
+      NotificationService.show({
+        type: "error",
+        message:
+          "Application synchronization storage has been completely cleared",
+        duration: 5000,
+        undoAction: async () => {
+          GlobalLoaderService.show(
+            "Re-instating application database state...",
+          );
+          try {
+            SettingsApplication.undoReset(snapshot);
+          } finally {
+            GlobalLoaderService.hide();
+          }
+        },
+      });
+    } finally {
+      GlobalLoaderService.hide();
+    }
+  },
 
-        HabitController.refreshUI();
-
-        NotificationService.show({
-          type: "error",
-          message:
-            "Application synchronization storage has been completely cleared",
-          duration: 5000,
-          undoAction: async () => {
-            GlobalLoaderService.show(
-              "Re-instating application database state...",
-            );
-            setTimeout(async () => {
-              try {
-                if (previousPayload) {
-                  localStorage.setItem(STORAGE_KEY, previousPayload);
-                } else {
-                  localStorage.removeItem(STORAGE_KEY);
-                }
-
-                StateManager.save(previousHabits || []);
-                state.habits = previousHabits || [];
-
-                state.activeTab = "active";
-                state.currentView = "habits";
-                state.currentCategory = "all";
-
-                renderHabitList(
-                  StateManager.getFilteredHabits(),
-                  state.activeTab,
-                );
-                HabitController.refreshUI();
-              } finally {
-                GlobalLoaderService.hide();
-              }
-            }, 30);
-          },
-        });
-      } finally {
-        GlobalLoaderService.hide();
-      }
-    }, 50);
+  destroy() {
+    if (this._themeUnsubscribe) {
+      this._themeUnsubscribe();
+      this._themeUnsubscribe = null;
+    }
   },
 };

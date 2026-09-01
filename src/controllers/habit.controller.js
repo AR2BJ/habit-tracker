@@ -1,50 +1,84 @@
-import { StateManager, state } from "@/models/state.model.js";
-
-import { AnalyticsController } from "./analytics.controller.js";
-import { AnalyticsView } from "@/views/analytics-view.js";
-import { DeleteModalsComponent } from "@/components/modals/delete-modals.component.js";
-import { DesktopNavComponent } from "@/components/layout/desktop-nav.component.js";
-import { EditModalsComponent } from "@/components/modals/edit-modals.component.js";
-import { GlobalLoaderService } from "@/services/loader.service.js";
+// src/controllers/habit.controller.js
+import { AnalyticsController } from "./analytics.controller";
+import { AnalyticsView } from "@/views/analytics-view";
+import { CategoryFilterManager } from "@/ui/services/category-filter-manager.service";
+import { DeleteModalsComponent } from "@/components/modals/delete-modals.component";
+import { DesktopNavComponent } from "@/components/layout/desktop-nav.component";
+import { DropdownManager } from "@/ui/services/dropdown-manager.service";
+import { EditModalsComponent } from "@/components/modals/edit-modals.component";
+import { GlobalLoaderService } from "@/services/loader.service";
 import { HabitActionController } from "./habits/habit-action.controller";
+import { HabitApplication } from "@/app/habits/habit.application";
 import { HabitFormController } from "./habits/habit-form.controller";
-import { HabitsView } from "@/views/habits-view.js";
-import { HeaderComponent } from "@/components/shared/header.component.js";
-import { InfoModalComponent } from "@/components/modals/info-modal.component.js";
-import { MobileNavComponent } from "@/components/layout/mobile-nav.component.js";
-import { SettingsController } from "./settings.controller.js";
-import { SettingsViewComponent } from "@/components/features/settings/settings-view.component.js";
-import { renderHabitList } from "@/views/habits/habit-list.renderer.js";
+import { HabitsView } from "@/views/habits-view";
+import { HeaderComponent } from "@/components/shared/header.component";
+import { InfoModalComponent } from "@/components/modals/info-modal.component";
+import { MenuManager } from "@/ui/services/menu-manager.service";
+import { MobileNavComponent } from "@/components/layout/mobile-nav.component";
+import { NavigationManager } from "@/ui/services/navigation-manager.service";
+import { NotificationService } from "@/services/notification.service";
+import { SearchManager } from "@/ui/services/search-manager.service";
+import { SettingsViewComponent } from "@/components/features/settings/settings-view.component";
+import { TabManager } from "@/ui/services/tab-manager.service";
+import { renderHabitList } from "@/views/habits/habit-list.renderer";
 
 export const HabitController = {
+  _unsubscribe: null,
+  _isInitialized: false,
+
   init() {
-    StateManager.init();
+    if (this._isInitialized) return;
+    this._isInitialized = true;
+
+    // Subscribe to store changes
+    this._unsubscribe = HabitApplication.subscribe(() => {
+      this.refreshUI();
+    });
+
+    // Render components
     this.renderComponent();
     this.refreshUI();
 
-    HabitFormController.init(this);
-    HabitActionController.init(this);
+    // Initialize sub-controllers
+    HabitFormController.init({
+      toggleModal: (modalId, show) => this.toggleModal(modalId, show),
+    });
 
-    SettingsController.runAutoArchivePipeline();
+    HabitActionController.init({
+      toggleModal: (modalId, show) => this.toggleModal(modalId, show),
+    });
 
-    this.bindStaticEvents();
-    this.bindMenuToggle();
-    this.bindActionMenuToggle();
-    this.setupTabIndicatorObserver();
+    // Initialize UI services
+    TabManager.init();
+    MenuManager.init();
+    DropdownManager.init();
+    SearchManager.init();
 
+    // Bind all UI events
+    this._bindAllEvents();
+
+    // Initial tab styles
     requestAnimationFrame(() => {
-      this.updateTabStyles(state.activeTab);
+      const ui = HabitApplication.getUI();
+      TabManager.updateTabStyles(ui.activeTab);
     });
   },
 
   renderComponent() {
+    const isDark =
+      document.documentElement.classList.contains("dark") ||
+      localStorage.getItem("theme") === "dark";
+    const autoArchiveEnabled =
+      localStorage.getItem("sett_auto_archive") === "true";
+
     const renderMap = {
       "header-container": HeaderComponent.render,
       "desktop-nav-container": DesktopNavComponent.render,
       "mobile-nav-container": MobileNavComponent.render,
       "habits-view-container": HabitsView.render,
       "analytics-view-container": AnalyticsView.render,
-      "settings-view-container": SettingsViewComponent.render,
+      "settings-view-container": () =>
+        SettingsViewComponent.render({ isDark, autoArchiveEnabled }),
       "help-modal-container": InfoModalComponent.render,
       "edit-modals-container": EditModalsComponent.render,
       "delete-modals-container": DeleteModalsComponent.render,
@@ -57,152 +91,253 @@ export const HabitController = {
   },
 
   refreshUI() {
-    const allHabits = StateManager.getHabits();
-    const filteredHabits = StateManager.getFilteredHabits();
+    const allHabits = HabitApplication.getHabits();
+    const filteredHabits = HabitApplication.getFilteredHabits();
+    const ui = HabitApplication.getUI();
 
-    renderHabitList(filteredHabits, state.activeTab);
+    renderHabitList(filteredHabits, ui.activeTab);
+
     AnalyticsController.dispatchRender(allHabits);
-    this.updateNavigationDOM();
+
+    NavigationManager.updateNavigationDOM(ui.currentView);
   },
 
-  bindMenuToggle() {
-    const menuToggle = document.getElementById("menu-toggle");
-    const desktopNav = document.getElementById("desktop-nav");
-    const app = document.getElementById("app");
+  /**
+   * Bind all UI events in one place
+   */
+  _bindAllEvents() {
+    // sync storage
+    this._bindStorageSync();
 
-    let isMenuOpen = false;
+    // Tab events (Active / Archived)
+    this._bindTabs();
 
-    menuToggle?.addEventListener("click", () => {
-      isMenuOpen = !isMenuOpen;
-      if (isMenuOpen) {
-        desktopNav?.classList.replace(
-          "-translate-x-[calc(100%+2rem)]",
-          "translate-x-0",
-        );
-        app?.classList.replace("lg:ps-8", "lg:ps-30");
-      } else {
-        desktopNav?.classList.replace(
-          "translate-x-0",
-          "-translate-x-[calc(100%+2rem)]",
-        );
-        app?.classList.replace("lg:ps-30", "lg:ps-8");
+    // Navigation events (Habits / Analytics / Settings)
+    this._bindNavigation();
+
+    // Category filter events
+    CategoryFilterManager.init();
+
+    // Help modal
+    this._bindHelpModal();
+
+    // Scroll to top
+    this._bindScrollToTop();
+
+    // Form toggle
+    this._bindFormToggle();
+
+    // Theme change listener
+    this._bindThemeListener();
+  },
+
+  _bindStorageSync() {
+    // Listen for local storage updates (same tab)
+    window.addEventListener("local-storage-update", (event) => {
+      // Refresh UI without showing loader
+      this.refreshUI();
+    });
+  },
+
+  _bindTabs() {
+    const activeBtn = document.getElementById("tab-active");
+    const archivedBtn = document.getElementById("tab-archived");
+
+    // Remove old listeners to prevent duplicates
+    const newActiveBtn = activeBtn?.cloneNode(true);
+    const newArchivedBtn = archivedBtn?.cloneNode(true);
+
+    if (activeBtn && newActiveBtn) {
+      activeBtn.parentNode?.replaceChild(newActiveBtn, activeBtn);
+    }
+    if (archivedBtn && newArchivedBtn) {
+      archivedBtn.parentNode?.replaceChild(newArchivedBtn, archivedBtn);
+    }
+
+    const finalActiveBtn = document.getElementById("tab-active");
+    const finalArchivedBtn = document.getElementById("tab-archived");
+
+    finalActiveBtn?.addEventListener("click", () => {
+      const ui = HabitApplication.getUI();
+      if (ui.activeTab === "active") return;
+
+      GlobalLoaderService.show("Switching workspace to Active Habits...");
+
+      try {
+        HabitApplication.setTab("active");
+        TabManager.updateTabStyles("active");
+      } finally {
+        GlobalLoaderService.hide();
+      }
+    });
+
+    finalArchivedBtn?.addEventListener("click", () => {
+      const ui = HabitApplication.getUI();
+      if (ui.activeTab === "archived") return;
+
+      GlobalLoaderService.show("Loading Archived Habits ledger...");
+
+      try {
+        HabitApplication.setTab("archived");
+        TabManager.updateTabStyles("archived");
+      } finally {
+        GlobalLoaderService.hide();
       }
     });
   },
 
-  bindActionMenuToggle() {
-    document.addEventListener("click", (e) => {
-      const toggleBtn = e.target.closest(".dropdown-toggle-btn");
-
-      if (toggleBtn) {
-        e.stopPropagation();
-        const container = toggleBtn.closest(".dropdown-container");
-        const menu = container?.querySelector(".dropdown-menu");
-
-        document.querySelectorAll(".dropdown-menu").forEach((m) => {
-          if (m !== menu) m.classList.add("hidden");
-        });
-
-        menu?.classList.toggle("hidden");
-        return;
-      }
-
-      if (!e.target.closest(".dropdown-container")) {
-        document
-          .querySelectorAll(".dropdown-menu")
-          .forEach((m) => m.classList.add("hidden"));
-      }
-    });
-  },
-
-  bindStaticEvents() {
-    const filterButtons = document.querySelectorAll(".category-filter-btn");
-
-    const setFilterButtonState = (button, isActive) => {
-      const icon = button.querySelector(".category-icon");
-      const svg =
-        icon?.tagName?.toLowerCase() === "svg"
-          ? icon
-          : icon?.querySelector("svg");
-
-      button.classList.toggle("bg-brand/80", isActive);
-      button.classList.toggle("text-white", isActive);
-      button.classList.toggle("shadow-brand/10", isActive);
-      button.classList.toggle("shadow-sm", isActive);
-      button.classList.toggle("border-brand/80", isActive);
-      button.classList.toggle("bg-surface", !isActive);
-      button.classList.toggle("border-border", !isActive);
-      button.classList.toggle("text-secondary", !isActive);
-      button.classList.toggle("hover:text-color", !isActive);
-      button.classList.toggle("hover:bg-surface-2", !isActive);
-
-      if (icon) {
-        icon.style.color = isActive ? "#fff" : "";
-      }
-
-      if (svg) {
-        svg.style.fill = isActive ? "currentColor" : "";
-        svg.style.stroke = isActive ? "currentColor" : "";
-      }
-
-      svg?.querySelectorAll("path, circle, rect, polygon").forEach((shape) => {
-        shape.style.fill = isActive ? "currentColor" : "";
-        shape.style.stroke = isActive ? "currentColor" : "";
-      });
+  _bindNavigation() {
+    const navButtons = ["habits", "analytics", "settings"];
+    const viewNames = {
+      habits: "Workspace Overview",
+      analytics: "Data Analytics Engine",
+      settings: "System Configuration",
     };
 
-    const initialCategory = "all";
+    navButtons.forEach((v) => {
+      const desktopBtn = document.getElementById(`nav-${v}`);
+      const mobileBtn = document.getElementById(`mobile-${v}`);
 
-    filterButtons.forEach((btn) => {
-      const isActive = btn.dataset.category === initialCategory;
-      setFilterButtonState(btn, isActive);
+      // Remove old listeners by cloning
+      const newDesktopBtn = desktopBtn?.cloneNode(true);
+      const newMobileBtn = mobileBtn?.cloneNode(true);
 
-      btn.addEventListener("click", (e) => {
-        const currentBtn = e.currentTarget;
-        const selectedCategory = currentBtn.dataset.category;
+      if (desktopBtn && newDesktopBtn) {
+        desktopBtn.parentNode?.replaceChild(newDesktopBtn, desktopBtn);
+      }
+      if (mobileBtn && newMobileBtn) {
+        mobileBtn.parentNode?.replaceChild(newMobileBtn, mobileBtn);
+      }
 
-        if (currentBtn.classList.contains("bg-brand/80")) return;
+      const finalDesktopBtn = document.getElementById(`nav-${v}`);
+      const finalMobileBtn = document.getElementById(`mobile-${v}`);
 
-        const categoryNames = {
-          all: "All Habits",
-          general: "General & Miscellaneous",
-          health: "Health & Bio-Maintenance",
-          work: "Work & Production Dev",
-          research: "Research & Deep Dive",
-          academics: "Academics & Advanced Knowledge",
-          openSource: "Open Source & Side Projects",
-          systemDesign: "System Design & Soft Skills",
-          digitalDetox: "Digital Detox & Reset",
-          routine: "Daily Routines & Workflow",
-          harmful: "Harmful Habits",
-        };
-        GlobalLoaderService.show(
-          `Filtering workspace by ${categoryNames[selectedCategory] || selectedCategory}...`,
-        );
+      const handleNav = () => {
+        const ui = HabitApplication.getUI();
+        if (ui.currentView === v) return;
 
-        setTimeout(() => {
-          try {
-            StateManager.setCategory(selectedCategory);
+        GlobalLoaderService.show(`Navigating to ${viewNames[v] || v}...`);
 
-            filterButtons.forEach((button) =>
-              setFilterButtonState(button, false),
-            );
-            setFilterButtonState(currentBtn, true);
+        try {
+          HabitApplication.setView(v);
+          NavigationManager.updateNavigationDOM(v);
+        } finally {
+          GlobalLoaderService.hide();
+        }
+      };
 
-            this.refreshUI();
-          } finally {
-            GlobalLoaderService.hide();
-          }
-        }, 30);
-      });
+      finalDesktopBtn?.addEventListener("click", handleNav);
+      finalMobileBtn?.addEventListener("click", handleNav);
     });
+  },
 
+  _bindHelpModal() {
+    const helpToggle = document.getElementById("help-toggle");
+    const helpModal = document.getElementById("help-modal");
+    const closeHelpModal = document.getElementById("close-help-modal");
+    const btnCloseHelp = document.getElementById("btn-close-help");
+    const helpBackdrop = document.getElementById("help-modal-backdrop");
+
+    // Remove old listeners
+    const newHelpToggle = helpToggle?.cloneNode(true);
+    if (helpToggle && newHelpToggle) {
+      helpToggle.parentNode?.replaceChild(newHelpToggle, helpToggle);
+    }
+
+    const finalHelpToggle = document.getElementById("help-toggle");
+
+    const switchHelpTab = (tabName) => {
+      const btnSafeguard = document.getElementById("tab-help-safeguard");
+      const btnShortcuts = document.getElementById("tab-help-shortcuts");
+      const contentSafeguard = document.getElementById(
+        "content-help-safeguard",
+      );
+      const contentShortcuts = document.getElementById(
+        "content-help-shortcuts",
+      );
+
+      if (!btnSafeguard || !btnShortcuts) return;
+
+      // Reset both buttons first
+      btnSafeguard.className =
+        "flex-1 py-2 text-xs font-bold rounded-lg text-secondary hover:text-color transition cursor-pointer";
+      btnShortcuts.className =
+        "flex-1 py-2 text-xs font-bold rounded-lg text-secondary hover:text-color transition cursor-pointer";
+
+      // Set active button
+      if (tabName === "safeguard") {
+        btnSafeguard.className =
+          "flex-1 py-2 text-xs font-bold rounded-lg bg-brand text-white transition cursor-pointer";
+        contentSafeguard.classList.remove("hidden");
+        contentShortcuts.classList.add("hidden");
+      } else if (tabName === "shortcuts") {
+        btnShortcuts.className =
+          "flex-1 py-2 text-xs font-bold rounded-lg bg-brand text-white transition cursor-pointer";
+        contentShortcuts.classList.remove("hidden");
+        contentSafeguard.classList.add("hidden");
+      }
+    };
+
+    const openHelp = (defaultTab = "safeguard") => {
+      if (helpModal) helpModal.classList.replace("hidden", "flex");
+
+      switchHelpTab(defaultTab);
+
+      const btnSafeguard = document.getElementById("tab-help-safeguard");
+      const btnShortcuts = document.getElementById("tab-help-shortcuts");
+
+      // Remove old listeners by cloning
+      if (btnSafeguard) {
+        const newBtnSafeguard = btnSafeguard.cloneNode(true);
+        btnSafeguard.parentNode?.replaceChild(newBtnSafeguard, btnSafeguard);
+      }
+      if (btnShortcuts) {
+        const newBtnShortcuts = btnShortcuts.cloneNode(true);
+        btnShortcuts.parentNode?.replaceChild(newBtnShortcuts, btnShortcuts);
+      }
+
+      const finalBtnSafeguard = document.getElementById("tab-help-safeguard");
+      const finalBtnShortcuts = document.getElementById("tab-help-shortcuts");
+
+      if (finalBtnSafeguard) {
+        finalBtnSafeguard.addEventListener("click", () => {
+          switchHelpTab("safeguard");
+        });
+      }
+
+      if (finalBtnShortcuts) {
+        finalBtnShortcuts.addEventListener("click", () => {
+          switchHelpTab("shortcuts");
+        });
+      }
+
+      document.body.classList.add("overflow-hidden");
+    };
+
+    const closeHelp = () => {
+      if (helpModal) helpModal.classList.replace("flex", "hidden");
+      document.body.classList.remove("overflow-hidden");
+    };
+
+    finalHelpToggle?.addEventListener("click", () => openHelp("safeguard"));
+    closeHelpModal?.addEventListener("click", closeHelp);
+    btnCloseHelp?.addEventListener("click", closeHelp);
+    helpBackdrop?.addEventListener("click", closeHelp);
+  },
+
+  _bindFormToggle() {
     const toggleFormBtn = document.getElementById("btn-toggle-habit-form");
     const formContainer = document.getElementById("habit-form-container");
     const formChevron = document.getElementById("form-chevron");
 
     if (toggleFormBtn && formContainer && formChevron) {
-      toggleFormBtn.addEventListener("click", () => {
+      // Remove old listener
+      const newToggleBtn = toggleFormBtn.cloneNode(true);
+      toggleFormBtn.parentNode?.replaceChild(newToggleBtn, toggleFormBtn);
+
+      const finalToggleBtn = document.getElementById("btn-toggle-habit-form");
+
+      finalToggleBtn.addEventListener("click", () => {
         const isHidden = formContainer.classList.contains("hidden");
         if (isHidden) {
           formContainer.classList.replace("hidden", "flex");
@@ -213,237 +348,20 @@ export const HabitController = {
         }
       });
     }
+  },
 
-    const searchInput = document.getElementById("search-habits");
-    const clearBtn = document.getElementById("clear-search-btn");
-    const searchContainer = searchInput?.closest(".group\\/search");
-
-    if (searchInput) {
-      searchInput.value = state.searchQuery || "";
-
-      const evaluateSearchState = () => {
-        const hasValue = searchInput.value.trim().length > 0;
-        const isHovered = searchContainer?.matches(":hover");
-
-        if (hasValue && isHovered) {
-          if (clearBtn) {
-            clearBtn.classList.replace("hidden", "flex");
-            requestAnimationFrame(() => {
-              clearBtn.classList.remove("opacity-0", "scale-75");
-              clearBtn.classList.add("opacity-100", "scale-100");
-            });
-          }
-        } else if (clearBtn) {
-          clearBtn.classList.remove("opacity-100", "scale-100");
-          clearBtn.classList.add("opacity-0", "scale-75");
-
-          setTimeout(() => {
-            if (
-              !searchInput.value.trim().length ||
-              !searchContainer?.matches(":hover")
-            ) {
-              clearBtn.classList.replace("flex", "hidden");
-            }
-          }, 200);
-        }
-      };
-
-      searchInput.addEventListener("input", (e) => {
-        GlobalLoaderService.show("Loading, please wait...");
-
-        setTimeout(() => {
-          try {
-            state.searchQuery = e.target.value;
-            this.refreshUI();
-            evaluateSearchState();
-          } finally {
-            GlobalLoaderService.hide();
-          }
-        }, 10);
-      });
-
-      searchContainer?.addEventListener("mouseenter", evaluateSearchState);
-      searchContainer?.addEventListener("mouseleave", evaluateSearchState);
-
-      clearBtn?.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        GlobalLoaderService.show("Loading, please wait...");
-
-        setTimeout(() => {
-          try {
-            searchInput.value = "";
-            state.searchQuery = "";
-
-            setTimeout(() => searchInput.focus(), 10);
-
-            this.refreshUI();
-            evaluateSearchState();
-          } finally {
-            GlobalLoaderService.hide();
-          }
-        }, 10);
-      });
-    }
-
-    const activeBtn = document.getElementById("tab-active");
-    const archivedBtn = document.getElementById("tab-archived");
-
-    activeBtn?.addEventListener("click", () => {
-      if (state.activeTab === "active") return;
-
-      GlobalLoaderService.show("Switching workspace to Active Habits...");
-
-      setTimeout(() => {
-        try {
-          state.activeTab = "active";
-          this.updateTabStyles("active");
-          this.refreshUI();
-        } finally {
-          GlobalLoaderService.hide();
-        }
-      }, 30);
-    });
-
-    archivedBtn?.addEventListener("click", () => {
-      if (state.activeTab === "archived") return;
-
-      GlobalLoaderService.show("Loading Archived Habits ledger...");
-
-      setTimeout(() => {
-        try {
-          state.activeTab = "archived";
-          this.updateTabStyles("archived");
-          this.refreshUI();
-        } finally {
-          GlobalLoaderService.hide();
-        }
-      }, 30);
-    });
-
-    const navButtons = ["habits", "analytics", "settings"];
-    navButtons.forEach((v) => {
-      const desktopBtn = document.getElementById(`nav-${v}`);
-      const mobileBtn = document.getElementById(`mobile-${v}`);
-
-      const handleNav = () => {
-        if (state.currentView === v) return;
-
-        const viewNames = {
-          habits: "Workspace Overview",
-          analytics: "Data Analytics Engine",
-          settings: "System Configuration",
-        };
-        GlobalLoaderService.show(`Navigating to ${viewNames[v] || v}...`);
-
-        setTimeout(() => {
-          try {
-            state.currentView = v;
-
-            navButtons.forEach((nav) => {
-              const dEl = document.getElementById(`nav-${nav}`);
-              const mEl = document.getElementById(`mobile-${nav}`);
-              dEl?.classList.replace("text-brand/80", "text-secondary");
-              mEl?.classList.replace("text-brand/80", "text-secondary");
-            });
-
-            desktopBtn?.classList.replace("text-secondary", "text-brand/80");
-            mobileBtn?.classList.replace("text-secondary", "text-brand/80");
-
-            this.refreshUI();
-          } finally {
-            GlobalLoaderService.hide();
-          }
-        }, 30);
-      };
-
-      desktopBtn?.addEventListener("click", handleNav);
-      mobileBtn?.addEventListener("click", handleNav);
-    });
-
-    const helpToggle = document.getElementById("help-toggle");
-    const helpModal = document.getElementById("help-modal");
-    const closeHelpModal = document.getElementById("close-help-modal");
-    const btnCloseHelp = document.getElementById("btn-close-help");
-    const helpBackdrop = document.getElementById("help-modal-backdrop");
-
-    const openHelp = (defaultTab = "safeguard") => {
-      if (helpModal) helpModal.classList.replace("hidden", "flex");
-
-      // Function to switch tabs inside the help modal
-      const switchHelpTab = (tabName) => {
-        const btnSafeguard = document.getElementById("tab-help-safeguard");
-        const btnShortcuts = document.getElementById("tab-help-shortcuts");
-        const contentSafeguard = document.getElementById(
-          "content-help-safeguard",
-        );
-        const contentShortcuts = document.getElementById(
-          "content-help-shortcuts",
-        );
-
-        if (!btnSafeguard || !btnShortcuts) return;
-
-        if (tabName === "safeguard") {
-          // Safeguard Active State
-          btnSafeguard.className =
-            "flex-1 py-2 text-xs font-bold rounded-lg bg-brand text-white transition cursor-pointer";
-          btnShortcuts.className =
-            "flex-1 py-2 text-xs font-bold rounded-lg text-secondary hover:text-color transition cursor-pointer";
-
-          contentSafeguard.classList.remove("hidden");
-          contentShortcuts.classList.add("hidden");
-        } else if (tabName === "shortcuts") {
-          // Shortcuts Active State
-          btnShortcuts.className =
-            "flex-1 py-2 text-xs font-bold rounded-lg bg-brand text-white transition cursor-pointer";
-          btnSafeguard.className =
-            "flex-1 py-2 text-xs font-bold rounded-lg text-secondary hover:text-color transition cursor-pointer";
-          contentShortcuts.classList.remove("hidden");
-          contentSafeguard.classList.add("hidden");
-        }
-      };
-
-      // Set initial tab state upon opening
-      switchHelpTab(defaultTab);
-
-      // Bind click listeners for help modal tabs
-      const btnSafeguard = document.getElementById("tab-help-safeguard");
-      const btnShortcuts = document.getElementById("tab-help-shortcuts");
-
-      if (btnSafeguard && !btnSafeguard.dataset.bound) {
-        btnSafeguard.addEventListener("click", () =>
-          switchHelpTab("safeguard"),
-        );
-        btnSafeguard.dataset.bound = "true";
-      }
-
-      if (btnShortcuts && !btnShortcuts.dataset.bound) {
-        btnShortcuts.addEventListener("click", () =>
-          switchHelpTab("shortcuts"),
-        );
-        btnShortcuts.dataset.bound = "true";
-      }
-
-      document.body.classList.add("overflow-hidden");
-    };
-
-    const closeHelp = () => {
-      if (helpModal) helpModal.classList.replace("flex", "hidden");
-
-      document.body.classList.remove("overflow-hidden");
-    };
-
-    helpToggle?.addEventListener("click", openHelp);
-    closeHelpModal?.addEventListener("click", closeHelp);
-    btnCloseHelp?.addEventListener("click", closeHelp);
-    helpBackdrop?.addEventListener("click", closeHelp);
-
+  _bindScrollToTop() {
     const scrollTopBtn = document.getElementById("scroll-to-top-btn");
 
     if (scrollTopBtn) {
       let isVisible = false;
       let hideTimeout;
+
+      // Remove old listener
+      const newScrollBtn = scrollTopBtn.cloneNode(true);
+      scrollTopBtn.parentNode?.replaceChild(newScrollBtn, scrollTopBtn);
+
+      const finalScrollBtn = document.getElementById("scroll-to-top-btn");
 
       window.addEventListener("scroll", () => {
         const scrollThreshold = 600;
@@ -452,59 +370,43 @@ export const HabitController = {
           if (!isVisible) {
             isVisible = true;
             clearTimeout(hideTimeout);
-
-            scrollTopBtn.classList.replace("hidden", "flex");
-
+            finalScrollBtn?.classList.replace("hidden", "flex");
             requestAnimationFrame(() => {
-              scrollTopBtn.classList.remove("opacity-0", "scale-75");
-              scrollTopBtn.classList.add("opacity-100", "scale-100");
+              finalScrollBtn?.classList.remove("opacity-0", "scale-75");
+              finalScrollBtn?.classList.add("opacity-100", "scale-100");
             });
           }
         } else {
           if (isVisible) {
             isVisible = false;
-
             requestAnimationFrame(() => {
-              scrollTopBtn.classList.remove("opacity-100", "scale-100");
-              scrollTopBtn.classList.add("opacity-0", "scale-75");
+              finalScrollBtn?.classList.remove("opacity-100", "scale-100");
+              finalScrollBtn?.classList.add("opacity-0", "scale-75");
             });
-
             hideTimeout = setTimeout(() => {
               if (!isVisible) {
-                scrollTopBtn.classList.replace("flex", "hidden");
+                finalScrollBtn?.classList.replace("flex", "hidden");
               }
             }, 200);
           }
         }
       });
 
-      scrollTopBtn.addEventListener("click", () => {
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
+      finalScrollBtn?.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
       });
     }
+  },
 
+  _bindThemeListener() {
     if (window.currentThemeListener) {
       document.removeEventListener("themeChanged", window.currentThemeListener);
     }
     window.currentThemeListener = () => {
-      const allHabits = StateManager.getHabits();
+      const allHabits = HabitApplication.getHabits();
       AnalyticsController.dispatchRender(allHabits);
     };
     document.addEventListener("themeChanged", window.currentThemeListener);
-  },
-
-  handleTabSwitch(tab) {
-    StateManager.setTab(tab);
-    this.refreshUI();
-    this.updateTabStyles(tab);
-  },
-
-  handleViewSwitch(view) {
-    StateManager.setView(view);
-    this.refreshUI();
   },
 
   toggleModal(modalId, show) {
@@ -519,95 +421,35 @@ export const HabitController = {
     }
   },
 
-  updateNavigationDOM() {
-    const views = ["habits", "analytics", "settings"];
-    views.forEach((v) => {
-      const el = document.getElementById(`${v}-view`);
-      if (el) {
-        if (state.currentView === v) el.classList.replace("hidden", "flex");
-        else el.classList.replace("flex", "hidden");
-      }
-
-      const desktopBtn = document.getElementById(`nav-${v}`);
-      const mobileBtn = document.getElementById(`mobile-${v}`);
-
-      if (state.currentView === v) {
-        desktopBtn?.classList.replace("text-secondary", "text-brand/80");
-        desktopBtn?.classList.add("shadow-brand/10");
-        desktopBtn?.classList.add("active");
-        mobileBtn?.classList.replace("text-secondary", "text-brand/80");
-        mobileBtn?.classList.add("active");
-      } else {
-        desktopBtn?.classList.replace("text-brand/80", "text-secondary");
-        desktopBtn?.classList.remove("shadow-brand/10");
-        desktopBtn?.classList.remove("active");
-        mobileBtn?.classList.replace("text-brand/80", "text-secondary");
-        mobileBtn?.classList.remove("active");
-      }
-    });
-
-    requestAnimationFrame(() => {
-      if (state.currentView === "habits") {
-        this.updateTabStyles(state.activeTab);
-      }
-    });
+  handleTabSwitch(tab) {
+    TabManager.switchTab(tab);
   },
 
-  setupTabIndicatorObserver() {
-    const activeBtn = document.getElementById("tab-active");
-    const archivedBtn = document.getElementById("tab-archived");
-
-    if (!activeBtn || !archivedBtn) return;
-
-    if (!window.habitTabResizeObserver) {
-      window.habitTabResizeObserver = new ResizeObserver(() => {
-        requestAnimationFrame(() => {
-          this.updateTabStyles(state.activeTab);
-        });
-      });
-    }
-
-    window.habitTabResizeObserver.disconnect();
-    window.habitTabResizeObserver.observe(activeBtn);
-    window.habitTabResizeObserver.observe(archivedBtn);
+  handleViewSwitch(view) {
+    NavigationManager.switchView(view);
   },
 
   updateTabStyles(tab) {
-    const indicator = document.getElementById("tab-indicator");
-    const activeBtn = document.getElementById("tab-active");
-    const archivedBtn = document.getElementById("tab-archived");
+    TabManager.updateTabStyles(tab);
+  },
 
-    if (!indicator || !activeBtn || !archivedBtn) return;
+  updateNavigationDOM() {
+    const ui = HabitApplication.getUI();
+    NavigationManager.updateNavigationDOM(ui.currentView);
+  },
 
-    const buttonWidth =
-      activeBtn.offsetWidth || activeBtn.getBoundingClientRect().width;
+  setupTabIndicatorObserver() {
+    TabManager.setupTabIndicatorObserver();
+  },
 
-    if (!buttonWidth) return;
-
-    const offset = 4;
-
-    indicator.style.width = `${buttonWidth}px`;
-
-    if (tab === "active") {
-      indicator.style.left = `${offset}px`;
-      activeBtn.classList.replace(
-        "text-secondary",
-        "text-(--color-btn-primary-text)",
-      );
-      archivedBtn.classList.replace(
-        "text-(--color-btn-primary-text)",
-        "text-secondary",
-      );
-    } else {
-      indicator.style.left = `${buttonWidth + offset}px`;
-      archivedBtn.classList.replace(
-        "text-secondary",
-        "text-(--color-btn-primary-text)",
-      );
-      activeBtn.classList.replace(
-        "text-(--color-btn-primary-text)",
-        "text-secondary",
-      );
+  destroy() {
+    if (this._unsubscribe) {
+      this._unsubscribe();
+      this._unsubscribe = null;
     }
+    TabManager.destroy();
+    SearchManager.destroy();
+    DropdownManager.closeAll();
+    this._isInitialized = false;
   },
 };

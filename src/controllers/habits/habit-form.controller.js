@@ -1,7 +1,7 @@
-import { AutocompleteManager } from "@/ui/services/autocomplete-manager.service";
+import { AutocompleteManager } from "@/services/ui/autocomplete-manager.service";
 import { GlobalLoaderService } from "@/services/loader.service";
 import { HabitApplication } from "@/app/habits/habit.application";
-import { ModalManager } from "@/ui/services/modal.service";
+import { ModalManager } from "@/services/modal.service";
 import { NotificationService } from "@/services/notification.service";
 
 // Pending IDs for modals

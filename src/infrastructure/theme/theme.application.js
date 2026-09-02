@@ -1,4 +1,5 @@
 import { ThemeRepository } from "./theme.repository";
+import { ThemeUIService } from "@/services/ui/theme-ui.service";
 
 export const ThemeApplication = {
   _currentTheme: null,
@@ -13,7 +14,7 @@ export const ThemeApplication = {
   setTheme(mode) {
     this._currentTheme = mode;
     ThemeRepository.set(mode);
-    this.applyTheme(mode);
+    ThemeUIService.applyTheme(mode);
   },
 
   toggleTheme() {
@@ -23,30 +24,9 @@ export const ThemeApplication = {
     return next;
   },
 
-  applyTheme(mode) {
-    const root = document.documentElement;
-
-    // Remove both classes first
-    root.classList.remove("dark", "light");
-
-    // Add the appropriate class
-    if (mode === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.add("light");
-    }
-
-    // Dispatch event for listeners
-    document.dispatchEvent(
-      new CustomEvent("themeChanged", {
-        detail: { theme: mode },
-      }),
-    );
-  },
-
   init() {
     const theme = this.getTheme();
-    this.applyTheme(theme);
+    ThemeUIService.applyTheme(theme);
     return theme;
   },
 };

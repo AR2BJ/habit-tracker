@@ -1,7 +1,7 @@
 import { setPendingDeleteId, setPendingEditId } from "./habit-form.controller";
 
 import { GlobalLoaderService } from "@/services/loader.service";
-import { HabitActionService } from "@/ui/services/habit-action.service";
+import { HabitActionService } from "@/services/ui/habit-action.service";
 import { HabitApplication } from "@/app/habits/habit.application";
 import { NotificationService } from "@/services/notification.service";
 

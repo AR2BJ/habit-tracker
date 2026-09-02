@@ -1,4 +1,4 @@
-import { TooltipService } from "@/ui/services/tooltip.service";
+import { TooltipService } from "@/services/tooltip.service";
 
 /**
  * TooltipController - Manages tooltip event binding and user interaction

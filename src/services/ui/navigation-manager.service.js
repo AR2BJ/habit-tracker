@@ -1,5 +1,6 @@
 import { GlobalLoaderService } from "@/services/loader.service";
 import { HabitApplication } from "@/app/habits/habit.application";
+import { TabManager } from "./tab-manager.service";
 
 /**
  * NavigationManager - Manages view navigation (Habits/Analytics/Settings)
@@ -56,9 +57,8 @@ export const NavigationManager = {
     requestAnimationFrame(() => {
       if (view === "habits") {
         const ui = HabitApplication.getUI();
-        import("@/ui/services/tab-manager.service").then(({ TabManager }) => {
-          TabManager.updateTabStyles(ui.activeTab);
-        });
+
+        TabManager.updateTabStyles(ui.activeTab);
       }
     });
   },

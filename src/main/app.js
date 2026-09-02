@@ -1,8 +1,12 @@
 import "@/vendor/fontawesome/js/all";
 
+import { AnalyticsController } from "@/controllers/analytics.controller";
 import { BootstrapService } from "@/services/bootstrap.service";
-import { StorageSyncService } from "@/infrastructure/persistence/storage-sync.service";
+import { HabitController } from "@/controllers/habit.controller";
+import { HabitFiltersScrollService } from "@/services/ui/habit-filters-scroll.service";
+import { StorageService } from "@/services/storage.service";
 import { ThemeApplication } from "@/infrastructure/theme/theme.application";
+import { TooltipController } from "@/controllers/tooltip.controller";
 
 // Ensure theme is applied before any rendering
 // (ThemeApplication.init was already called in theme.js, but this is a safeguard)
@@ -28,26 +32,14 @@ document.addEventListener("DOMContentLoaded", () => {
 // Cleanup on page unload
 window.addEventListener("beforeunload", () => {
   // Clean up controllers
-  import("@/controllers/tooltip.controller").then(({ TooltipController }) => {
-    TooltipController.destroy();
-  });
+  TooltipController.destroy();
 
-  import("@/controllers/habit.controller").then(({ HabitController }) => {
-    HabitController.destroy();
-  });
+  HabitController.destroy();
 
-  import("@/controllers/analytics.controller").then(
-    ({ AnalyticsController }) => {
-      AnalyticsController.destroy();
-    },
-  );
+  AnalyticsController.destroy();
 
   // Clean up UI services
-  import("@/ui/services/habit-filters-scroll.service").then(
-    ({ HabitFiltersScrollService }) => {
-      HabitFiltersScrollService.destroy();
-    },
-  );
+  HabitFiltersScrollService.destroy();
 });
 
 // Expose for debugging (optional)
@@ -60,7 +52,7 @@ if (import.meta.env.DEV) {
 
 if (typeof window !== "undefined") {
   window.__sync = {
-    force: () => StorageSyncService.forceSync(),
+    force: () => StorageService.forceSync(),
     status: () => {
       const raw = localStorage.getItem("habit_tracker");
       const habits = raw ? JSON.parse(raw)?.habits : [];

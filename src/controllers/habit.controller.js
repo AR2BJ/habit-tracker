@@ -1,9 +1,9 @@
 import { AnalyticsController } from "./analytics.controller";
 import { AnalyticsView } from "@/views/analytics-view";
-import { CategoryFilterManager } from "@/ui/services/category-filter-manager.service";
+import { CategoryFilterManager } from "@/services/ui/category-filter-manager.service";
 import { DeleteModalsComponent } from "@/components/modals/delete-modals.component";
 import { DesktopNavComponent } from "@/components/layout/desktop-nav.component";
-import { DropdownManager } from "@/ui/services/dropdown-manager.service";
+import { DropdownManager } from "@/services/ui/dropdown-manager.service";
 import { EditModalsComponent } from "@/components/modals/edit-modals.component";
 import { GlobalLoaderService } from "@/services/loader.service";
 import { HabitActionController } from "./habits/habit-action.controller";
@@ -12,13 +12,12 @@ import { HabitFormController } from "./habits/habit-form.controller";
 import { HabitsView } from "@/views/habits-view";
 import { HeaderComponent } from "@/components/shared/header.component";
 import { InfoModalComponent } from "@/components/modals/info-modal.component";
-import { MenuManager } from "@/ui/services/menu-manager.service";
+import { MenuManager } from "@/services/ui/menu-manager.service";
 import { MobileNavComponent } from "@/components/layout/mobile-nav.component";
-import { NavigationManager } from "@/ui/services/navigation-manager.service";
-import { NotificationService } from "@/services/notification.service";
-import { SearchManager } from "@/ui/services/search-manager.service";
+import { NavigationManager } from "@/services/ui/navigation-manager.service";
+import { SearchManager } from "@/services/ui/search-manager.service";
 import { SettingsViewComponent } from "@/components/features/settings/settings-view.component";
-import { TabManager } from "@/ui/services/tab-manager.service";
+import { TabManager } from "@/services/ui/tab-manager.service";
 import { renderHabitList } from "@/views/habits/habit-list.renderer";
 
 export const HabitController = {
@@ -398,9 +397,9 @@ export const HabitController = {
   },
 
   _bindThemeListener() {
-    if (window.currentThemeListener) {
+    if (window.currentThemeListener)
       document.removeEventListener("themeChanged", window.currentThemeListener);
-    }
+
     window.currentThemeListener = () => {
       const allHabits = HabitApplication.getHabits();
       AnalyticsController.dispatchRender(allHabits);

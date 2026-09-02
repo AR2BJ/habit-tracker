@@ -1,9 +1,9 @@
 import { AnalyticsController } from "./analytics.controller";
-import { CategoryShortcutService } from "@/ui/services/category-shortcut.service";
+import { CategoryShortcutService } from "@/services/ui/category-shortcut.service";
 import { GlobalLoaderService } from "@/services/loader.service";
 import { HabitApplication } from "@/app/habits/habit.application";
-import { KeyboardShortcutService } from "@/ui/services/keyboard-shortcut.service";
-import { ModalManager } from "@/ui/services/modal.service";
+import { KeyboardShortcutService } from "@/services/ui/keyboard-shortcut.service";
+import { ModalManager } from "@/services/modal.service";
 
 /**
  * NavigationController - Manages navigation and view switching

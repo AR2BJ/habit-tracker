@@ -1,5 +1,6 @@
 import { GlobalLoaderService } from "@/services/loader.service";
 import { ThemeApplication } from "@/infrastructure/theme/theme.application";
+import { ThemeUIService } from "@/services/ui/theme-ui.service";
 
 export const ThemeController = {
   _isInitialized: false,
@@ -9,7 +10,7 @@ export const ThemeController = {
 
     // Ensure theme is applied
     ThemeApplication.init();
-    this.updateIcon(ThemeApplication.getTheme());
+    ThemeUIService.updateIcon(ThemeApplication.getTheme());
 
     this._bindEvents();
     this._isInitialized = true;
@@ -33,35 +34,17 @@ export const ThemeController = {
     requestAnimationFrame(() => {
       try {
         const newTheme = ThemeApplication.toggleTheme();
-        ThemeController.updateIcon(newTheme);
+        ThemeUIService.updateIcon(newTheme);
 
         // Hide loader after a brief delay for visual feedback
         setTimeout(() => {
           GlobalLoaderService.hide();
-        }, 300);
+        }, 100);
       } catch (error) {
         console.error("Theme switch failure:", error);
         GlobalLoaderService.hide();
       }
     });
-  },
-
-  updateIcon(theme) {
-    const btn = document.getElementById("theme-toggle");
-    if (!btn) return;
-
-    if (theme === "dark") {
-      btn.innerHTML = `<i class="fa-regular fa-sun text-yellow-500/80"></i>`;
-      btn.classList.replace("hover:bg-slate-600/10", "hover:bg-yellow-600/10");
-    } else {
-      btn.innerHTML = `<i class="fa-regular fa-moon text-secondary"></i>`;
-      btn.classList.replace("hover:bg-yellow-600/10", "hover:bg-slate-600/10");
-    }
-  },
-
-  applyTheme(theme) {
-    ThemeApplication.applyTheme(theme);
-    this.updateIcon(theme);
   },
 
   destroy() {

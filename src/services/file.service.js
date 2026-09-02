@@ -1,5 +1,5 @@
-import { ExportService } from "@/infrastructure/files/export.service";
-import { ImportService } from "@/infrastructure/files/import.service";
+import { ExportService } from "./export.service";
+import { ImportService } from "./import.service";
 
 /**
  * FileService - Manages file operations (upload/download)

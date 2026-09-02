@@ -7,7 +7,7 @@ import {
 
 import { AnalyticsApplication } from "@/app/analytics/analytics.application";
 import { HabitApplication } from "@/app/habits/habit.application";
-import { getTheme } from "@/services/theme.service";
+import { ThemeApplication } from "@/infrastructure/theme/theme.application";
 
 let currentHeatmapView = "weekly";
 
@@ -71,11 +71,6 @@ export const AnalyticsController = {
         }
       });
     }
-
-    // Listen for theme changes
-    document.addEventListener("themeChanged", () => {
-      this.dispatchRender();
-    });
   },
 
   handleTabSwitch(tab) {
@@ -87,7 +82,7 @@ export const AnalyticsController = {
     updateTabStyles(tab);
 
     // Then update chart data
-    const isDark = getTheme() === "dark";
+    const isDark = ThemeApplication.getTheme() === "dark";
 
     const data = AnalyticsApplication.getHeatmapData(tab, isDark);
 
@@ -108,7 +103,7 @@ export const AnalyticsController = {
   dispatchRender(habits) {
     const allHabits = habits || HabitApplication.getHabits();
 
-    const isDark = getTheme() === "dark";
+    const isDark = ThemeApplication.getTheme() === "dark";
     const data = AnalyticsApplication.getAnalyticsData(
       currentHeatmapView,
       isDark,

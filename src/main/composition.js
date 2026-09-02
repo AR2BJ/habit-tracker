@@ -5,7 +5,7 @@ import { SettingsApplication } from "@/app/settings/settings.application";
 import { Store } from "@/infrastructure/store/store";
 import { ThemeApplication } from "@/infrastructure/theme/theme.application";
 
-export const CompositionRoot = {
+export const Composition = {
   // Application services
   habitApp: HabitApplication,
   analyticsApp: AnalyticsApplication,

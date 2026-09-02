@@ -1,7 +1,7 @@
-import { STORAGE_KEY } from "./local-storage.adapter";
+import { STORAGE_KEY } from "@/infrastructure/persistence/local-storage.adapter";
 import { Store } from "@/infrastructure/store/store";
 
-export const StorageSyncService = {
+export const StorageService = {
   _isInitialized: false,
   _syncInProgress: false,
   _pollingInterval: null,

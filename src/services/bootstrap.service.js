@@ -1,15 +1,23 @@
 import { AnalyticsController } from "@/controllers/analytics.controller";
-import { CompositionRoot } from "@/main/composition-root";
+import { Composition } from "@/main/composition";
 import { GlobalLoaderService } from "@/services/loader.service";
 import { HabitApplication } from "@/app/habits/habit.application";
-import { StorageSyncService } from "@/infrastructure/persistence/storage-sync.service";
-import { ThemeSyncService } from "@/infrastructure/theme/theme-sync.service";
+import { HabitController } from "@/controllers/habit.controller";
+import { HabitFiltersScrollService } from "./ui/habit-filters-scroll.service";
+import { NavigationController } from "@/controllers/navigation.controller";
+import { SettingsController } from "@/controllers/settings.controller";
+import { StateController } from "@/controllers/state.controller";
+import { StorageService } from "./storage.service";
+import { ThemeController } from "@/controllers/theme.controller";
+import { ThemeService } from "./theme.service";
+import { TooltipController } from "@/controllers/tooltip.controller";
+import { state } from "@/models/state.model";
 
 export const BootstrapService = {
   async init() {
     try {
       // 1. Initialize composition root
-      CompositionRoot.init();
+      Composition.init();
 
       // 2. Initialize loader
       GlobalLoaderService.init();
@@ -18,10 +26,10 @@ export const BootstrapService = {
       HabitApplication.load();
 
       // 4. Initialize storage sync (listens for external changes)
-      StorageSyncService.init();
+      StorageService.init();
 
       // 5. Initialize theme sync
-      ThemeSyncService.init();
+      ThemeService.init();
 
       // 6. Initialize controllers
       await this._initControllers();
@@ -41,23 +49,6 @@ export const BootstrapService = {
   },
 
   async _initControllers() {
-    // Import all controllers (using dynamic imports for better loading)
-    const [
-      { NavigationController },
-      { HabitController },
-      { SettingsController },
-      { ThemeController },
-      { TooltipController },
-      { HabitFiltersScrollService },
-    ] = await Promise.all([
-      import("@/controllers/navigation.controller"),
-      import("@/controllers/habit.controller"),
-      import("@/controllers/settings.controller"),
-      import("@/controllers/theme.controller"),
-      import("@/controllers/tooltip.controller"),
-      import("@/ui/services/habit-filters-scroll.service"),
-    ]);
-
     // Initialize in correct order
     NavigationController.init();
     HabitController.init();
@@ -76,9 +67,7 @@ export const BootstrapService = {
   },
 
   _runMaintenance() {
-    import("@/controllers/state.controller").then(({ StateController }) => {
-      StateController.execute();
-    });
+    StateController.execute();
   },
 
   _showApp() {
@@ -98,12 +87,8 @@ export const BootstrapService = {
     }
 
     // Update tab styles after app is visible
-    import("@/controllers/habit.controller").then(({ HabitController }) => {
-      import("@/models/state.model").then(({ state }) => {
-        requestAnimationFrame(() => {
-          HabitController.updateTabStyles(state.activeTab);
-        });
-      });
+    requestAnimationFrame(() => {
+      HabitController.updateTabStyles(state.activeTab);
     });
   },
 };

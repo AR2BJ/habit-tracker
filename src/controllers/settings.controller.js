@@ -1,12 +1,12 @@
 import { StateManager, state } from "@/models/state.model";
 
-import { FileService } from "@/ui/services/file.service";
+import { FileService } from "@/services/file.service";
 import { GlobalLoaderService } from "@/services/loader.service";
 import { HabitApplication } from "@/app/habits/habit.application";
 import { NotificationService } from "@/services/notification.service";
 import { SettingsApplication } from "@/app/settings/settings.application";
 import { StateController } from "./state.controller";
-import { getTheme } from "@/services/theme.service";
+import { ThemeApplication } from "@/infrastructure/theme/theme.application";
 import { todayISO } from "@/shared/utils/date.utils";
 
 export const SettingsController = {
@@ -37,13 +37,15 @@ export const SettingsController = {
 
     // Theme change listener
     document.addEventListener("themeChanged", (event) => {
-      this.syncThemeControls(event.detail?.theme || getTheme());
+      this.syncThemeControls(
+        event.detail?.theme || ThemeApplication.getTheme(),
+      );
     });
 
-    this.syncThemeControls(getTheme());
+    this.syncThemeControls(ThemeApplication.getTheme());
 
     window.addEventListener("resize", () => {
-      this.syncThemeControls(getTheme());
+      this.syncThemeControls(ThemeApplication.getTheme());
     });
   },
 
@@ -164,7 +166,7 @@ export const SettingsController = {
   },
 
   handleThemeSwitch(targetTheme) {
-    const currentTheme = getTheme();
+    const currentTheme = ThemeApplication.getTheme();
     if (currentTheme === targetTheme) return;
 
     document.getElementById("theme-toggle")?.click();

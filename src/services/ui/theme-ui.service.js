@@ -24,13 +24,19 @@ export const ThemeUIService = {
    */
   applyTheme(mode) {
     const root = document.documentElement;
+
+    // Remove both classes first
+    root.classList.remove("dark", "light");
+
+    // Add the appropriate class
     if (mode === "dark") {
       root.classList.add("dark");
-      root.classList.remove("light");
     } else {
       root.classList.add("light");
-      root.classList.remove("dark");
     }
+
+    // Dispatch event for listeners
+    this.dispatchThemeEvent(mode);
   },
 
   /**

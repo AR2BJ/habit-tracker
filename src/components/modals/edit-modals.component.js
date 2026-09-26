@@ -3,7 +3,7 @@ export const EditModalsComponent = {
     return `
       <div
         id="edit-modal"
-        class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
+        class="fixed inset-0 z-400 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
       >
         <div
           class="bg-surface rounded-2xl p-4 lg:p-6 max-w-3xl w-full h-auto shadow-2xl flex flex-col border border-border overflow-hidden"

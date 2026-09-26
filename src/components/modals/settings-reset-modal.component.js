@@ -11,7 +11,7 @@ export const SettingsResetComponent = {
           <div
             class="w-10 h-10 lg:w-11 lg:h-11 rounded-xl lg:rounded-2xl bg-red-500/10 text-red-500/80 flex items-center justify-center text-xl mx-auto"
           >
-            <i class="fa-regular fa-triangle-exclamation"></i>
+            <i class="ti ti-alert-triangle"></i>
           </div>
 
           <div class="text-center flex flex-col gap-1">

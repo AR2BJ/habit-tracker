@@ -52,7 +52,7 @@ export const StateController = {
     NotificationService.show({
       type: "success",
       message: `${count} day(s) without status have been marked as skipped`,
-      icon: "fa-circle-check",
+      icon: "ti-circle-check",
       iconColor: "text-emerald-500/80",
       duration: 5000,
     });
@@ -65,8 +65,8 @@ export const StateController = {
     NotificationService.show({
       type: "info",
       message: `${count} habit(s) have been archived due to inactivity`,
-      icon: "fa-box-archive",
-      iconColor: "text-brand/80",
+      icon: "ti-archive",
+      iconColor: "text-sky-500/80",
       duration: 5000,
     });
   },
@@ -79,8 +79,8 @@ export const StateController = {
     NotificationService.show({
       type: "info",
       message: `Maintenance complete: ${skipped} day(s) skipped, ${archived} habit(s) archived`,
-      icon: "fa-wand-magic-sparkles",
-      iconColor: "text-brand/80",
+      icon: "ti-wand",
+      iconColor: "text-sky-500/80",
       duration: 6000,
     });
   },

@@ -37,7 +37,7 @@ export class HabitActionService {
           message: isNowCompleted
             ? `Completed "${habit.name}" for today! ✨`
             : `Removed completion for "${habit.name}"`,
-          icon: isNowCompleted ? "fa-circle-check" : "fa-circle",
+          icon: isNowCompleted ? "ti-circle-check" : "ti-circle",
           iconColor: isNowCompleted ? "text-emerald-500/80" : "text-brand/80",
           duration: 5000,
         });
@@ -46,7 +46,7 @@ export class HabitActionService {
         this._notification.show({
           type: "error",
           message: error.message || "Failed to toggle habit",
-          icon: "fa-triangle-exclamation",
+          icon: "ti-alert-triangle",
           duration: 3000,
         });
       } finally {
@@ -104,7 +104,7 @@ export class HabitActionService {
           message: isNowCompleted
             ? `Marked "${habit.name}" as done for ${dateLabel}! ✨`
             : `Unchecked "${habit.name}" for ${dateLabel}`,
-          icon: isNowCompleted ? "fa-square-check" : "fa-square-xmark",
+          icon: isNowCompleted ? "ti-square-check" : "ti-square-x",
           iconColor: isNowCompleted ? "text-emerald-500/80" : "text-brand/80",
           duration: 5000,
         });
@@ -113,7 +113,7 @@ export class HabitActionService {
         this._notification.show({
           type: "error",
           message: error.message || "Failed to update date",
-          icon: "fa-triangle-exclamation",
+          icon: "ti-alert-triangle",
           duration: 3000,
         });
       } finally {
@@ -143,7 +143,7 @@ export class HabitActionService {
           message: isNowSkipped
             ? `Safeguard activated: Skipped day for "${habit.name}".`
             : `Removed safeguard for "${habit.name}"`,
-          icon: isNowSkipped ? "fa-shield-halved" : "fa-calendar",
+          icon: isNowSkipped ? "ti-shield-half" : "ti-calendar",
           iconColor: isNowSkipped ? "text-amber-500/80" : "text-brand/80",
           duration: 5000,
         });
@@ -152,7 +152,7 @@ export class HabitActionService {
         this._notification.show({
           type: "error",
           message: error.message || "Failed to update skipped date",
-          icon: "fa-triangle-exclamation",
+          icon: "ti-alert-triangle",
           duration: 3000,
         });
       } finally {

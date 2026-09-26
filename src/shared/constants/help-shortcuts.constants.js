@@ -4,17 +4,17 @@ export const HELP_SHORTCUTS = [
     items: [
       {
         label: "Go to Habits View",
-        icon: "fa-rectangle-history",
+        icon: "ti-folders",
         keys: [["Shift"], ["H"]],
       },
       {
         label: "Go to Analytics Dashboard",
-        icon: "fa-chart-mixed",
+        icon: "ti-chart-histogram",
         keys: [["Shift"], ["A"]],
       },
       {
         label: "Go to App Settings",
-        icon: "fa-sliders",
+        icon: "ti-settings",
         keys: [["Shift"], ["S"]],
       },
     ],
@@ -24,32 +24,32 @@ export const HELP_SHORTCUTS = [
     items: [
       {
         label: "Scrolling To Top",
-        icon: "fa-chevron-square-up",
+        icon: "ti-arrow-up",
         keys: [["Alt"], ["B"]],
       },
       {
         label: "Collapse / Expand Habit Creation Form",
-        icon: "fa-square-minus",
+        icon: "ti-square-minus",
         keys: [["Alt"], ["C"]],
       },
       {
         label: "Toggle Dark/Light Theme",
-        icon: "fa-circle-half-stroke",
+        icon: "ti-brightness",
         keys: [["Alt"], ["T"]],
       },
       {
         label: "Toggle Navigation Menu",
-        icon: "fa-bars",
+        icon: "ti-menu-4",
         keys: [["Alt"], ["N"]],
       },
       {
         label: "Open Reset Data Modal",
-        icon: "fa-arrow-rotate-left",
+        icon: "ti-alert-triangle",
         keys: [["Alt"], ["R"]],
       },
       {
         label: "Close Active Modal / Blur Input",
-        icon: "fa-xmark",
+        icon: "ti-x",
         keys: [["Esc"]],
       },
     ],
@@ -59,27 +59,32 @@ export const HELP_SHORTCUTS = [
     items: [
       {
         label: "Quick Search / Filter",
-        icon: "fa-magnifying-glass",
+        icon: "ti-search",
         keys: [["/"]],
       },
       {
-        label: "Switch Tab View (Active / Archived)",
-        icon: "fa-eye",
-        keys: [["Alt"], ["A", "X"]],
+        label: "Switch to Active Tab",
+        icon: "ti-clipboard-list",
+        keys: [["Alt", "A"]],
+      },
+      {
+        label: "Switch to Archived Tab",
+        icon: "ti-archive",
+        keys: [["Alt", "X"]],
       },
       {
         label: "Switch Chart View (Weekly / Monthly / Yearly)",
-        icon: "fa-chart-line",
+        icon: "ti-chart-line",
         keys: [["Alt"], ["1 - 3"]],
       },
       {
         label: "Quick Category Select (Habits View)",
-        icon: "fa-filter",
+        icon: "ti-filter",
         keys: [["0 - 9 / 10"]],
       },
       {
         label: "Toggle This Help Center",
-        icon: "fa-circle-question",
+        icon: "ti-question-mark",
         keys: [["?"]],
       },
     ],

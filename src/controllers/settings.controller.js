@@ -1,5 +1,3 @@
-import { StateManager, state } from "@/models/state.model";
-
 import { FileService } from "@/services/file.service";
 import { GlobalLoaderService } from "@/services/loader.service";
 import { HabitApplication } from "@/app/habits/habit.application";
@@ -180,8 +178,8 @@ export const SettingsController = {
       NotificationService.show({
         type: "info",
         message: "There is no data to export",
-        icon: "fa-circle-info",
-        iconColor: "text-brand/80",
+        icon: "ti-info-circle",
+        iconColor: "text-sky-500/80",
         duration: 5000,
       });
       return;
@@ -192,7 +190,7 @@ export const SettingsController = {
       NotificationService.show({
         type: "success",
         message: `Database layer exported successfully as ${format.toUpperCase()}`,
-        icon: "fa-file-arrow-down",
+        icon: "ti-file-download",
         iconColor: "text-emerald-500/80",
         duration: 5000,
       });
@@ -200,7 +198,7 @@ export const SettingsController = {
       NotificationService.show({
         type: "error",
         message: error.message || "Export failed",
-        icon: "fa-triangle-exclamation",
+        icon: "ti-alert-triangle",
         duration: 5000,
       });
     }
@@ -218,14 +216,14 @@ export const SettingsController = {
       StateController.runManual();
 
       // Reset UI state
-      StateManager.setTab("active");
-      StateManager.setView("habits");
-      StateManager.setCategory("all");
+      HabitApplication.setTab("active");
+      HabitApplication.setView("habits");
+      HabitApplication.setCategory("all");
 
       NotificationService.show({
         type: "success",
         message: `Data ledger parsed and synchronized from ${file.name}`,
-        icon: "fa-circle-check",
+        icon: "ti-circle-check",
         iconColor: "text-emerald-500/80",
         duration: 5000,
       });
@@ -234,7 +232,7 @@ export const SettingsController = {
       NotificationService.show({
         type: "error",
         message: error.message || "Failed to parse file",
-        icon: "fa-triangle-exclamation",
+        icon: "ti-alert-triangle",
         iconColor: "text-red-500/80",
         duration: 5000,
       });
@@ -249,16 +247,16 @@ export const SettingsController = {
     const toggleDot = document.getElementById("sett-auto-archive-dot");
 
     if (enabled) {
-      toggleBtn?.classList.replace("bg-neutral-300/80", "bg-brand/80");
+      toggleBtn?.classList.replace("bg-neutral-300/80", "bg-emerald-500/80");
       toggleBtn?.classList.replace(
         "dark:bg-neutral-700/80",
-        "dark:bg-brand/80",
+        "dark:bg-emerald-400/80",
       );
       toggleDot?.classList.replace("translate-x-0", "translate-x-5");
     } else {
-      toggleBtn?.classList.replace("bg-brand/80", "bg-neutral-300/80");
+      toggleBtn?.classList.replace("bg-emerald-500/80", "bg-neutral-300/80");
       toggleBtn?.classList.replace(
-        "dark:bg-brand/80",
+        "dark:bg-emerald-400/80",
         "dark:bg-neutral-700/80",
       );
       toggleDot?.classList.replace("translate-x-5", "translate-x-0");
@@ -272,8 +270,8 @@ export const SettingsController = {
     NotificationService.show({
       type: "info",
       message: `Autonomous archiving pipeline has been ${nextState ? "activated" : "deactivated"}`,
-      icon: "fa-robot",
-      iconColor: "text-brand/80",
+      icon: "ti-robot-face",
+      iconColor: "text-sky-500/80",
       duration: 5000,
     });
 
@@ -295,8 +293,8 @@ export const SettingsController = {
       NotificationService.show({
         type: "info",
         message: `${result.archived} stale habit(s) exceeding 30 days auto-archived`,
-        icon: "fa-box-archive",
-        iconColor: "text-brand/80",
+        icon: "ti-archive",
+        iconColor: "text-sky-500/80",
         duration: 5000,
       });
     }
@@ -319,9 +317,9 @@ export const SettingsController = {
       const snapshot = SettingsApplication.reset();
 
       // Reset UI state
-      StateManager.setTab("active");
-      StateManager.setView("habits");
-      StateManager.setCategory("all");
+      HabitApplication.setTab("active");
+      HabitApplication.setView("habits");
+      HabitApplication.setCategory("all");
 
       NotificationService.show({
         type: "error",

@@ -50,7 +50,7 @@ export const HabitFormController = {
       NotificationService.show({
         type: "error",
         message: "Habit not found",
-        icon: "fa-triangle-exclamation",
+        icon: "ti-alert-triangle",
         duration: 3000,
       });
       return;
@@ -80,7 +80,7 @@ export const HabitFormController = {
         NotificationService.show({
           type: "error",
           message: "Habit name cannot be empty",
-          icon: "fa-triangle-exclamation",
+          icon: "ti-alert-triangle",
           duration: 5000,
         });
         return;
@@ -101,7 +101,7 @@ export const HabitFormController = {
           NotificationService.show({
             type: "success",
             message: `Habit "${name}" created successfully!`,
-            icon: "fa-check",
+            icon: "ti-check",
             iconColor: "text-emerald-500/80",
             duration: 5000,
           });
@@ -109,7 +109,7 @@ export const HabitFormController = {
           NotificationService.show({
             type: "error",
             message: error.message || "Failed to create habit",
-            icon: "fa-triangle-exclamation",
+            icon: "ti-alert-triangle",
             iconColor: "text-red-500/80",
             duration: 5000,
           });
@@ -197,7 +197,7 @@ export const HabitFormController = {
       NotificationService.show({
         type: "error",
         message: "Habit not found",
-        icon: "fa-triangle-exclamation",
+        icon: "ti-alert-triangle",
         duration: 3000,
       });
       return;
@@ -237,7 +237,7 @@ export const HabitFormController = {
         NotificationService.show({
           type: "error",
           message: error.message || "Failed to delete habit",
-          icon: "fa-triangle-exclamation",
+          icon: "ti-alert-triangle",
           duration: 5000,
         });
       } finally {
@@ -254,7 +254,7 @@ export const HabitFormController = {
       NotificationService.show({
         type: "error",
         message: "No habit selected for editing",
-        icon: "fa-triangle-exclamation",
+        icon: "ti-alert-triangle",
         duration: 3000,
       });
       return;
@@ -267,7 +267,7 @@ export const HabitFormController = {
       NotificationService.show({
         type: "error",
         message: "Habit name cannot be empty",
-        icon: "fa-triangle-exclamation",
+        icon: "ti-alert-triangle",
         duration: 5000,
       });
       return;
@@ -293,7 +293,7 @@ export const HabitFormController = {
         NotificationService.show({
           type: "success",
           message: "Habit updated successfully!",
-          icon: "fa-check",
+          icon: "ti-check",
           iconColor: "text-emerald-500/80",
           duration: 5000,
         });
@@ -301,7 +301,7 @@ export const HabitFormController = {
         NotificationService.show({
           type: "error",
           message: error.message || "Failed to update habit",
-          icon: "fa-triangle-exclamation",
+          icon: "ti-alert-triangle",
           iconColor: "text-red-500/80",
           duration: 5000,
         });

@@ -1,3 +1,4 @@
+import { CATEGORY_OPTIONS } from "@/shared/constants/habit-options.constants";
 import { SprintCalculator } from "@/domain/habits/habit-sprint.calculator";
 import { todayISO } from "@/shared/utils/date.utils";
 
@@ -9,11 +10,7 @@ export const HabitCalendarComponent = {
    * @returns {string} HTML string
    */
   render(habit, today = todayISO()) {
-    const {
-      createdAt,
-      id,
-      archived,
-    } = habit;
+    const { createdAt, id, archived } = habit;
 
     // Calculate sprint
     const { sprintIndex, sprintStart, sprintEnd } =
@@ -32,7 +29,7 @@ export const HabitCalendarComponent = {
           <span
             class="flex items-center gap-1 order-2 sm:order-1 text-[11px] sm:text-xs md:text-sm whitespace-nowrap"
           >
-            <i class="fa-regular fa-calendar-range text-brand/70"></i>
+            <i class="ti ti-calendar-week text-brand/70"></i>
             Start: ${sprintStart}
           </span>
 
@@ -40,10 +37,10 @@ export const HabitCalendarComponent = {
             class="relative inline-flex items-center justify-center order-1 sm:order-2"
           >
             <span
-              class="absolute inset-0 animate-micro-ping rounded-full bg-brand/25"
+              class="absolute inset-0 animate-micro-ping rounded-md bg-brand/25"
             ></span>
             <span
-              class="relative text-[10px] sm:text-xs bg-brand/10 text-brand/80 px-3 py-1 rounded-full font-bold tracking-wide border border-brand/20 shadow-sm select-none whitespace-nowrap"
+              class="relative min-h-5.5 inline-flex items-center gap-1 rounded-md border border-brand/30 bg-brand/10 px-2.5 py-1 text-xs font-semibold text-brand/80"
             >
               Sprint ${sprintIndex + 1}
             </span>
@@ -53,7 +50,7 @@ export const HabitCalendarComponent = {
             class="flex items-center gap-1 order-3 text-[11px] sm:text-xs md:text-sm whitespace-nowrap"
           >
             End: ${sprintEnd}
-            <i class="fa-regular fa-calendar-check text-brand/70"></i>
+            <i class="ti ti-calendar-check text-brand/70"></i>
           </span>
         </div>
 
@@ -81,9 +78,9 @@ export const HabitCalendarComponent = {
 
               const icon =
                 status === "completed"
-                  ? '<i class="fa-regular fa-check"></i>'
+                  ? '<i class="ti ti-check"></i>'
                   : status === "skipped"
-                    ? '<i class="fa-regular fa-shield"></i>'
+                    ? '<i class="ti ti-shield"></i>'
                     : "";
 
               return `

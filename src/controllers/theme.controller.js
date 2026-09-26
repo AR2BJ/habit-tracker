@@ -22,6 +22,44 @@ export const ThemeController = {
 
     btn.removeEventListener("click", this._handleToggle);
     btn.addEventListener("click", this._handleToggle);
+
+    btn.addEventListener("mouseenter", () => {
+      const sunIcon = document.getElementById("btn-sun");
+      const moonIcon = document.getElementById("btn-moon");
+      const moonStarsIcon = document.getElementById("btn-moon-stars");
+
+      if (sunIcon) {
+        sunIcon.classList.add("rotate-45", "scale-110");
+        sunIcon.classList.replace("ti-sun", "ti-sun-high");
+      }
+
+      if (moonIcon && moonStarsIcon) {
+        moonIcon.classList.replace("opacity-100", "opacity-0");
+        moonIcon.classList.replace("scale-100", "scale-75");
+
+        moonStarsIcon.classList.replace("opacity-0", "opacity-100");
+        moonStarsIcon.classList.replace("scale-75", "scale-110");
+      }
+    });
+
+    btn.addEventListener("mouseleave", () => {
+      const sunIcon = document.getElementById("btn-sun");
+      const moonIcon = document.getElementById("btn-moon");
+      const moonStarsIcon = document.getElementById("btn-moon-stars");
+
+      if (sunIcon) {
+        sunIcon.classList.remove("rotate-45", "scale-110");
+        sunIcon.classList.replace("ti-sun-high", "ti-sun");
+      }
+
+      if (moonIcon && moonStarsIcon) {
+        moonIcon.classList.replace("opacity-0", "opacity-100");
+        moonIcon.classList.replace("scale-75", "scale-100");
+
+        moonStarsIcon.classList.replace("opacity-100", "opacity-0");
+        moonStarsIcon.classList.replace("scale-110", "scale-75");
+      }
+    });
   },
 
   _handleToggle(event) {

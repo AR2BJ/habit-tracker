@@ -11,6 +11,10 @@ export const Store = {
     session: {
       lastDeletedHabit: null,
     },
+    filter: {
+      statusFilter: "all",
+      sortBy: "streak",
+    },
   },
   _listeners: [],
 
@@ -24,6 +28,17 @@ export const Store = {
 
   setHabits(habits) {
     this._state.habits = habits;
+    this._notify();
+  },
+
+  // filter setters
+  setStatusFilter(filter) {
+    this._state.filter.statusFilter = filter;
+    this._notify();
+  },
+
+  setSortBy(sortBy) {
+    this._state.filter.sortBy = sortBy;
     this._notify();
   },
 

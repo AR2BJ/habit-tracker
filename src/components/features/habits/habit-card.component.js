@@ -1,8 +1,18 @@
+import {
+  CATEGORY_OPTIONS,
+  FREQUENCY_OPTIONS,
+} from "@/shared/constants/habit-options.constants";
+
 import { HabitAnalytics } from "@/domain/habits/habit.analytics";
 import { HabitCalendarComponent } from "./habit-calendar.component";
 import { todayISO } from "@/shared/utils/date.utils";
 
 export const HabitCardComponent = {
+  _normalizeIconClass(iconString) {
+    if (!iconString) return "ti ti-folder";
+    return iconString;
+  },
+
   /**
    * Get goal status for a habit
    * @param {Object} habit - Habit object
@@ -17,16 +27,16 @@ export const HabitCardComponent = {
     const isGoalMet = weeklyChecks >= targetFrequency;
     const isGoalOverflow = weeklyChecks > targetFrequency;
 
-    let icon = "fa-bullseye-arrow text-pink-500/80";
+    let icon = "ti-target-arrow text-pink-500/80";
     let labelColor = "text-secondary";
 
     if (isGoalMet) {
-      icon = "fa-circle-check text-brand/80";
+      icon = "ti-circle-check text-brand/80";
       labelColor = "text-brand/80 dark:text-brand/80";
     }
 
     if (isGoalOverflow) {
-      icon = "fa-bolt-lightning text-lime-500/80";
+      icon = "ti-bolt text-lime-500/80";
       labelColor = "text-lime-600/80 dark:text-lime-400/80";
     }
 
@@ -40,24 +50,42 @@ export const HabitCardComponent = {
     };
   },
 
-  /**
-   * Get category badge class
-   */
-  _getCategoryBadgeClass(category) {
-    const categoryColors = {
-      general: "bg-yellow-500/10 text-yellow-500/80 border-yellow-500/20",
-      health: "bg-emerald-500/10 text-emerald-500/80 border-emerald-500/20",
-      work: "bg-cyan-500/10 text-cyan-500/80 border-cyan-500/20",
-      research: "bg-violet-500/10 text-violet-500/80 border-violet-500/20",
-      academics: "bg-pink-500/10 text-pink-500/80 border-pink-500/20",
-      openSource: "bg-lime-500/10 text-lime-500/80 border-lime-500/20",
-      systemDesign: "bg-blue-500/10 text-blue-500/80 border-blue-500/20",
-      digitalDetox:
-        "bg-fuchsia-500/10 text-fuchsia-500/80 border-fuchsia-500/20",
-      routine: "bg-orange-500/10 text-orange-500/80 border-orange-500/20",
-      harmful: "bg-red-500/10 text-red-500/80 border-red-500/20",
+  _getCategoryBadgeHtml(categoryValue) {
+    const matched = CATEGORY_OPTIONS.find((p) => p.value === categoryValue);
+    const categoryData = matched || {
+      value: categoryValue || "general",
+      icon: "ti ti-circle text-secondary",
+      class: "bg-surface text-secondary border-border/60",
     };
-    return categoryColors[category] || categoryColors.general;
+
+    const iconClass = this._normalizeIconClass(categoryData.icon);
+
+    return `<span
+      class="category-badge min-h-5.5 inline-flex items-center gap-1 rounded-md border ${categoryData.class} px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider"
+      title="category badge"
+    >
+      <i class="${iconClass} text-[10px] lg:text-xs pb-px"></i>
+      <span>${categoryData.title}</span>
+    </span>`;
+  },
+
+  _getFrequencyBadgeHtml(frequencyValue) {
+    const matched = FREQUENCY_OPTIONS.find((f) => f.value === frequencyValue);
+    const frequencyData = matched || {
+      value: frequencyValue || 1,
+      icon: "ti ti-circle text-secondary",
+      class: "bg-surface text-secondary border-border/60",
+    };
+
+    const iconClass = this._normalizeIconClass(frequencyData.icon);
+
+    return `<span
+      class="frequency-badge min-h-5.5 inline-flex items-center gap-1 rounded-md border ${frequencyData.class} px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider"
+      title="frequency badge"
+    >
+      <i class="${iconClass} text-[10px] lg:text-xs pb-px"></i>
+      <span>${frequencyData.title}</span>
+    </span>`;
   },
 
   /**
@@ -68,6 +96,13 @@ export const HabitCardComponent = {
    * @returns {string} HTML string
    */
   render(habit, isArchived = false, today = todayISO()) {
+    const categoryBadge = HabitCardComponent._getCategoryBadgeHtml(
+      habit.category,
+    );
+    const frequencyBadge = HabitCardComponent._getFrequencyBadgeHtml(
+      habit.frequency,
+    );
+
     const { current, best } = HabitAnalytics.calculateStreak(
       habit.completedDates,
       habit.skippedDates || [],
@@ -77,15 +112,14 @@ export const HabitCardComponent = {
     const isHabitArchived = isArchived || habit.archived;
 
     const goalStatus = this._getGoalStatus(habit);
-    const badgeClass = this._getCategoryBadgeClass(habit.category);
 
     const actionButtonClass = isHabitArchived
       ? "restore-btn hover:bg-emerald-600/10"
       : "archive-btn hover:bg-yellow-600/10";
     const actionTooltip = isHabitArchived ? "Restore" : "Archive";
     const actionIcon = isHabitArchived
-      ? "fa-arrow-rotate-left text-emerald-500/80"
-      : "fa-box-archive text-amber-500/80";
+      ? "ti-rotate -rotate-180 text-emerald-500/80"
+      : "ti-archive text-amber-500/80";
 
     const checkTooltip = completedToday ? "Uncheck Today" : "Check Today";
 
@@ -113,7 +147,7 @@ export const HabitCardComponent = {
                         : "border-border text-secondary hover:border-brand/80 hover:text-brand/80"
                     }"
                   >
-                    <i class="fa-regular ${completedToday ? "fa-check text-base md:text-xl font-bold" : "fa-square text-sm"}"></i>
+                    <i class="ti ${completedToday ? "ti-check text-base md:text-xl font-bold" : "ti-square text-sm"}"></i>
                   </button>
                 `
               }
@@ -126,25 +160,19 @@ export const HabitCardComponent = {
 
             <div class="flex flex-col min-w-0 w-full">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <span
-                  class="inline-flex items-center rounded-md border ${badgeClass} px-1.5 py-0.5 text-[9px] uppercase tracking-wider"
-                >
-                  ${habit.category}
-                </span>
-                <span
-                  class="inline-flex items-center rounded-md border bg-surface text-secondary border-border/50 px-1.5 py-0.5 text-[9px] uppercase tracking-wider"
-                >
-                  ${habit.frequency ?? 7} days/wk
-                </span>
+              ${categoryBadge} ${frequencyBadge}
+              <span
+                class="w-fit min-h-5.5 inline-flex items-center gap-1 rounded-md border border-secondary/30 bg-secondary/10 px-2 py-0.5 text-[10px] font-medium text-secondary/80"
+              >
+                <i class="ti ti-calendar text-[10px] lg:text-xs pb-px"></i>
+                <span>${habit.createdAt}</span>
+              </span>
               </div>
               <h2
-                class="mt-1 text-sm md:text-base font-bold text-color tracking-tight leading-snug wrap-break-word"
+                class="mt-2 text-sm md:text-base font-bold text-color tracking-tight leading-snug wrap-break-word"
               >
                 ${habit.name}
               </h2>
-              <span class="w-fit mt-2 inline-flex items-center rounded-md border bg-surface-2 text-secondary border-border shadow-sm px-1.5 py-0.5 text-[9px]">
-                Created on ${habit.createdAt}
-              </span>
             </div>
           </div>
 
@@ -165,7 +193,7 @@ export const HabitCardComponent = {
                   class="text-xs md:text-sm font-bold text-color flex items-center gap-1 mt-0.5"
                 >
                   <i
-                    class="fa-regular fa-fire text-orange-500/80 text-[10px] md:text-sm pe-0.5"
+                    class="ti ti-flame text-orange-500/80 text-[10px] md:text-sm pe-0.5"
                   ></i>
                   <span>${current}d</span>
                 </span>
@@ -181,14 +209,12 @@ export const HabitCardComponent = {
                   class="text-xs md:text-sm font-bold text-color flex items-center gap-1 mt-0.5"
                 >
                   <i
-                    class="fa-regular fa-crown text-yellow-500/80 text-[10px] md:text-sm pe-0.5"
+                    class="ti ti-crown text-yellow-500/80 text-[10px] md:text-sm pe-0.5"
                   ></i>
                   <span>${best}d</span>
                 </span>
               </div>
-              <div
-                class="flex flex-col items-center px-1"
-              >
+              <div class="flex flex-col items-center px-1">
                 <span
                   class="text-[9px] md:text-xs font-semibold text-secondary uppercase tracking-wider ${goalStatus.labelColor}"
                   >This Wk</span
@@ -197,7 +223,7 @@ export const HabitCardComponent = {
                   class="text-xs md:text-sm font-bold text-color flex items-center gap-1 mt-0.5"
                 >
                   <i
-                    class="fa-regular ${goalStatus.icon} text-[10px] md:text-sm pe-0.5"
+                    class="ti ${goalStatus.icon} text-[10px] md:text-sm pe-0.5"
                   ></i>
                   <span
                     class="${
@@ -220,7 +246,7 @@ export const HabitCardComponent = {
                   class="text-xs md:text-sm font-bold text-color flex items-center gap-1 mt-0.5"
                 >
                   <i
-                    class="fa-regular fa-chart-simple text-teal-500/80 text-[10px] md:text-sm pe-0.5"
+                    class="ti ti-chart-line text-teal-500/80 text-[10px] md:text-sm pe-0.5"
                   ></i>
                   <span>${totalChecks}</span>
                 </span>
@@ -238,7 +264,7 @@ export const HabitCardComponent = {
                     data-id="${habit.id}"
                     class="${actionButtonClass} w-9 h-9 rounded-lg bg-surface-2 border border-border flex items-center justify-center hover:cursor-pointer peer transition"
                   >
-                    <i class="fa-regular ${actionIcon} text-base"></i>
+                    <i class="ti ${actionIcon} text-base md:text-lg"></i>
                   </button>
                   <div
                     class="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-1 rounded bg-surface-2 text-xs text-color opacity-0 cursor-default peer-hover:opacity-100 transition z-10"
@@ -253,7 +279,7 @@ export const HabitCardComponent = {
                     class="edit-btn w-9 h-9 rounded-lg bg-surface-2 hover:bg-blue-600/10 border border-border flex items-center justify-center hover:cursor-pointer peer transition"
                   >
                     <i
-                      class="fa-regular fa-pen-to-square text-blue-500/80 text-base"
+                      class="ti ti-edit-circle text-blue-500/80 text-base md:text-lg"
                     ></i>
                   </button>
                   <div
@@ -268,7 +294,9 @@ export const HabitCardComponent = {
                     data-id="${habit.id}"
                     class="delete-btn w-9 h-9 rounded-lg bg-surface-2 hover:bg-red-600/10 border border-border flex items-center justify-center hover:cursor-pointer peer transition"
                   >
-                    <i class="fa-regular fa-trash-can text-red-500/80 text-base"></i>
+                    <i
+                      class="ti ti-trash text-red-500/80  text-base md:text-lg"
+                    ></i>
                   </button>
                   <div
                     class="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-1 rounded bg-surface-2 text-xs text-color opacity-0 cursor-default peer-hover:opacity-100 transition z-10 whitespace-nowrap pointer-events-none border border-border/60"
@@ -283,7 +311,7 @@ export const HabitCardComponent = {
                   data-id="${habit.id}"
                   class="dropdown-toggle-btn h-9 w-9 rounded-lg border border-border text-secondary hover:text-color hover:bg-surface flex items-center justify-center transition shadow-sm cursor-pointer"
                 >
-                  <i class="fa-regular fa-ellipsis-vertical text-lg"></i>
+                  <i class="ti ti-dots-vertical text-lg"></i>
                 </button>
 
                 <div
@@ -296,7 +324,7 @@ export const HabitCardComponent = {
                       isHabitArchived ? "restore-btn" : "archive-btn"
                     } flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-xs font-medium border-0 bg-transparent text-secondary hover:text-color hover:bg-surface-2 transition cursor-pointer"
                   >
-                    <i class="fa-regular ${actionIcon} text-xs"></i>
+                    <i class="ti ${actionIcon} text-xs"></i>
                     <span
                       >${
                         isHabitArchived ? "Restore Habit" : "Archive Habit"
@@ -308,9 +336,7 @@ export const HabitCardComponent = {
                     data-id="${habit.id}"
                     class="edit-btn flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-xs font-medium border-0 bg-transparent text-secondary hover:text-color hover:bg-surface-2 transition cursor-pointer"
                   >
-                    <i
-                      class="fa-regular fa-pen-to-square text-xs text-blue-500/80"
-                    ></i>
+                    <i class="ti ti-edit-circle text-xs text-blue-500/80"></i>
                     <span>Edit Title</span>
                   </button>
 
@@ -320,7 +346,7 @@ export const HabitCardComponent = {
                     data-id="${habit.id}"
                     class="delete-btn flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-xs font-medium border-0 bg-transparent text-red-500/80 hover:bg-red-500/5 transition cursor-pointer"
                   >
-                    <i class="fa-regular fa-trash-can text-xs"></i>
+                    <i class="ti ti-trash text-xs"></i>
                     <span>Delete Permanently</span>
                   </button>
                 </div>

@@ -13,9 +13,9 @@ export const EditModalsComponent = {
           >
             <div class="flex items-center gap-3 min-w-0">
               <div
-                class="w-10 h-10 lg:w-11 lg:h-11 rounded-xl lg:rounded-2xl bg-brand/10 text-brand/80 flex items-center justify-center text-base lg:text-lg shrink-0"
+                class="w-10 h-10 lg:w-11 lg:h-11 rounded-xl lg:rounded-2xl bg-brand/10 text-brand/80 flex items-center justify-center text-lg lg:text-xl  shrink-0"
               >
-                <i class="fa-regular fa-pen-to-square"></i>
+                <i class="ti ti-edit-circle"></i>
               </div>
 
               <div class="min-w-0">
@@ -37,7 +37,7 @@ export const EditModalsComponent = {
               type="button"
                class="w-8 h-8 lg:w-9 lg:h-9 rounded-lg lg:rounded-xl bg-surface-2 hover:bg-red-600/10 border border-border text-secondary hover:text-color flex items-center justify-center transition cursor-pointer shrink-0"
             >
-              <i class="fa-regular fa-xmark text-sm"></i>
+              <i class="ti ti-x text-sm lg:text-base"></i>
             </button>
           </div>
 
@@ -86,7 +86,7 @@ export const EditModalsComponent = {
                 id="confirm-edit"
                 class="h-10 lg:h-11 rounded-lg lg:rounded-xl bg-brand/80 hover:bg-brand text-white font-medium text-xs lg:text-sm transition shadow-md shadow-brand/10 cursor-pointer flex items-center justify-center gap-2"
               >
-                <i class="fa-regular fa-check"></i> Save Changes
+                <i class="ti ti-check"></i> Save Changes
               </button>
             </div>
           </div>

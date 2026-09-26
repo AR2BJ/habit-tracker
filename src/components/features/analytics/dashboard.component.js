@@ -1,3 +1,8 @@
+import {
+  CATEGORY_OPTIONS,
+  FREQUENCY_OPTIONS,
+} from "@/shared/constants/habit-options.constants";
+
 import { DashboardAnalytics } from "@/domain/analytics/dashboard.analytics";
 import { todayISO } from "@/shared/utils/date.utils";
 
@@ -49,22 +54,21 @@ export const DashboardComponent = {
 
     // Determine weekly target card style
     let weeklyBorderClass = "hover:border-pink-500/30";
-    let weeklyIcon = "fa-bullseye-arrow text-pink-500";
+    let weeklyIcon = "ti-target-arrow text-pink-500";
     if (goalsOverflowThisWeek > 0) {
       weeklyBorderClass = "hover:border-lime-500/30";
-      weeklyIcon = "fa-bolt-lightning text-lime-500";
+      weeklyIcon = "ti-bolt-filled text-lime-500";
     } else if (goalsOverflowThisWeek === 0 && goalsMetThisWeek > 0) {
       weeklyBorderClass = "hover:border-brand/30";
-      weeklyIcon = "fa-circle-check text-brand/80";
+      weeklyIcon = "ti-circle-check-filled text-brand/80";
     }
 
     return `
-      <!-- Total Habits -->
       <div
-        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] hover:-translate-y-1 hover:border-sky-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] hover:-translate-y-1 hover:border-sky-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
       >
         <i
-          class="fa-solid fa-layer-group absolute -right-4 -bottom-6 text-[10rem] text-sky-500 opacity-[0.04] dark:opacity-[0.06] rotate-20 pointer-events-none group-hover:scale-110 group-hover:rotate-10 transition-transform duration-500"
+          class="ti ti-stack-2-filled absolute -right-4 -bottom-6 text-[12rem] text-sky-500 opacity-[0.04] dark:opacity-[0.06] rotate-20 pointer-events-none group-hover:scale-110 group-hover:rotate-10 transition-transform duration-500"
         ></i>
 
         <div class="flex flex-col gap-1 z-10">
@@ -84,12 +88,11 @@ export const DashboardComponent = {
         </div>
       </div>
 
-      <!-- Completed Today -->
       <div
-        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] hover:-translate-y-1 hover:border-emerald-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] hover:-translate-y-1 hover:border-emerald-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
       >
         <i
-          class="fa-solid fa-calendar-check absolute -right-4 -bottom-6 text-[10rem] text-emerald-500 opacity-[0.04] dark:opacity-[0.06] rotate-15 pointer-events-none group-hover:scale-110 group-hover:rotate-5 transition-transform duration-500"
+          class="ti ti-calendar-event-filled absolute -right-4 -bottom-6 text-[11rem] text-emerald-500 opacity-[0.04] dark:opacity-[0.06] rotate-15 pointer-events-none group-hover:scale-110 group-hover:rotate-5 transition-transform duration-500"
         ></i>
 
         <div class="flex flex-col gap-1 z-10">
@@ -106,12 +109,11 @@ export const DashboardComponent = {
         </div>
       </div>
 
-      <!-- Weekly Targets -->
       <div
-        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] ${weeklyBorderClass} rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] ${weeklyBorderClass} rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
       >
         <i
-          class="fa-solid ${weeklyIcon} absolute -right-2 -bottom-6 text-[10rem] opacity-[0.04] dark:opacity-[0.06] rotate-25 pointer-events-none group-hover:scale-110 group-hover:rotate-15 transition-transform duration-500"
+          class="ti ${weeklyIcon} absolute -right-2 -bottom-6 text-[11rem] opacity-[0.04] dark:opacity-[0.06] rotate-25 pointer-events-none group-hover:scale-110 group-hover:rotate-15 transition-transform duration-500"
         ></i>
 
         <div class="flex flex-col gap-1 z-10">
@@ -130,12 +132,11 @@ export const DashboardComponent = {
         </div>
       </div>
 
-      <!-- Best Streak -->
       <div
-        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] hover:-translate-y-1 hover:border-orange-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] hover:-translate-y-1 hover:border-orange-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
       >
         <i
-          class="fa-solid fa-fire absolute -right-2 -bottom-4 text-[10rem] text-orange-500 opacity-[0.04] dark:opacity-[0.06] rotate-12 pointer-events-none group-hover:scale-110 group-hover:rotate-0 transition-transform duration-500"
+          class="ti ti-flame-filled absolute -right-2 -bottom-4 text-[11rem] text-orange-500 opacity-[0.04] dark:opacity-[0.06] rotate-12 pointer-events-none group-hover:scale-110 group-hover:rotate-0 transition-transform duration-500"
         ></i>
 
         <div class="flex flex-col gap-1 z-10">
@@ -155,12 +156,11 @@ export const DashboardComponent = {
         </div>
       </div>
 
-      <!-- Avg Success -->
       <div
-        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] hover:-translate-y-1 hover:border-yellow-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] hover:-translate-y-1 hover:border-yellow-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
       >
         <i
-          class="fa-solid fa-chart-line absolute -right-4 -bottom-6 text-[10rem] text-yellow-500 opacity-[0.04] dark:opacity-[0.06] rotate-18 pointer-events-none group-hover:scale-110 group-hover:rotate-[8deg] transition-transform duration-500"
+          class="ti ti-chart-line absolute -right-4 -bottom-6 text-[11rem] text-yellow-500 opacity-[0.04] dark:opacity-[0.06] rotate-18 pointer-events-none group-hover:scale-110 group-hover:rotate-[8deg] transition-transform duration-500"
         ></i>
 
         <div class="flex flex-col gap-1 z-10">
@@ -177,12 +177,11 @@ export const DashboardComponent = {
         </div>
       </div>
 
-      <!-- Archived -->
       <div
-        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] hover:-translate-y-1 hover:border-slate-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
+        class="col-span-2 md:col-span-1 relative overflow-hidden bg-surface-2 border border-border/70 shadow-sm backdrop-opacity-[0.04] dark:backdrop-opacity-[0.06] hover:-translate-y-1 hover:border-slate-500/30 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between min-h-36 group"
       >
         <i
-          class="fa-regular fa-box-archive absolute -right-4 -bottom-6 text-[10rem] text-slate-500 opacity-[0.04] dark:opacity-[0.06] rotate-18 pointer-events-none group-hover:scale-110 group-hover:rotate-[8deg] transition-transform duration-500"
+          class="ti ti-archive-filled absolute -right-4 -bottom-6 text-[11rem] text-slate-500 opacity-[0.04] dark:opacity-[0.06] rotate-18 pointer-events-none group-hover:scale-110 group-hover:rotate-[8deg] transition-transform duration-500"
         ></i>
 
         <div class="flex flex-col gap-1 z-10">
@@ -211,9 +210,8 @@ export const DashboardComponent = {
       <div
         class="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full col-span-2 sm:col-span-full mt-4"
       >
-        <!-- Heatmap Chart -->
         <div
-          class="lg:col-span-2 bg-surface border border-border/70 shadow-sm rounded-2xl p-6 flex flex-col justify-between"
+          class="lg:col-span-2 bg-surface-2 border border-border/70 shadow-sm rounded-2xl p-6 flex flex-col justify-between"
         >
           <div
             class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between"
@@ -222,10 +220,10 @@ export const DashboardComponent = {
               <h4
                 class="text-lg font-bold text-color flex items-center gap-2"
               >
-                <i class="fa-regular fa-calendar text-brand/80 text-xl"></i>
+                <i class="ti ti-affiliate text-brand/80 text-xl"></i>
                 Lifetime Activity Grid
               </h4>
-              <p class="text-sm text-secondary mt-1">
+              <p class="text-xs text-secondary mt-1">
                 Advanced multi-tier habit density repository mapped by sprint
                 lifecycle.
               </p>
@@ -234,15 +232,15 @@ export const DashboardComponent = {
             <div class="relative flex items-center justify-end">
               <button
                 id="heatmap-mobile-menu-toggle"
-                class="sm:hidden inline-flex items-center justify-center h-8 w-8 rounded-lg border border-border bg-surface-2 text-secondary hover:text-color transition shadow-sm cursor-pointer"
+                class="sm:hidden inline-flex items-center justify-center h-8 w-8 rounded-lg border border-border bg-surface text-secondary hover:text-color transition shadow-sm cursor-pointer"
                 aria-label="Open view menu"
               >
-                <i class="fa-regular fa-ellipsis-vertical text-lg"></i>
+                <i class="ti ti-dots-vertical text-lg"></i>
               </button>
 
               <div
                 id="heatmap-mobile-menu"
-                class="hidden absolute right-0 top-full mt-2 w-44 rounded-2xl border border-border bg-surface-2 shadow-lg z-20 overflow-hidden"
+                class="hidden absolute right-0 top-full mt-2 w-44 rounded-2xl border border-border bg-surface shadow-lg z-20 overflow-hidden"
               >
                 <button
                   data-view="weekly"
@@ -266,7 +264,7 @@ export const DashboardComponent = {
 
               <div
                 id="chart-view-switcher"
-                class="hidden sm:flex relative overflow-hidden rounded-xl border border-border/80 bg-surface-2 p-1 isolation-auto"
+                class="hidden sm:flex relative overflow-hidden rounded-xl border border-border/80 bg-surface p-1 isolation-auto"
               >
                 <div
                   id="heatmap-tab-indicator"
@@ -308,20 +306,17 @@ export const DashboardComponent = {
           </div>
         </div>
 
-        <!-- Weekday Chart -->
         <div
-          class="bg-surface border border-border/70 shadow-sm rounded-2xl p-6 flex flex-col justify-between"
+          class="bg-surface-2 border border-border/70 shadow-sm rounded-2xl p-6 flex flex-col justify-between"
         >
           <div>
             <h4
               class="text-lg font-bold text-color flex items-center gap-2"
             >
-              <i
-                class="fa-regular fa-chart-simple text-amber-500/80 text-xl"
-              ></i>
+              <i class="ti ti-chart-bar rotate-90 text-brand text-xl"></i>
               Distribution Trends
             </h4>
-            <p class="text-sm text-secondary mt-1">
+            <p class="text-xs text-secondary mt-1">
               Analysis of your execution behavior mapped by day of the week.
             </p>
           </div>
@@ -337,9 +332,8 @@ export const DashboardComponent = {
         </div>
       </div>
 
-      <!-- Individual Habits List -->
       <div
-        class="col-span-full bg-surface border border-border/70 shadow-sm rounded-2xl p-6 flex flex-col justify-between"
+        class="col-span-full bg-surface-2 border border-border/70 shadow-sm rounded-2xl p-6 flex flex-col justify-between"
       >
           <div
             class="flex flex-wrap sm:flex-nowrap sm:items-center justify-between gap-2"
@@ -349,7 +343,7 @@ export const DashboardComponent = {
                 class="text-lg font-bold text-color flex items-center gap-2"
               >
                 <i
-                  class="fa-regular fa-layer-group text-brand/80 text-xl"
+                  class="ti ti-stack-3 text-brand/80 text-xl"
                 ></i>
                 Individual All-Time Analytics
               </h4>
@@ -359,7 +353,7 @@ export const DashboardComponent = {
               </p>
             </div>
             <span
-              class="text-xs text-center font-semibold px-2.5 py-1 rounded-lg bg-surface-2 border border-border shadow-sm text-secondary self-center sm:self-auto w-full sm:w-auto"
+              class="text-xs text-center font-semibold px-2.5 py-1 rounded-lg bg-surface border border-border shadow-sm text-secondary self-center sm:self-auto w-full sm:w-auto"
             >
               ${activeCount} Active Tracked (${archivedCount} Archived)
             </span>
@@ -379,11 +373,11 @@ export const DashboardComponent = {
     if (habits.length === 0) {
       return `
         <div
-          class="flex w-full h-full min-h-60 items-center justify-center rounded-2xl border border-dashed border-border/80 bg-surface-2 p-6 text-center"
+          class="flex w-full h-full min-h-60 items-center justify-center rounded-2xl border border-dashed border-border/80 bg-surface p-6 text-center"
         >
           <div class="max-w-xs">
             <i
-              class="fa-regular fa-box-open text-4xl mb-3 fa-regular text-brand/60"
+              class="ti ti-package text-4xl mb-3 text-brand/60"
             ></i>
             <div class="mb-2 text-lg font-semibold text-color">
               No active habits
@@ -400,6 +394,13 @@ export const DashboardComponent = {
       <div class="mt-5 flex flex-col justify-center gap-2">
         ${habits
           .map((habit) => {
+            const categoryBadge = DashboardComponent._getCategoryBadgeHtml(
+              habit.category,
+            );
+            const frequencyBadge = DashboardComponent._getFrequencyBadgeHtml(
+              habit.frequency,
+            );
+
             const habitStats = DashboardAnalytics.getHabitStats(habit, today);
             const goalStatus = DashboardAnalytics.getGoalStatus(
               habitStats.weeklyChecks,
@@ -414,12 +415,12 @@ export const DashboardComponent = {
                 ? "bg-lime-500/10 text-lime-500/80 border-lime-500/30 font-bold animate-pulse shadow-sm"
                 : goalStatus.status === "met"
                   ? "bg-brand/10 text-brand/80 border-brand/20 font-semibold"
-                  : "bg-surface text-secondary border-border/50";
+                  : "bg-surface-2 text-secondary border-border/50";
 
             const rowBadgeText = goalStatus.label;
             const rowBadgeIcon =
               goalStatus.status === "overachieved"
-                ? `<i class="fa-solid fa-bolt-lightning text-lime-500/80 text-[10px] ps-1"></i>`
+                ? `<i class="ti ti-bolt-filled text-lime-500/80 text-[10px] ps-1"></i>`
                 : "";
 
             const batteryColor = stability.color;
@@ -436,7 +437,7 @@ export const DashboardComponent = {
 
             return `
               <div
-                class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 group/row bg-surface-2 p-4 rounded-xl border border-border shadow-sm"
+                class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 group/row bg-surface p-4 rounded-xl border border-border shadow-sm"
               >
                 <div class="flex items-center gap-3 min-w-0 flex-1">
                   <div class="w-full">
@@ -452,18 +453,18 @@ export const DashboardComponent = {
                       >
                         ${habit.name}
                       </span>
-                      <span class="hidden md:flex">
-                        ${habit.name}
-                      </span>
+                      <span class="hidden md:flex"> ${habit.name} </span>
+
+                      ${categoryBadge} ${frequencyBadge}
+
                       <span
-                        class="inline-flex lg:hidden items-center rounded-md border ${rowBadgeStyle} px-1.5 py-0.5 text-[9px] uppercase tracking-wider"
+                        class="min-h-4 inline-flex lg:hidden items-center rounded border ${rowBadgeStyle} px-1.5 py-0.5 text-[9px] uppercase tracking-wider"
                       >
-                        ${rowBadgeText}
-                        ${rowBadgeIcon}
+                        ${rowBadgeText} ${rowBadgeIcon}
                       </span>
                       ${
                         habit.archived
-                          ? `<span class="inline-flex lg:hidden items-center rounded-md border bg-surface text-secondary border-border shadow-sm px-1.5 py-0.5 text-[9px] uppercase tracking-wider">Archived</span>`
+                          ? `<span class="min-h-4 inline-flex lg:hidden items-center rounded-md border bg-surface-2 text-secondary border-border shadow-sm px-1.5 py-0.5 text-[9px] uppercase tracking-wider">Archived</span>`
                           : ""
                       }
                     </div>
@@ -471,48 +472,23 @@ export const DashboardComponent = {
                     <div
                       class="text-[11px] text-secondary/70 mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 font-medium"
                     >
-                      <div
-                        class="hidden lg:flex flex-row items-center gap-2"
-                      >
+                      <div class="hidden lg:flex flex-row items-center gap-2">
                         <span
-                          class="inline-flex items-center rounded-md border ${rowBadgeStyle} px-1.5 py-0.5 text-[9px] uppercase tracking-wider"
+                          class="min-h-4 inline-flex items-center rounded border ${rowBadgeStyle} px-1.5 py-0.5 text-[9px] uppercase tracking-wider"
                         >
-                          ${rowBadgeText}
-                          ${rowBadgeIcon}
+                          ${rowBadgeText} ${rowBadgeIcon}
                         </span>
                         ${
                           habit.archived
-                            ? `<span class="inline-flex items-center rounded-md border bg-surface text-secondary border-border/50 px-1.5 py-0.5 text-[9px] uppercase tracking-wider">Archived</span>`
+                            ? `<span class="min-h-4 inline-flex items-center rounded-md border bg-surface-2 text-secondary border-border/50 px-1.5 py-0.5 text-[9px] uppercase tracking-wider">Archived</span>`
                             : ""
                         }
                       </div>
-                      <span
-                        class="flex flex-row items-center gap-1"
-                      >
-                        <i
-                          class="fa-regular fa-clock text-sky-500/80"
-                        ></i>
+                      <span class="flex flex-row items-center gap-1">
+                        <i class="ti ti-clock text-sky-500/80"></i>
                         Since:
                         <strong class="text-secondary font-semibold"
                           >${habit.createdAt}</strong
-                        >
-                      </span>
-                      <span
-                        class="flex flex-row items-center gap-1"
-                      >
-                        <i
-                          class="fa-regular fa-shapes text-amber-500/80"
-                        ></i>
-                        Category:
-                        <strong class="text-secondary font-semibold"
-                          >${habit.category}</strong
-                        >
-                      </span>
-                      <span class="inline-flex items-center gap-1">
-                        <i class="fa-regular ${goalStatus.icon}"></i> This
-                        Week:
-                        <strong class="text-color font-bold"
-                          >${habitStats.weeklyChecks}/${habitStats.targetFrequency}</strong
                         >
                       </span>
                     </div>
@@ -520,14 +496,12 @@ export const DashboardComponent = {
                 </div>
 
                 <div
-                  class="flex flex-col sm:flex-row sm:justify-between items-center gap-6 lg:gap-8 bg-surface lg:bg-transparent p-4 lg:p-0 rounded-xl border border-border lg:border-0 shadow-sm lg:shadow-none"
+                  class="flex flex-col sm:flex-row sm:justify-between items-center gap-6 lg:gap-8 bg-surface-2 lg:bg-transparent p-4 lg:p-0 rounded-xl border border-border lg:border-0 shadow-sm lg:shadow-none"
                 >
                   <div
                     class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-4 lg:gap-8 text-center sm:text-left min-w-0"
                   >
-                    <div
-                      class="flex flex-col justify-center items-center"
-                    >
+                    <div class="flex flex-col justify-center items-center">
                       <div
                         class="text-[10px] uppercase font-bold text-muted/80 tracking-wider text-nowrap"
                       >
@@ -539,9 +513,7 @@ export const DashboardComponent = {
                         ${habitStats.streak.current}d
                       </div>
                     </div>
-                    <div
-                      class="flex flex-col justify-center items-center"
-                    >
+                    <div class="flex flex-col justify-center items-center">
                       <div
                         class="text-[10px] uppercase font-bold text-muted/80 tracking-wider"
                       >
@@ -593,7 +565,7 @@ export const DashboardComponent = {
                       </div>
                     </div>
                     <span
-                      class="text-[10px] font-bold px-2.5 py-0.5 rounded-lg border ${badgeStyle} whitespace-nowrap lg:self-center"
+                      class="min-h-4 inline-flex text-[10px] font-bold px-2 py-0.5 rounded border ${badgeStyle} whitespace-nowrap lg:self-center"
                       >${batteryText}</span
                     >
                   </div>
@@ -604,5 +576,48 @@ export const DashboardComponent = {
           .join("")}
       </div>
     `;
+  },
+
+  _normalizeIconClass(iconString) {
+    if (!iconString) return "ti ti-folder";
+    return iconString;
+  },
+
+  _getCategoryBadgeHtml(categoryValue) {
+    const matched = CATEGORY_OPTIONS.find((c) => c.value === categoryValue);
+    const categoryData = matched || {
+      value: categoryValue || "general",
+      icon: "ti ti-circle text-secondary",
+      class: "bg-surface text-secondary border-border/60",
+    };
+
+    const iconClass = this._normalizeIconClass(categoryData.icon);
+
+    return `<span
+      class="category-badge min-h-4 inline-flex items-center gap-1 rounded border ${categoryData.class} px-2 py-0.5 text-[9px] uppercase font-bold tracking-wider"
+      title="category badge"
+    >
+      <i class="${iconClass} text-[9px] lg:text-[11px] pb-px"></i>
+      <span>${categoryData.title}</span>
+    </span>`;
+  },
+
+  _getFrequencyBadgeHtml(frequencyValue) {
+    const matched = FREQUENCY_OPTIONS.find((f) => f.value === frequencyValue);
+    const frequencyData = matched || {
+      value: frequencyValue || 1,
+      icon: "ti ti-circle text-secondary",
+      class: "bg-surface text-secondary border-border/60",
+    };
+
+    const iconClass = this._normalizeIconClass(frequencyData.icon);
+
+    return `<span
+      class="frequency-badge min-h-4 inline-flex items-center gap-1 rounded border ${frequencyData.class} px-2 py-0.5 text-[9px] uppercase font-bold tracking-wider"
+      title="frequency badge"
+    >
+      <i class="${iconClass} text-[9px] lg:text-[11px] pb-px"></i>
+      <span>${frequencyData.title}</span>
+    </span>`;
   },
 };

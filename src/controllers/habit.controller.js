@@ -1,5 +1,11 @@
+import {
+  FILTER_OPTIONS_BY_TAB,
+  SORT_OPTIONS_BY_TAB,
+} from "@/shared/constants/habit-options.constants";
+
 import { AnalyticsController } from "./analytics.controller";
 import { AnalyticsView } from "@/views/analytics-view";
+import { AutocompleteComponent } from "@/components/ui/autocomplete.component";
 import { CategoryFilterManager } from "@/services/ui/category-filter-manager.service";
 import { DeleteModalsComponent } from "@/components/modals/delete-modals.component";
 import { DesktopNavComponent } from "@/components/layout/desktop-nav.component";
@@ -17,6 +23,7 @@ import { MobileNavComponent } from "@/components/layout/mobile-nav.component";
 import { NavigationManager } from "@/services/ui/navigation-manager.service";
 import { SearchManager } from "@/services/ui/search-manager.service";
 import { SettingsViewComponent } from "@/components/features/settings/settings-view.component";
+import { Store } from "@/infrastructure/store/store";
 import { TabManager } from "@/services/ui/tab-manager.service";
 import { renderHabitList } from "@/views/habits/habit-list.renderer";
 
@@ -36,6 +43,8 @@ export const HabitController = {
     // Render components
     this.renderComponent();
     this.refreshUI();
+
+    this.initFilterAutocompletes();
 
     // Initialize sub-controllers
     HabitFormController.init({
@@ -60,6 +69,105 @@ export const HabitController = {
       const ui = HabitApplication.getUI();
       TabManager.updateTabStyles(ui.activeTab);
     });
+  },
+
+  initFilterAutocompletes() {
+    const state = Store.getState();
+
+    const statusWrapper = document.getElementById(
+      "status-filter-autocomplete-wrapper",
+    );
+    const sortWrapper = document.getElementById("sort-autocomplete-wrapper");
+
+    if (statusWrapper) {
+      if (this.statusFilterAutocomplete) {
+        this.statusFilterAutocomplete.destroy();
+      }
+
+      const rawOptions = FILTER_OPTIONS_BY_TAB;
+
+      const statusOptions = rawOptions.map((opt) => ({
+        title: opt.title || opt.name,
+        value: opt.value || opt.id,
+        icon: opt.icon,
+      }));
+
+      this.statusFilterAutocomplete = new AutocompleteComponent(
+        statusWrapper,
+        statusOptions,
+        {
+          label: "Status",
+          isRow: true,
+          placeholder: "Select Status...",
+          itemTitle: "title",
+          itemValue: "value",
+          itemIcon: "icon",
+          containerClass: "min-h-8! bg-surface!",
+          inputClass: "h-5! pb-0! w-full lg:w-36 text-xs sm:text-sm",
+          onChange: (selectedVal) => {
+            GlobalLoaderService.show("Filtering habits by date...");
+            setTimeout(() => {
+              try {
+                HabitApplication.setStatusFilter(selectedVal);
+                this.refreshUI();
+              } finally {
+                GlobalLoaderService.hide();
+              }
+            }, 100);
+          },
+        },
+      );
+
+      // Set initial value
+      if (state.filter.statusFilter) {
+        this.statusFilterAutocomplete.setValue(state.filter.statusFilter);
+      }
+    }
+
+    if (sortWrapper) {
+      if (this.sortAutocomplete) {
+        this.sortAutocomplete.destroy();
+      }
+
+      const rawOptions = SORT_OPTIONS_BY_TAB;
+
+      const sortOptions = rawOptions.map((opt) => ({
+        title: opt.title || opt.name,
+        value: opt.value || opt.id,
+        icon: opt.icon,
+      }));
+
+      this.sortAutocomplete = new AutocompleteComponent(
+        sortWrapper,
+        sortOptions,
+        {
+          label: "Sort",
+          isRow: true,
+          placeholder: "Sort By...",
+          itemTitle: "title",
+          itemValue: "value",
+          itemIcon: "icon",
+          containerClass: "min-h-8! bg-surface!",
+          inputClass: "h-5! pb-0! w-full lg:w-36 text-xs sm:text-sm",
+          onChange: (selectedVal) => {
+            GlobalLoaderService.show("Sorting tasks...");
+            setTimeout(() => {
+              try {
+                HabitApplication.setSortBy(selectedVal);
+                this.refreshUI();
+              } finally {
+                GlobalLoaderService.hide();
+              }
+            }, 100);
+          },
+        },
+      );
+
+      // Set initial value
+      if (state.filter.sortBy) {
+        this.sortAutocomplete.setValue(state.filter.sortBy);
+      }
+    }
   },
 
   renderComponent() {
@@ -258,19 +366,19 @@ export const HabitController = {
 
       // Reset both buttons first
       btnSafeguard.className =
-        "flex-1 py-2 text-xs font-bold rounded-lg text-secondary hover:text-color transition cursor-pointer";
+        "flex-1 py-2 text-xs font-bold rounded-lg text-secondary hover:text-color transition cursor-pointer flex justify-center items-center";
       btnShortcuts.className =
-        "flex-1 py-2 text-xs font-bold rounded-lg text-secondary hover:text-color transition cursor-pointer";
+        "flex-1 py-2 text-xs font-bold rounded-lg text-secondary hover:text-color transition cursor-pointer flex justify-center items-center";
 
       // Set active button
       if (tabName === "safeguard") {
         btnSafeguard.className =
-          "flex-1 py-2 text-xs font-bold rounded-lg bg-brand text-white transition cursor-pointer";
+          "flex-1 py-2 text-xs font-bold rounded-lg bg-brand text-white transition cursor-pointer flex justify-center items-center";
         contentSafeguard.classList.remove("hidden");
         contentShortcuts.classList.add("hidden");
       } else if (tabName === "shortcuts") {
         btnShortcuts.className =
-          "flex-1 py-2 text-xs font-bold rounded-lg bg-brand text-white transition cursor-pointer";
+          "flex-1 py-2 text-xs font-bold rounded-lg bg-brand text-white transition cursor-pointer flex justify-center items-center";
         contentShortcuts.classList.remove("hidden");
         contentSafeguard.classList.add("hidden");
       }

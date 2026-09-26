@@ -8,10 +8,10 @@ import { NavigationController } from "@/controllers/navigation.controller";
 import { SettingsController } from "@/controllers/settings.controller";
 import { StateController } from "@/controllers/state.controller";
 import { StorageService } from "./storage.service";
+import { Store } from "@/infrastructure/store/store";
 import { ThemeController } from "@/controllers/theme.controller";
 import { ThemeService } from "./theme.service";
 import { TooltipController } from "@/controllers/tooltip.controller";
-import { state } from "@/models/state.model";
 
 export const BootstrapService = {
   async init() {
@@ -74,6 +74,8 @@ export const BootstrapService = {
     const loader = document.querySelector("#app-loader");
     const app = document.querySelector("#app");
 
+    const state = Store.getState();
+
     if (loader) {
       loader.classList.add("opacity-0", "pointer-events-none");
       // Remove loader after fade-out
@@ -88,7 +90,7 @@ export const BootstrapService = {
 
     // Update tab styles after app is visible
     requestAnimationFrame(() => {
-      HabitController.updateTabStyles(state.activeTab);
+      HabitController.updateTabStyles(state.ui.activeTab);
     });
   },
 };

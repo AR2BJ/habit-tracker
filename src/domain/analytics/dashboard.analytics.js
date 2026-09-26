@@ -118,20 +118,20 @@ export const DashboardAnalytics = {
       return {
         status: "overachieved",
         label: "Overachieved",
-        icon: "fa-bolt-lightning text-lime-500/80",
+        icon: "ti-bolt text-lime-500/80",
       };
     }
     if (isGoalMet) {
       return {
         status: "met",
         label: "Target Met",
-        icon: "fa-circle-check text-brand/80",
+        icon: "ti-circle-check text-brand/80",
       };
     }
     return {
       status: "on-track",
       label: "On Track",
-      icon: "fa-bullseye-arrow text-pink-500/80",
+      icon: "ti-target-arrow text-pink-500/80",
     };
   },
 
@@ -173,7 +173,7 @@ export const DashboardAnalytics = {
   getCompletionStatus(completedToday, totalHabits) {
     if (totalHabits === 0) return "no habits added yet";
     if (completedToday === totalHabits) {
-      return `<span class="text-emerald-500/80 font-bold flex items-center gap-1"><i class="fa-solid fa-sparkles"></i> All caught up!</span>`;
+      return `<span class="text-emerald-500/80 font-bold flex items-center gap-1"><i class="ti ti-sparkles"></i> All caught up!</span>`;
     }
     return `waiting for ${totalHabits - completedToday} more checks`;
   },
@@ -183,7 +183,7 @@ export const DashboardAnalytics = {
    */
   getWeeklyTargetStatus(goalsOverflowThisWeek) {
     if (goalsOverflowThisWeek > 0) {
-      return `<span class="text-lime-500/80 font-bold flex items-center gap-1 animate-pulse"><i class="fa-solid fa-fire text-[9px]"></i> ${goalsOverflowThisWeek} Smashed!</span>`;
+      return `<span class="text-lime-500/80 font-bold flex items-center gap-1 animate-pulse"><i class="ti ti-flame text-[9px]"></i> ${goalsOverflowThisWeek} Smashed!</span>`;
     }
     return "goals met this week";
   },

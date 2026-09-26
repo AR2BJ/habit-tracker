@@ -33,6 +33,8 @@ export const HabitApplication = {
       tab: state.ui.activeTab,
       category: state.ui.currentCategory,
       searchQuery: state.ui.searchQuery,
+      statusFilter: state.filter.statusFilter,
+      sortBy: state.filter.sortBy,
     });
   },
 
@@ -59,6 +61,14 @@ export const HabitApplication = {
 
   setSearchQuery(query) {
     Store.setSearchQuery(query);
+  },
+
+  setStatusFilter(filter) {
+    Store.setStatusFilter(filter);
+  },
+
+  setSortBy(sortBy) {
+    Store.setSortBy(sortBy);
   },
 
   // Domain operations

@@ -1,5 +1,3 @@
-import "@/vendor/fontawesome/js/all";
-
 import { AnalyticsController } from "@/controllers/analytics.controller";
 import { BootstrapService } from "@/services/bootstrap.service";
 import { HabitController } from "@/controllers/habit.controller";

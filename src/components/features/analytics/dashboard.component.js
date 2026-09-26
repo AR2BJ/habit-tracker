@@ -412,9 +412,9 @@ export const DashboardComponent = {
 
             const rowBadgeStyle =
               goalStatus.status === "overachieved"
-                ? "bg-lime-500/10 text-lime-500/80 border-lime-500/30 font-bold animate-pulse shadow-sm"
+                ? "bg-lime-500/10 text-lime-500/80 border-lime-500/30 animate-pulse"
                 : goalStatus.status === "met"
-                  ? "bg-brand/10 text-brand/80 border-brand/20 font-semibold"
+                  ? "bg-brand/10 text-brand/80 border-brand/20"
                   : "bg-surface-2 text-secondary border-border/50";
 
             const rowBadgeText = goalStatus.label;
@@ -441,8 +441,24 @@ export const DashboardComponent = {
               >
                 <div class="flex items-center gap-3 min-w-0 flex-1">
                   <div class="w-full">
+                    <div class="flex flex-wrap items-center gap-2">
+                      ${categoryBadge} ${frequencyBadge}
+
+                      <span
+                        class="min-h-5.5 inline-flex items-center rounded-md border ${rowBadgeStyle} px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider"
+                      >
+                        ${rowBadgeText} ${rowBadgeIcon}
+                      </span>
+
+                      ${
+                        habit.archived
+                          ? `<span class="min-h-5.5 inline-flex items-center gap-1 rounded-md border border-border bg-surface-2 text-secondary px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider">Archived</span>`
+                          : ""
+                      }
+                    </div>
+
                     <div
-                      class="text-sm pb-3 sm:pb-0 font-bold text-color truncate flex flex-wrap items-center gap-2"
+                      class="text-sm mt-2 font-bold text-color truncate flex flex-wrap items-center gap-2"
                     >
                       <span
                         class="md:hidden truncate cursor-pointer js-tooltip-target"
@@ -454,36 +470,11 @@ export const DashboardComponent = {
                         ${habit.name}
                       </span>
                       <span class="hidden md:flex"> ${habit.name} </span>
-
-                      ${categoryBadge} ${frequencyBadge}
-
-                      <span
-                        class="min-h-4 inline-flex lg:hidden items-center rounded border ${rowBadgeStyle} px-1.5 py-0.5 text-[9px] uppercase tracking-wider"
-                      >
-                        ${rowBadgeText} ${rowBadgeIcon}
-                      </span>
-                      ${
-                        habit.archived
-                          ? `<span class="min-h-4 inline-flex lg:hidden items-center rounded-md border bg-surface-2 text-secondary border-border shadow-sm px-1.5 py-0.5 text-[9px] uppercase tracking-wider">Archived</span>`
-                          : ""
-                      }
                     </div>
 
                     <div
                       class="text-[11px] text-secondary/70 mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 font-medium"
                     >
-                      <div class="hidden lg:flex flex-row items-center gap-2">
-                        <span
-                          class="min-h-4 inline-flex items-center rounded border ${rowBadgeStyle} px-1.5 py-0.5 text-[9px] uppercase tracking-wider"
-                        >
-                          ${rowBadgeText} ${rowBadgeIcon}
-                        </span>
-                        ${
-                          habit.archived
-                            ? `<span class="min-h-4 inline-flex items-center rounded-md border bg-surface-2 text-secondary border-border/50 px-1.5 py-0.5 text-[9px] uppercase tracking-wider">Archived</span>`
-                            : ""
-                        }
-                      </div>
                       <span class="flex flex-row items-center gap-1">
                         <i class="ti ti-clock text-sky-500/80"></i>
                         Since:
@@ -594,10 +585,10 @@ export const DashboardComponent = {
     const iconClass = this._normalizeIconClass(categoryData.icon);
 
     return `<span
-      class="category-badge min-h-4 inline-flex items-center gap-1 rounded border ${categoryData.class} px-2 py-0.5 text-[9px] uppercase font-bold tracking-wider"
+      class="category-badge min-h-5.5 inline-flex items-center gap-1 rounded-md border ${categoryData.class} px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider"
       title="category badge"
     >
-      <i class="${iconClass} text-[9px] lg:text-[11px] pb-px"></i>
+      <i class="${iconClass} text-[10px] lg:text-xs pb-px"></i>
       <span>${categoryData.title}</span>
     </span>`;
   },
@@ -613,10 +604,10 @@ export const DashboardComponent = {
     const iconClass = this._normalizeIconClass(frequencyData.icon);
 
     return `<span
-      class="frequency-badge min-h-4 inline-flex items-center gap-1 rounded border ${frequencyData.class} px-2 py-0.5 text-[9px] uppercase font-bold tracking-wider"
+      class="frequency-badge min-h-5.5 inline-flex items-center gap-1 rounded-md border ${frequencyData.class} px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider"
       title="frequency badge"
     >
-      <i class="${iconClass} text-[9px] lg:text-[11px] pb-px"></i>
+      <i class="${iconClass} text-[10px] lg:text-xs pb-px"></i>
       <span>${frequencyData.title}</span>
     </span>`;
   },

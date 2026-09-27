@@ -40,7 +40,9 @@ export function renderHabitList(habits, activeTab = "active") {
       >
         <div class="text-6xl mb-2">${icon}</div>
         <h2 class="text-xl font-bold text-color">${title}</h2>
-        <p class="mt-2 text-sm text-secondary max-w-sm mx-auto">${description}</p>
+        <p class="mt-2 text-sm text-secondary max-w-sm mx-auto">
+          ${description}
+        </p>
       </div>
     `;
     return;

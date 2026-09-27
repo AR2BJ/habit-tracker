@@ -160,13 +160,13 @@ export const HabitCardComponent = {
 
             <div class="flex flex-col min-w-0 w-full">
               <div class="flex items-center gap-1.5 flex-wrap">
-              ${categoryBadge} ${frequencyBadge}
-              <span
-                class="w-fit min-h-5.5 inline-flex items-center gap-1 rounded-md border border-secondary/30 bg-secondary/10 px-2 py-0.5 text-[10px] font-medium text-secondary/80"
-              >
-                <i class="ti ti-calendar text-[10px] lg:text-xs pb-px"></i>
-                <span>${habit.createdAt}</span>
-              </span>
+                ${categoryBadge} ${frequencyBadge}
+                <span
+                  class="w-fit min-h-5.5 inline-flex items-center gap-1 rounded-md border border-secondary/30 bg-secondary/10 px-2 py-0.5 text-[10px] font-medium text-secondary/80"
+                >
+                  <i class="ti ti-calendar text-[10px] lg:text-xs pb-px"></i>
+                  <span>${habit.createdAt}</span>
+                </span>
               </div>
               <h2
                 class="mt-2 text-sm md:text-base font-bold text-color tracking-tight leading-snug wrap-break-word"

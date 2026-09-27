@@ -1,4 +1,3 @@
-import { CATEGORY_OPTIONS } from "@/shared/constants/habit-options.constants";
 import { SprintCalculator } from "@/domain/habits/habit-sprint.calculator";
 import { todayISO } from "@/shared/utils/date.utils";
 

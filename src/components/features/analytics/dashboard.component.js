@@ -217,9 +217,7 @@ export const DashboardComponent = {
             class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between"
           >
             <div>
-              <h4
-                class="text-lg font-bold text-color flex items-center gap-2"
-              >
+              <h4 class="text-lg font-bold text-color flex items-center gap-2">
                 <i class="ti ti-affiliate text-brand/80 text-xl"></i>
                 Lifetime Activity Grid
               </h4>
@@ -310,9 +308,7 @@ export const DashboardComponent = {
           class="bg-surface-2 border border-border/70 shadow-sm rounded-2xl p-6 flex flex-col justify-between"
         >
           <div>
-            <h4
-              class="text-lg font-bold text-color flex items-center gap-2"
-            >
+            <h4 class="text-lg font-bold text-color flex items-center gap-2">
               <i class="ti ti-chart-bar rotate-90 text-brand text-xl"></i>
               Distribution Trends
             </h4>
@@ -333,18 +329,17 @@ export const DashboardComponent = {
       </div>
 
       <div
-        class="col-span-full bg-surface-2 border border-border/70 shadow-sm rounded-2xl p-6 flex flex-col justify-between"
+        class="w-full col-span-2 sm:col-span-full mt-4 bg-surface-2 rounded-2xl"
       >
+        <div
+          class="col-span-full bg-surface-2 border border-border/70 shadow-sm rounded-2xl p-6 flex flex-col justify-between"
+        >
           <div
             class="flex flex-wrap sm:flex-nowrap sm:items-center justify-between gap-2"
           >
             <div>
-              <h4
-                class="text-lg font-bold text-color flex items-center gap-2"
-              >
-                <i
-                  class="ti ti-stack-3 text-brand/80 text-xl"
-                ></i>
+              <h4 class="text-lg font-bold text-color flex items-center gap-2">
+                <i class="ti ti-stack-3 text-brand/80 text-xl"></i>
                 Individual All-Time Analytics
               </h4>
               <p class="text-xs text-secondary/80 mt-1 font-medium">
@@ -362,6 +357,7 @@ export const DashboardComponent = {
           <div class="mt-6 space-y-3">
             ${this._renderHabitList(habits, stats)}
           </div>
+        </div>
       </div>
     `;
   },
@@ -420,8 +416,8 @@ export const DashboardComponent = {
             const rowBadgeText = goalStatus.label;
             const rowBadgeIcon =
               goalStatus.status === "overachieved"
-                ? `<i class="ti ti-bolt-filled text-lime-500/80 text-[10px] ps-1"></i>`
-                : "";
+                ? `<i class="ti ti-bolt-filled text-lime-500/80 text-[10px] lg:text-xs pb-0.5"></i>`
+                : `<i class="ti ti-target-arrow text-rose-500/80 text-[10px] lg:text-xs pb-0.5"></i>`;
 
             const batteryColor = stability.color;
             const batteryText = stability.label;
@@ -445,9 +441,12 @@ export const DashboardComponent = {
                       ${categoryBadge} ${frequencyBadge}
 
                       <span
-                        class="min-h-5.5 inline-flex items-center rounded-md border ${rowBadgeStyle} px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider"
+                        class="min-h-5.5 inline-flex items-center gap-1.5 rounded-md border ${rowBadgeStyle} px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider"
                       >
-                        ${rowBadgeText} ${rowBadgeIcon}
+                        ${rowBadgeIcon
+                          .replace("text-rose-500/80", "text-secondary")
+                          .replace("pb-0.5", "pb-px")}
+                        ${rowBadgeText}
                       </span>
 
                       ${
@@ -476,10 +475,27 @@ export const DashboardComponent = {
                       class="text-[11px] text-secondary/70 mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 font-medium"
                     >
                       <span class="flex flex-row items-center gap-1">
-                        <i class="ti ti-clock text-sky-500/80"></i>
+                        <i
+                          class="ti ti-clock text-sky-500/80 text-[10px] lg:text-xs pb-0.5"
+                        ></i>
                         Since:
                         <strong class="text-secondary font-semibold"
                           >${habit.createdAt}</strong
+                        >
+                      </span>
+                      <span class="flex flex-row items-center gap-1">
+                        <i
+                          class="ti ti-category text-amber-500/80 text-[10px] lg:text-xs pb-0.5"
+                        ></i>
+                        Category:
+                        <strong class="text-secondary font-semibold"
+                          >${habit.category}</strong
+                        >
+                      </span>
+                      <span class="inline-flex items-center gap-1">
+                        ${rowBadgeIcon} This Week:
+                        <strong class="text-color font-bold"
+                          >${habitStats.weeklyChecks}/${habitStats.targetFrequency}</strong
                         >
                       </span>
                     </div>
@@ -556,7 +572,7 @@ export const DashboardComponent = {
                       </div>
                     </div>
                     <span
-                      class="min-h-4 inline-flex text-[10px] font-bold px-2 py-0.5 rounded border ${badgeStyle} whitespace-nowrap lg:self-center"
+                      class="min-h-5.5 inline-flex text-[10px] font-bold px-2 py-0.5 rounded-md border ${badgeStyle} whitespace-nowrap lg:self-center"
                       >${batteryText}</span
                     >
                   </div>

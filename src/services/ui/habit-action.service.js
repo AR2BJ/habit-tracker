@@ -38,7 +38,7 @@ export class HabitActionService {
             ? `Completed "${habit.name}" for today! ✨`
             : `Removed completion for "${habit.name}"`,
           icon: isNowCompleted ? "ti-circle-check" : "ti-circle",
-          iconColor: isNowCompleted ? "text-emerald-500/80" : "text-brand/80",
+          iconColor: isNowCompleted ? "text-emerald-500/80" : "text-sky-500/80",
           duration: 5000,
         });
       } catch (error) {
@@ -105,7 +105,7 @@ export class HabitActionService {
             ? `Marked "${habit.name}" as done for ${dateLabel}! ✨`
             : `Unchecked "${habit.name}" for ${dateLabel}`,
           icon: isNowCompleted ? "ti-square-check" : "ti-square-x",
-          iconColor: isNowCompleted ? "text-emerald-500/80" : "text-brand/80",
+          iconColor: isNowCompleted ? "text-emerald-500/80" : "text-sky-500/80",
           duration: 5000,
         });
       } catch (error) {
@@ -144,7 +144,7 @@ export class HabitActionService {
             ? `Safeguard activated: Skipped day for "${habit.name}".`
             : `Removed safeguard for "${habit.name}"`,
           icon: isNowSkipped ? "ti-shield-half" : "ti-calendar",
-          iconColor: isNowSkipped ? "text-amber-500/80" : "text-brand/80",
+          iconColor: isNowSkipped ? "text-amber-500/80" : "text-sky-500/80",
           duration: 5000,
         });
       } catch (error) {

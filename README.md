@@ -160,7 +160,7 @@ Potential future enhancements include:
 
 ## License
 
-This project is licensed under the [MIT license](https://github.com/AR2BJ/habit-tracker/blob/dev/LICENSE).
+This project is licensed under the [MIT license](https://github.com/AR2BJ/habit-tracker/blob/master/LICENSE).
 
 ## Contributing
 

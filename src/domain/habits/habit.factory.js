@@ -7,7 +7,7 @@ export const HabitFactory = {
     const name = HabitRules.normalizeName(data.name);
 
     if (!HabitRules.isValidName(name)) {
-      throw new Error("Invalid habit name length (2-20 chars)");
+      throw new Error("Invalid habit name length (2-40 chars)");
     }
 
     return {

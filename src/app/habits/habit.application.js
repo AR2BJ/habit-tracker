@@ -81,7 +81,7 @@ export const HabitApplication = {
     // Validate first
     const name = HabitRules.normalizeName(habitData.name);
     if (!HabitRules.isValidName(name)) {
-      throw new Error("Invalid habit name length (2-20 chars)");
+      throw new Error("Invalid habit name length (2-40 chars)");
     }
 
     const habits = this.getHabits();

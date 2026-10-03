@@ -1,7 +1,7 @@
 export const HabitRules = {
   isValidName(name) {
     const cleaned = (name || "").trim().replace(/\s+/g, " ");
-    return cleaned.length >= 2 && cleaned.length <= 20;
+    return cleaned.length >= 2 && cleaned.length <= 40;
   },
 
   normalizeName(name) {
